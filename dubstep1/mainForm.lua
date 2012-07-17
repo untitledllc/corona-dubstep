@@ -1,4 +1,8 @@
-module ("MAIN_FORM",package.seeall)
+isOkSaveDialogPressed = nil
+
+require "saveRecDialog"
+
+module ("mainForm",package.seeall)
 
 local userActList = {}
 local action = {}
@@ -15,7 +19,7 @@ local but3ClickedCounter = 0
 local recCounter = 0
 
 local backRect
-local but1
+local but1 = nil
 local but2
 local but3
 local recBut
@@ -27,8 +31,8 @@ local textBut3
 local textRecBut
 local textRepBut
 
-audio.reserveChannels(3)
-function saveUserActList()
+
+local function saveUserActList()
     local path = system.pathForFile( "currentRecord.txt", system.DocumentsDirectory )
     local f = io.open(path,"w")
     if (not f) then
@@ -43,7 +47,7 @@ function saveUserActList()
     f:close()
 end
 
-function printUserActList()
+local function printUserActList()
     for i,t in pairs(userActList) do
         for j,val in pairs(t) do
 			print(val)
@@ -52,7 +56,7 @@ function printUserActList()
     print("---------------------------------")
 end
 
-function openUserActList()
+local function openUserActList()
     local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
     local f = io.open(path,"r+")
     if (not f) then
@@ -71,7 +75,7 @@ function openUserActList()
     f:close()
 end
 
-function playSound1 (event)
+local function playSound1 (event)
     if (event.phase == "ended") then
         if (but1ClickedCounter % 2 ~= 0) then
         	textBut1.text = "Track1 is stopped"
@@ -89,7 +93,7 @@ function playSound1 (event)
     end
 end
 
-function playSound2 (event)
+local function playSound2 (event)
     if (event.phase == "ended") then
         if (but2ClickedCounter % 2 ~= 0) then
         	textBut2.text = "Track2 is stopped"
@@ -107,7 +111,7 @@ function playSound2 (event)
     end
 end
 
-function playSound3 (event)
+local function playSound3 (event)
     if (event.phase == "ended") then
         if (but3ClickedCounter % 2 ~= 0) then
         	textBut3.text = "Track3 is stopped"
@@ -125,7 +129,7 @@ function playSound3 (event)
     end
 end
 
-function recording(event)
+local function recording(event)
     if (event.phase == "ended") then
         if (recCounter % 2 == 0) then
             userActList = {}
@@ -134,28 +138,22 @@ function recording(event)
             relatTime = system.getTimer()
         else
         	isRecStarted = false
-        	textRecBut.text = "Recording is stopped"
-        	if (#userActList > 0) then
-            	saveUserActList()
-            end
-            local path = "Record "..tostring(os.date("%c"))..".txt"
-            local destDir = system.DocumentsDirectory
-			os.rename( system.pathForFile( "currentRecord.txt", destDir  ),
-        		system.pathForFile( path, destDir  ) )
-        	repBut.isVisible = false
+        	textRecBut.text = "Recording is stopped"       
+        	hideMainForm()
+        	saveRecDialog.showDialog()
         end
         recCounter = recCounter + 1
     end
 end
 
-function replay(event)
+local function replay(event)
     repBut = event.target
     if (event.phase == "release") then
         openUserActList()    
     end
 end
 
-function bindEventListeners()
+local function bindEventListeners()
 	but1:addEventListener("touch",playSound1)
 	but2:addEventListener("touch",playSound2)
 	but3:addEventListener("touch",playSound3)
@@ -163,10 +161,9 @@ function bindEventListeners()
 	repBut:addEventListener("touch",replay)
 end
 
-function initGui()
+function showMainForm()
 	local w = display.contentWidth
 	local h = display.contentHeight
-
 	backRect = display.newRoundedRect(0, 0, w, h, 64)
 	but1 = display.newRoundedRect(w/8,h/6,3*w/4,28,12)
 	but2 = display.newRoundedRect(w/8,h/3,3*w/4,28,12)
@@ -208,7 +205,53 @@ function initGui()
 	recBut.strokeWidth = 2
 	repBut.strokeWidth = 2
 	
+	audio.reserveChannels(3)
 	bindEventListeners()
+
+	audio.stop(1)
+	audio.stop(2)
+	audio.stop(3)
+	
+	but1ClickedCounter = 0
+	but2ClickedCounter = 0
+	but3ClickedCounter = 0
+	recCounter = 0
+	
+	if (isOkSaveDialogPressed == true and #userActList > 0) then
+		print("Ok")
+    	saveUserActList()
+        local path = "Record "..tostring(os.date("%c"))..".txt"
+        local destDir = system.DocumentsDirectory
+		os.rename( system.pathForFile( "currentRecord.txt", destDir  ),
+        			system.pathForFile( path, destDir  ) )
+    end
+    
+ 	isOkSaveDialogPressed = nil
 end
 
+function hideMainForm()
+	display.remove(but1)
+	display.remove(but2)
+	display.remove(but3)
+	display.remove(recBut)
+	display.remove(textBut1)
+	display.remove(textBut2)
+	display.remove(textBut3)
+	display.remove(textRecBut)
+	display.remove(textRepBut)
+	
+	--[[but1:removeEventListener("touch", playSound1)
+	but2:removeEventListener("touch", playSound2)
+	but3:removeEventListener("touch", playSound3)
+	recBut:removeEventListener("touch", recording)
+	repBut:removeEventListener("touch", replay)--]]
+	
+	audio.stop(1)
+	audio.stop(2)
+	audio.stop(3)
+	but1ClickedCounter = 0
+	but2ClickedCounter = 0
+	but3ClickedCounter = 0
+	recCounter = 0
+end
 

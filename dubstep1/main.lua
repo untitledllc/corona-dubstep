@@ -1,3 +1,3 @@
 require "mainForm"
 
-MAIN_FORM.initGui()
+mainForm.showMainForm()
