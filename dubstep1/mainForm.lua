@@ -9,14 +9,12 @@ local action = {}
 local relatTime = 0
 local isRecStarted = false
 
-local sound1 = audio.loadSound("Track1.wav")
-local sound2 = audio.loadSound("Track2.wav")
-local sound3 = audio.loadSound("Track3.wav")
-
 local but1ClickedCounter = 0
 local but2ClickedCounter = 0
 local but3ClickedCounter = 0
 local recCounter = 0
+
+local numTracks = 3
 
 local backRect
 local but1 = nil
@@ -31,9 +29,12 @@ local textBut3
 local textRecBut
 local textRepBut
 
+local sound1 = audio.loadSound("Track1.mp3")
+local sound2 = audio.loadSound("Track2.mp3")
+local sound3 = audio.loadSound("Track3.mp3")
 
 local function saveUserActList()
-    local path = system.pathForFile( "currentRecord.txt", system.DocumentsDirectory )
+    local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
     local f = io.open(path,"w")
     if (not f) then
         print("not ok")
@@ -110,6 +111,17 @@ local function playSound3 (event)
     end
 end
 
+local function stopAllTracks()
+	local trCounter = 1
+	while (trCounter <= numTracks) do
+		userActList[#userActList+1] = {0,system.getTimer() - relatTime,trCounter}
+		trCounter = trCounter + 1
+	end
+	audio.stop(1)
+	audio.stop(2)
+	audio.stop(3)
+end
+
 local function recording(event)
     if (event.phase == "ended") then
         if (recCounter % 2 == 0) then
@@ -118,6 +130,7 @@ local function recording(event)
             isRecStarted = true
             relatTime = system.getTimer()
         else
+        	stopAllTracks()
         	isRecStarted = false
         	textRecBut.text = "Recording is stopped"       
         	hideMainForm()
@@ -199,12 +212,12 @@ function showMainForm()
 	recCounter = 0
 	
 	if (isOkSaveDialogPressed == true and #userActList > 0) then
-		print("Ok")
+		--print("Ok")
     	saveUserActList()
-        local path = "Record "..tostring(os.date("%c"))..".txt"
+        --[[local path = "Record "..tostring(os.date("%c"))..".txt"
         local destDir = system.DocumentsDirectory
 		os.rename( system.pathForFile( "currentRecord.txt", destDir  ),
-        			system.pathForFile( path, destDir  ) )
+        			system.pathForFile( path, destDir  ) )--]]
     end
     
  	isOkSaveDialogPressed = nil

@@ -5,15 +5,18 @@ local h = display.contentHeight
 local playLine
 local playBut
 local exitBut
-local curplayButPos
+local curPlayPos
 local textExit
 local textPlay
 local playLineLen = w - 20
 local playUserActList = {}
-local activeActions = {}
 local beginPlayTime
-local endTrackTime
+local endTrackTime 
+local isPlayPressed = nil
+local relPlayTime = 2
+local relEndTrackTime = 1
 local sound
+local actCounter = 1
 
 local function printUserActList()
     for i,t in pairs(playUserActList) do
@@ -38,8 +41,9 @@ local function readAction(file)
 end
 
 local function openUserActList()
+	playUserActList = {}
     local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
-    local f = io.open(path,"r+")
+    local f = io.open(path,"r")
     local act = 0
     while (act) do
     	act = readAction(f)
@@ -63,32 +67,29 @@ end
 local function makeAction(index) 
 	local track = getTrackNumber(index)
 	local playStop = getActionActivity(index)
-	local trackName = "Track"..tostring(track)..".wav"
+	local trackName = "Track"..tostring(track)..".mp3"
 	if (playStop == 1) then
 		sound = audio.loadSound(trackName)
-		audio.play(sound,{ channel = track,loops = -1})
+		audio.play(sound,{ channel = track,loops = 1})
 	else
 		audio.stop(track)
+		audio.dispose(track)
 	end
 end
 
-local function play()
-	openUserActList()
-	beginPlayTime = system.getTimer()
-	relEndTrackTime = playUserActList[#playUserActList][2]
-	local relPlayTime = system.getTimer() - beginPlayTime
-	local actCounter = 1
-	while(relPlayTime < relEndTrackTime) do
-		if (math.abs(relPlayTime - playUserActList[actCounter][2]) < 0.01) then
-			--print("Arrived here")
-			--print(actCounter)
+local function play(event)
+	--transition.to(curPlayPos, {time=relEndTrackTime,x=(w-10)})
+	
+	if (relPlayTime <= relEndTrackTime) then
+		if (math.abs(relPlayTime - playUserActList[actCounter][2]) < 20) then
+			print("IM HERE")
 			makeAction(actCounter)
 			actCounter = actCounter + 1
 		end
-		--print(relPlayTime)
 		relPlayTime = system.getTimer() - beginPlayTime
+		print(relPlayTime)
 	end
-	print("finished")
+	--print("finished")
 end
 
 local function hideRepView()
@@ -98,6 +99,8 @@ local function hideRepView()
 	display.remove(textExit)
 	display.remove(textPlay)
 	display.remove(playBut)
+	isPlayPressed = nil
+	Runtime:removeEventListener("enterFrame",play)
 end
 
 local function showMainForm(event)
@@ -110,7 +113,14 @@ local function onExit(event)
 end
 
 local function onPlay(event)
+	curPlayPos.x = 10
+	openUserActList()
+	beginPlayTime = system.getTimer()
+	relEndTrackTime = playUserActList[#playUserActList][2]
+	relPlayTime = system.getTimer() - beginPlayTime
+	actCounter = 1
 	if (event.phase == "ended") then
+		transition.to(curPlayPos, {time=relEndTrackTime,x=(w-10)})
 		play()
 	end
 end
@@ -118,6 +128,7 @@ end
 local function bindListeners() 
 	exitBut:addEventListener("touch",onExit)
 	playBut:addEventListener("touch",onPlay)
+	Runtime:addEventListener("enterFrame",play)
 end
 
 function showRepView()
