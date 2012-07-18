@@ -11,14 +11,13 @@ local h = display.contentHeight
 local function showMainForm(event)
 	mainForm.showMainForm()
 end
+
 local function hideDialog()
 	display.remove(textBox)
 	display.remove(butOk)
 	display.remove(butCancel)
 	display.remove(textOk)
 	display.remove(textCancel)
-	--[[butOk:removeEventListener("touch", okPressed)
-	butCancel:removeEventListener("touch", cancelPressed)--]]
 end
 
 local function okPressed()

@@ -1,7 +1,7 @@
 isOkSaveDialogPressed = nil
 
 require "saveRecDialog"
-
+require "replayView"
 module ("mainForm",package.seeall)
 
 local userActList = {}
@@ -54,25 +54,6 @@ local function printUserActList()
         end
     end
     print("---------------------------------")
-end
-
-local function openUserActList()
-    local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
-    local f = io.open(path,"r+")
-    if (not f) then
-        print("not ok")
-    end
-    for i,t in pairs(userActList) do
-        for j,val in pairs(t) do
-           val = f:read("*number")
-        end
-    end
-    for i,t in pairs(userActList) do
-        for j,val in pairs(t) do
-            print(val)
-        end
-    end
-    f:close()
 end
 
 local function playSound1 (event)
@@ -147,9 +128,9 @@ local function recording(event)
 end
 
 local function replay(event)
-    repBut = event.target
-    if (event.phase == "release") then
-        openUserActList()    
+    if (event.phase == "ended") then
+    	hideMainForm()   
+    	replayView.showRepView()   
     end
 end
 
@@ -234,17 +215,12 @@ function hideMainForm()
 	display.remove(but2)
 	display.remove(but3)
 	display.remove(recBut)
+	display.remove(repBut)
 	display.remove(textBut1)
 	display.remove(textBut2)
 	display.remove(textBut3)
 	display.remove(textRecBut)
 	display.remove(textRepBut)
-	
-	--[[but1:removeEventListener("touch", playSound1)
-	but2:removeEventListener("touch", playSound2)
-	but3:removeEventListener("touch", playSound3)
-	recBut:removeEventListener("touch", recording)
-	repBut:removeEventListener("touch", replay)--]]
 	
 	audio.stop(1)
 	audio.stop(2)
