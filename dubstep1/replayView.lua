@@ -3,20 +3,23 @@ module ("replayView",package.seeall)
 local w = display.contentWidth
 local h = display.contentHeight
 local playLine
-local playBut
-local exitBut
+local playBtn
+local exitBtn
+local pauseBtn
 local curPlayPos
-local textExit
-local textPlay
+local txtExit
+local txtPlay
+local txtPause
 local playLineLen = w - 20
 local playUserActList = {}
 local beginPlayTime
-local endTrackTime 
-local isPlayPressed = nil
 local relPlayTime = 2
 local relEndTrackTime = 1
 local sound
 local actCounter = 1
+local speed
+local isPaused = false
+local isPlayed = false
 
 local function printUserActList()
     for i,t in pairs(playUserActList) do
@@ -30,7 +33,7 @@ end
 local function readAction(file)
 	local action = {}
 	local i = 1
-	while (i <= 3) do
+	while (i <= numTracks) do
 		action[i] = file:read("*number")
 		if (action[i] == nil) then
 			return nil
@@ -77,29 +80,53 @@ local function makeAction(index)
 	end
 end
 
+local function pauseActiveChannels()
+	if (audio.isChannelPlaying(1)) then
+		audio.pause(1)
+	end
+	if (audio.isChannelPlaying(2)) then
+		audio.pause(2)
+	end
+	if (audio.isChannelPlaying(3)) then
+		audio.pause(3)
+	end
+	isPaused = true
+end
+
+local function resumePausedChannels()
+	if (audio.isChannelPaused(1)) then
+		audio.resume(1)
+	end
+	if (audio.isChannelPaused(1)) then
+		audio.resume(2)
+	end
+	if (audio.isChannelPaused(1)) then
+		audio.resume(3)
+	end
+	isPaused = false
+end
+
 local function play(event)
-	--transition.to(curPlayPos, {time=relEndTrackTime,x=(w-10)})
-	
 	if (relPlayTime <= relEndTrackTime) then
 		if (math.abs(relPlayTime - playUserActList[actCounter][2]) < 20) then
-			print("IM HERE")
 			makeAction(actCounter)
 			actCounter = actCounter + 1
 		end
+		curPlayPos.x = curPlayPos.x + speed*16
 		relPlayTime = system.getTimer() - beginPlayTime
-		print(relPlayTime)
 	end
-	--print("finished")
 end
 
 local function hideRepView()
 	display.remove(playLine)
-	display.remove(exitBut)
+	display.remove(exitBtn)
 	display.remove(curPlayPos)
-	display.remove(textExit)
-	display.remove(textPlay)
-	display.remove(playBut)
-	isPlayPressed = nil
+	display.remove(txtExit)
+	display.remove(txtPlay)
+	display.remove(playBtn)
+	display.remove(pauseBtn)
+	display.remove(txtPause)
+	
 	Runtime:removeEventListener("enterFrame",play)
 end
 
@@ -119,40 +146,51 @@ local function onPlay(event)
 	relEndTrackTime = playUserActList[#playUserActList][2]
 	relPlayTime = system.getTimer() - beginPlayTime
 	actCounter = 1
+	speed = (w - 20)/relEndTrackTime
+	isPlayed = true
 	if (event.phase == "ended") then
-		transition.to(curPlayPos, {time=relEndTrackTime,x=(w-10)})
 		play()
 	end
 end
 
+local function onPause(event) 
+	if (event.phase == "ended") then
+		isPaused = true
+	end
+end
+
 local function bindListeners() 
-	exitBut:addEventListener("touch",onExit)
-	playBut:addEventListener("touch",onPlay)
+	exitBtn:addEventListener("touch",onExit)
+	playBtn:addEventListener("touch",onPlay)
+	pauseBtn:addEventListener("touch",onPause)
 	Runtime:addEventListener("enterFrame",play)
 end
 
 function showRepView()
-	playBut = display.newRoundedRect(1,1,w/3,h/12,12)
+	playBtn = display.newRoundedRect(1,1,w/3,h/12,12)
+	pauseBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
 	curPlayPos = display.newRect(1,1,5,20)
 	playLine = display.newLine(10,h/2,w-10,h/2)
-	exitBut = display.newRoundedRect(1, 1, w/3, h/12, 12)
-	textExit = display.newText("Exit", 0, 0, native.systemFont, 24)
-	textPlay = display.newText("Play", 0, 0, native.systemFont, 24)
+	exitBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
+	txtExit = display.newText("Exit", 0, 0, native.systemFont, 24)
+	txtPlay = display.newText("Play", 0, 0, native.systemFont, 24)
+	txtPause = display.newText("Pause", 0, 0, native.systemFont, 24)
 	
 	playLine:setColor(255,0,0)
 	playLine.width = 5 
 	
 	curPlayPos.x,curPlayPos.y = 10,h/2
+	exitBtn.x, exitBtn.y = w/2, 5*h/6
+	playBtn.x, playBtn.y = w/3-5, 2*h/3
+	pauseBtn.x,pauseBtn.y = 2*w/3-5, 2*h/3
 	
-	exitBut.x, exitBut.y = 2*w/3-5, 2*h/3
+	txtExit.x,txtExit.y = w/2, 5*h/6
+	txtPlay.x,txtPlay.y = w/3, 2*h/3
+	txtPause.x,txtPause.y = 2*w/3-5, 2*h/3
 	
-	playBut.x, playBut.y = w/3-5, 2*h/3
-	
-	textExit.x,textExit.y = 2*w/3, 2*h/3
-	textPlay.x,textPlay.y = w/3, 2*h/3
-	
-	textExit:setTextColor(0,0,0)
-	textPlay:setTextColor(0,0,0)
+	txtExit:setTextColor(0,0,0)
+	txtPlay:setTextColor(0,0,0)
+	txtPause:setTextColor(0,0,0)
 	
 	bindListeners()
 end

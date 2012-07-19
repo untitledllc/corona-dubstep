@@ -1,5 +1,5 @@
 isOkSaveDialogPressed = nil
-
+numTracks = 3
 require "saveRecDialog"
 require "replayView"
 module ("mainForm",package.seeall)
@@ -9,29 +9,40 @@ local action = {}
 local relatTime = 0
 local isRecStarted = false
 
-local but1ClickedCounter = 0
-local but2ClickedCounter = 0
-local but3ClickedCounter = 0
-local recCounter = 0
+local tracks = {}
+local activeTracks = {}
+local track = {sound = nil,name = nil,startTime = nil,actTime = nil}
+local trackCounters = {}
 
-local numTracks = 3
+local btn1 = nil
+local btn2
+local btn3
+local recBtn
+local repBtn
 
-local backRect
-local but1 = nil
-local but2
-local but3
-local recBut
-local repBut
+local txtBtn1
+local txtBtn2
+local txtBtn3
+local txtRecBtn
+local txtRepBtn
 
-local textBut1
-local textBut2
-local textBut3
-local textRecBut
-local textRepBut
+local function getTxtFromGui(trIndex)
+	if (trIndex == 1) then
+		return txtBtn1
+	end
+	if (trIndex == 2) then
+		return txtBtn2
+	end
+	return txtBtn3
+end
 
-local sound1 = audio.loadSound("Track1.mp3")
-local sound2 = audio.loadSound("Track2.mp3")
-local sound3 = audio.loadSound("Track3.mp3")
+local function resetCounters() 
+	local i = 1
+	while (i <= numTracks + 1) do
+		trackCounters[i] = 0
+		i = i + 1
+	end
+end
 
 local function saveUserActList()
     local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
@@ -57,86 +68,67 @@ local function printUserActList()
     print("---------------------------------")
 end
 
-local function playSound1 (event)
-    if (event.phase == "ended") then
-        if (but1ClickedCounter % 2 ~= 0) then
-        	textBut1.text = "Track1 is stopped"
-            action = {time = system.getTimer() - relatTime, trackNumber = 1, start = 0}
-            audio.stop(1) 
+local function playTrack(trIndex)
+		local txtBtn = getTxtFromGui(trIndex)
+	    if (trackCounters[trIndex] % 2 ~= 0) then
+        	txtBtn.text = "Track"..tostring(trIndex).." is stopped"
+            action = {time = system.getTimer() - relatTime, trackNumber = trIndex, start = 0}
+            audio.stop(trIndex) 
         else
-        	textBut1.text = "Track1 is started"
-           	action = {time = system.getTimer() - relatTime, trackNumber = 1, start = 1}
-            audio.play(sound1,{ channel = 1,loops = -1})
+        	txtBtn.text = "Track"..tostring(trIndex).." is started"
+           	action = {time = system.getTimer() - relatTime, trackNumber = trIndex, start = 1}
+            audio.play(tracks[trIndex][1],{channel = trIndex,loops = -1})
         end
         if (isRecStarted == true) then
         	userActList[#userActList+1] = action
         end
-        but1ClickedCounter = but1ClickedCounter + 1
+        trackCounters[trIndex] = trackCounters[trIndex] + 1
+end
+
+local function playSound1 (event)
+    if (event.phase == "ended") then
+		playTrack(1)
     end
 end
 
 local function playSound2 (event)
     if (event.phase == "ended") then
-        if (but2ClickedCounter % 2 ~= 0) then
-        	textBut2.text = "Track2 is stopped"
-            action = {time = system.getTimer() - relatTime, trackNumber = 2, start = 0}
-            audio.stop(2) 
-        else
-        	textBut2.text = "Track2 is started"
-           	action = {time = system.getTimer() - relatTime, trackNumber = 2, start = 1}
-            audio.play(sound2,{ channel = 2,loops = -1})
-        end
-        if (isRecStarted == true) then
-        	userActList[#userActList+1] = action
-        end
-        but2ClickedCounter = but2ClickedCounter + 1
+		playTrack(2)
     end
 end
 
 local function playSound3 (event)
     if (event.phase == "ended") then
-        if (but3ClickedCounter % 2 ~= 0) then
-        	textBut3.text = "Track3 is stopped"
-            action = {time = system.getTimer() - relatTime, trackNumber = 3, start = 0}
-            audio.stop(3) 
-        else
-        	textBut3.text = "Track3 is started"
-           	action = {time = system.getTimer() - relatTime, trackNumber = 3, start = 1}
-            audio.play(sound3,{ channel = 3,loops = -1})
-        end
-        if (isRecStarted == true) then
-        	userActList[#userActList+1] = action
-        end
-        but3ClickedCounter = but3ClickedCounter + 1
+		playTrack(3)
     end
 end
 
-local function stopAllTracks()
+local function stopAllTracks(addToList)
 	local trCounter = 1
 	while (trCounter <= numTracks) do
-		userActList[#userActList+1] = {0,system.getTimer() - relatTime,trCounter}
+		if (addToList == true) then
+			userActList[#userActList+1] = {0,system.getTimer() - relatTime,trCounter}
+		end
+		audio.stop(trCounter)
 		trCounter = trCounter + 1
 	end
-	audio.stop(1)
-	audio.stop(2)
-	audio.stop(3)
 end
 
 local function recording(event)
     if (event.phase == "ended") then
-        if (recCounter % 2 == 0) then
+        if (trackCounters[#trackCounters] % 2 == 0) then
             userActList = {}
-            textRecBut.text = "Recording is started"
+            txtRecBtn.text = "Recording is started"
             isRecStarted = true
             relatTime = system.getTimer()
         else
-        	stopAllTracks()
+        	stopAllTracks(true)
         	isRecStarted = false
-        	textRecBut.text = "Recording is stopped"       
+        	txtRecBtn.text = "Recording is stopped"       
         	hideMainForm()
         	saveRecDialog.showDialog()
         end
-        recCounter = recCounter + 1
+        trackCounters[#trackCounters] = trackCounters[#trackCounters] + 1
     end
 end
 
@@ -148,69 +140,77 @@ local function replay(event)
 end
 
 local function bindEventListeners()
-	but1:addEventListener("touch",playSound1)
-	but2:addEventListener("touch",playSound2)
-	but3:addEventListener("touch",playSound3)
-	recBut:addEventListener("touch",recording)
-	repBut:addEventListener("touch",replay)
+	btn1:addEventListener("touch",playSound1)
+	btn2:addEventListener("touch",playSound2)
+	btn3:addEventListener("touch",playSound3)
+	recBtn:addEventListener("touch",recording)
+	repBtn:addEventListener("touch",replay)
+end
+
+local function initSounds()
+	local i = 1
+	local str
+	while (i <= numTracks) do
+		str = "Track"..tostring(i)..".mp3"
+		track[1] = audio.loadSound(str)
+		track[2] = str
+		tracks[i] = track
+		track = {}
+		i = i + 1
+	end
 end
 
 function showMainForm()
 	local w = display.contentWidth
 	local h = display.contentHeight
-	backRect = display.newRoundedRect(0, 0, w, h, 64)
-	but1 = display.newRoundedRect(w/8,h/6,3*w/4,28,12)
-	but2 = display.newRoundedRect(w/8,h/3,3*w/4,28,12)
-	but3 = display.newRoundedRect(w/8,h/2,3*w/4,28,12)
-	recBut = display.newRoundedRect(w/8,2*h/3,3*w/4,28,12)
-	repBut = display.newRoundedRect(w/8,5*h/6,3*w/4,28,12)
+	
+	btn1 = display.newRoundedRect(w/8,h/6,3*w/4,28,12)
+	btn2 = display.newRoundedRect(w/8,h/3,3*w/4,28,12)
+	btn3 = display.newRoundedRect(w/8,h/2,3*w/4,28,12)
+	recBtn = display.newRoundedRect(w/8,2*h/3,3*w/4,28,12)
+	repBtn = display.newRoundedRect(w/8,5*h/6,3*w/4,28,12)
 
-	textBut1 = display.newText("Track1 is stopped", w/8, h/6+3, native.systemFont, 16)
-	textBut2 = display.newText("Track2 is stopped", w/8, h/3+3, native.systemFont, 16)
-	textBut3 = display.newText("Track3 is stopped", w/8, h/2+3, native.systemFont, 16)
-	textRecBut = display.newText("Recording is stopped", w/8, 2*h/3+3, native.systemFont, 16)
-	textRepBut = display.newText("Replaying is stopped", w/8, 5*h/6+3, native.systemFont, 16)
+	txtBtn1 = display.newText("Track1 is stopped", w/8, h/6+3, native.systemFont, 16)
+	txtBtn2 = display.newText("Track2 is stopped", w/8, h/3+3, native.systemFont, 16)
+	txtBtn3 = display.newText("Track3 is stopped", w/8, h/2+3, native.systemFont, 16)
+	txtRecBtn = display.newText("Recording is stopped", w/8, 2*h/3+3, native.systemFont, 16)
+	txtRepBtn = display.newText("Replaying is stopped", w/8, 5*h/6+3, native.systemFont, 16)
 
-	textBut1:setTextColor(0,0,0)
-	textBut2:setTextColor(0,0,0)
-	textBut3:setTextColor(0,0,0)
-	textRecBut:setTextColor(0,0,0)
-	textRepBut:setTextColor(0,0,0)
+	txtBtn1:setTextColor(0,0,0)
+	txtBtn2:setTextColor(0,0,0)
+	txtBtn3:setTextColor(0,0,0)
+	txtRecBtn:setTextColor(0,0,0)
+	txtRepBtn:setTextColor(0,0,0)
 
-	textBut1.x,textBut2.x,textBut3.x,textRecBut.x,textRepBut.x = w/2,w/2,w/2,w/2,w/2
+	txtBtn1.x,txtBtn2.x,txtBtn3.x,txtRecBtn.x,txtRepBtn.x = w/2,w/2,w/2,w/2,w/2
 
-	backRect:setFillColor(140, 140, 140)
-	but1:setFillColor(255,255,255)
-	but2:setFillColor(255,255,255)
-	but3:setFillColor(255,255,255)
-	recBut:setFillColor(255,255,255)
-	repBut:setFillColor(255,255,255)
+	btn1:setFillColor(255,255,255)
+	btn2:setFillColor(255,255,255)
+	btn3:setFillColor(255,255,255)
+	recBtn:setFillColor(255,255,255)
+	repBtn:setFillColor(255,255,255)
 
-	but1:setStrokeColor(0,0,0)
-	but2:setStrokeColor(0,0,0)
-	but3:setStrokeColor(0,0,0)
-	recBut:setStrokeColor(0,0,0)
-	repBut:setStrokeColor(0,0,0)
+	btn1:setStrokeColor(0,0,0)
+	btn2:setStrokeColor(0,0,0)
+	btn3:setStrokeColor(0,0,0)
+	recBtn:setStrokeColor(0,0,0)
+	repBtn:setStrokeColor(0,0,0)
 
-	backRect.strokeWidth = 3
-	but1.strokeWidth = 2
-	but2.strokeWidth = 2
-	but3.strokeWidth = 2
-	recBut.strokeWidth = 2
-	repBut.strokeWidth = 2
+	btn1.strokeWidth = 2
+	btn2.strokeWidth = 2
+	btn3.strokeWidth = 2
+	recBtn.strokeWidth = 2
+	repBtn.strokeWidth = 2
+	
+	initSounds()
 	
 	audio.reserveChannels(3)
 	bindEventListeners()
-
-	audio.stop(1)
-	audio.stop(2)
-	audio.stop(3)
 	
-	but1ClickedCounter = 0
-	but2ClickedCounter = 0
-	but3ClickedCounter = 0
-	recCounter = 0
+	stopAllTracks(false)
 	
+	resetCounters()
+	print("IM HERE")
 	if (isOkSaveDialogPressed == true and #userActList > 0) then
 		--print("Ok")
     	saveUserActList()
@@ -224,23 +224,19 @@ function showMainForm()
 end
 
 function hideMainForm()
-	display.remove(but1)
-	display.remove(but2)
-	display.remove(but3)
-	display.remove(recBut)
-	display.remove(repBut)
-	display.remove(textBut1)
-	display.remove(textBut2)
-	display.remove(textBut3)
-	display.remove(textRecBut)
-	display.remove(textRepBut)
+	display.remove(btn1)
+	display.remove(btn2)
+	display.remove(btn3)
+	display.remove(recBtn)
+	display.remove(repBtn)
+	display.remove(txtBtn1)
+	display.remove(txtBtn2)
+	display.remove(txtBtn3)
+	display.remove(txtRecBtn)
+	display.remove(txtRepBtn)
 	
 	audio.stop(1)
 	audio.stop(2)
 	audio.stop(3)
-	but1ClickedCounter = 0
-	but2ClickedCounter = 0
-	but3ClickedCounter = 0
-	recCounter = 0
-end
 
+end
