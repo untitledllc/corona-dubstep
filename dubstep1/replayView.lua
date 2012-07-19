@@ -68,6 +68,17 @@ local function getTrackNumber(index)
 	return playUserActList[index][2]
 end
 
+local function calcPrerecordedTracks() 
+	local i = 1
+	local result = 0
+	for idx,val in pairs(playUserActList) do
+		if (val[4] ~= -1) then
+			result = result + 1
+		end
+	end
+	return result
+end
+
 local function makeAction(index) 
 	local track = getTrackNumber(index)
 	local playStop = getActionActivity(index)
@@ -92,6 +103,17 @@ local function pauseActiveChannels()
 		audio.pause(3)
 	end
 	isPaused = true
+end
+
+local function seekActiveTracks(quaActTracks) 
+	local idx = 1	
+	while (idx <= quaActTracks) do
+		print("HERE")
+		audio.play(mainForm.tracks[idx][1])
+		audio.seek(playUserActList[idx][4],mainForm.tracks[idx][1])
+		--audio.pause(playUserActList[idx][2])
+		idx = idx + 1
+	end
 end
 
 local function resumePausedChannels()
@@ -151,7 +173,8 @@ local function onPlay(event)
 		actCounter = 1
 		speed = (w - 20)/relEndTrackTime
 		isPlayed = true
-		play()
+		seekActiveTracks(calcPrerecordedTracks())
+		--play()
 	end
 end
 

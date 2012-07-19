@@ -1,5 +1,6 @@
 isOkSaveDialogPressed = nil
 numTracks = 3
+tracks = {}
 require "saveRecDialog"
 require "replayView"
 module ("mainForm",package.seeall)
@@ -9,10 +10,8 @@ local action = {}
 local relatTime = 0
 local isRecStarted = false
 
-local tracks = {}
 local activeTracks = {}
 local activeTime = {}
-local track = {sound = nil,name = nil,startTime = nil}
 local trackCounters = {}
 
 local btn1 = nil
@@ -127,13 +126,6 @@ local function calcActiveTime()
 	return result
 end
 
-local function addActTimeToActList()
-	for idx,val in pairs(userActList) do
-    	userActList[idx][4] = activeTime[idx]
-    	print("actTime =",activeTime[idx])
-	end
-end
-
 local function playSound1 (event)
     if (event.phase == "ended") then
 		playTrack(1)
@@ -161,7 +153,6 @@ local function recording(event)
             isRecStarted = true
             relatTime = system.getTimer()
         else
-			--addActTimeToActList()
 			printUserActList()
         	stopAllTracks(true)
         	isRecStarted = false
@@ -188,12 +179,13 @@ local function bindEventListeners()
 	repBtn:addEventListener("touch",replay)
 end
 
-local function initSounds()
+function initSounds()
 	local i = 1
 	local str
+	local track = {sound = nil,name = nil,startTime = nil}
 	while (i <= numTracks) do
 		str = "Track"..tostring(i)..".mp3"
-		track[1] = audio.loadSound(str)
+		track[1] = audio.loadStream(str)
 		track[2] = str
 		tracks[i] = track
 		track = {}
