@@ -11,6 +11,7 @@ local isRecStarted = false
 
 local tracks = {}
 local activeTracks = {}
+local activeTime = {}
 local track = {sound = nil,name = nil,startTime = nil}
 local trackCounters = {}
 
@@ -64,6 +65,17 @@ local function printUserActList()
         for j,val in pairs(t) do
 			print(val)
         end
+        print("\n")
+    end
+    print("---------------------------------")
+end
+
+local function printActiveTracks()
+    for i,t in pairs(activeTracks) do
+        for j,val in pairs(t) do
+			print(val)
+			print("#####")
+        end
     end
     print("---------------------------------")
 end
@@ -72,13 +84,12 @@ local function playTrack(trIndex)
 	local txtBtn = getTxtFromGui(trIndex)
 	if (trackCounters[trIndex] % 2 ~= 0) then
         txtBtn.text = "Track"..tostring(trIndex).." is stopped"
-        action = {time = system.getTimer() - relatTime, trackNumber = trIndex, start = 0}
+        action = {system.getTimer() - relatTime,trIndex,0,activeTime[trIndex]}
         audio.stop(trIndex)
-        activeTracks[trIndex] = nil 
+        activeTracks[trIndex][3] = -1 
     else
-        print(trIndex)
         txtBtn.text = "Track"..tostring(trIndex).." is started"
-        action = {time = system.getTimer() - relatTime, trackNumber = trIndex, start = 1}
+        action = {system.getTimer() - relatTime,trIndex,1,activeTime[trIndex]}
         audio.play(tracks[trIndex][1],{channel = trIndex,loops = -1})
         tracks[trIndex][3] = system.getTimer()
         activeTracks[trIndex] = tracks[trIndex]
@@ -86,11 +97,41 @@ local function playTrack(trIndex)
     if (isRecStarted == true) then
         userActList[#userActList+1] = action
     end
-    for idx,val in pairs(activeTracks) do
-        print(val[2])
-    end
-    print("-----------------------")
+    --printActiveTracks()
     trackCounters[trIndex] = trackCounters[trIndex] + 1
+end
+
+local function stopAllTracks(addToList)
+	local trCounter = 1
+	while (trCounter <= numTracks) do
+		if (addToList == true) then
+			userActList[#userActList+1] = {system.getTimer() - relatTime,trCounter,0,-1}
+		end
+		audio.stop(trCounter)
+		trCounter = trCounter + 1
+	end
+end
+
+local function calcActiveTime()
+	local absTime = system.getTimer()
+	local result = {}
+	local i = 1
+	while (i <= numTracks) do
+		if (activeTracks[i] and activeTracks[i][3] ~= -1) then
+			result[i] = absTime - activeTracks[i][3]
+		else 
+			result[i] = -1
+		end
+		i = i + 1
+	end
+	return result
+end
+
+local function addActTimeToActList()
+	for idx,val in pairs(userActList) do
+    	userActList[idx][4] = activeTime[idx]
+    	print("actTime =",activeTime[idx])
+	end
 end
 
 local function playSound1 (event)
@@ -115,10 +156,13 @@ local function recording(event)
     if (event.phase == "ended") then
         if (trackCounters[#trackCounters] % 2 == 0) then
             userActList = {}
+            activeTime = calcActiveTime()
             txtRecBtn.text = "Recording is started"
             isRecStarted = true
             relatTime = system.getTimer()
         else
+			--addActTimeToActList()
+			printUserActList()
         	stopAllTracks(true)
         	isRecStarted = false
         	txtRecBtn.text = "Recording is stopped"       
@@ -142,17 +186,6 @@ local function bindEventListeners()
 	btn3:addEventListener("touch",playSound3)
 	recBtn:addEventListener("touch",recording)
 	repBtn:addEventListener("touch",replay)
-end
-
-local function stopAllTracks(addToList)
-	local trCounter = 1
-	while (trCounter <= numTracks) do
-		if (addToList == true) then
-			userActList[#userActList+1] = {0,system.getTimer() - relatTime,trCounter}
-		end
-		audio.stop(trCounter)
-		trCounter = trCounter + 1
-	end
 end
 
 local function initSounds()
@@ -229,7 +262,7 @@ function showMainForm()
 		os.rename( system.pathForFile( "currentRecord.txt", destDir  ),
         			system.pathForFile( path, destDir  ) )--]]
     end
-    
+    --activeTime = {}
  	isOkSaveDialogPressed = nil
 end
 

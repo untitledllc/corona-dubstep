@@ -26,6 +26,7 @@ local function printUserActList()
         for j,val in pairs(t) do
 			print(val)
         end
+        print("\n")
     end
     print("---------------------------------")
 end
@@ -33,7 +34,7 @@ end
 local function readAction(file)
 	local action = {}
 	local i = 1
-	while (i <= numTracks) do
+	while (i <= 4) do
 		action[i] = file:read("*number")
 		if (action[i] == nil) then
 			return nil
@@ -56,15 +57,15 @@ local function openUserActList()
 end
 
 local function getNextActionTime(index)
-	return playUserActList[index][2]
-end
-
-local function getActionActivity(index)
 	return playUserActList[index][1]
 end
 
-local function getTrackNumber(index)
+local function getActionActivity(index)
 	return playUserActList[index][3]
+end
+
+local function getTrackNumber(index)
+	return playUserActList[index][2]
 end
 
 local function makeAction(index) 
@@ -108,7 +109,7 @@ end
 
 local function play(event)
 	if (relPlayTime <= relEndTrackTime) then
-		if (math.abs(relPlayTime - playUserActList[actCounter][2]) < 20) then
+		if (math.abs(relPlayTime - playUserActList[actCounter][1]) < 20) then
 			makeAction(actCounter)
 			actCounter = actCounter + 1
 		end
@@ -140,15 +141,16 @@ local function onExit(event)
 end
 
 local function onPlay(event)
-	curPlayPos.x = 10
-	openUserActList()
-	beginPlayTime = system.getTimer()
-	relEndTrackTime = playUserActList[#playUserActList][2]
-	relPlayTime = system.getTimer() - beginPlayTime
-	actCounter = 1
-	speed = (w - 20)/relEndTrackTime
-	isPlayed = true
 	if (event.phase == "ended") then
+		curPlayPos.x = 10
+		openUserActList()
+		printUserActList()
+		beginPlayTime = system.getTimer()
+		relEndTrackTime = playUserActList[#playUserActList][1]
+		relPlayTime = system.getTimer() - beginPlayTime
+		actCounter = 1
+		speed = (w - 20)/relEndTrackTime
+		isPlayed = true
 		play()
 	end
 end
