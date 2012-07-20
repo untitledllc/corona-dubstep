@@ -6,20 +6,23 @@ local playLine
 local playBtn
 local exitBtn
 local pauseBtn
+local stopBtn
 local curPlayPos
 local txtExit
 local txtPlay
 local txtPause
+local txtStop
 local playLineLen = w - 20
 local playUserActList = {}
 local beginPlayTime
 local relPlayTime = 2
 local relEndTrackTime = 1
-local sound
 local actCounter = 1
 local speed
 local isPaused = false
 local isPlayed = false
+local isStopped = false
+local playPressCounter = 0
 
 local function printUserActList()
     for i,t in pairs(playUserActList) do
@@ -81,14 +84,17 @@ end
 
 local function makeAction(index) 
 	local track = getTrackNumber(index)
+	--print(track)
 	local playStop = getActionActivity(index)
-	local trackName = "Track"..tostring(track)..".mp3"
-	if (playStop == 1) then
-		sound = audio.loadSound(trackName)
-		audio.play(sound,{ channel = track,loops = 1})
+	if (playUserActList[index][4] == -1) then
+		if (playStop == 1) then
+			audio.play(tracks[track][1],{ channel = track,loops = 1})
+		else
+			audio.stop(track)
+			audio.dispose(track)
+		end
 	else
-		audio.stop(track)
-		audio.dispose(track)
+		audio.stop(tracks[track][1])
 	end
 end
 
@@ -109,8 +115,8 @@ local function seekActiveTracks(quaActTracks)
 	local idx = 1	
 	while (idx <= quaActTracks) do
 		print("HERE")
-		audio.play(mainForm.tracks[idx][1])
-		audio.seek(playUserActList[idx][4],mainForm.tracks[idx][1])
+		audio.play(tracks[idx][1])
+		audio.seek(playUserActList[idx][4],tracks[idx][1])
 		--audio.pause(playUserActList[idx][2])
 		idx = idx + 1
 	end
@@ -130,7 +136,7 @@ local function resumePausedChannels()
 end
 
 local function play(event)
-	if (relPlayTime <= relEndTrackTime) then
+	if (relPlayTime <= relEndTrackTime and isStopped == false and isPaused == false) then
 		if (math.abs(relPlayTime - playUserActList[actCounter][1]) < 20) then
 			makeAction(actCounter)
 			actCounter = actCounter + 1
@@ -141,14 +147,17 @@ local function play(event)
 end
 
 local function hideRepView()
+	playPressCounter = 0
 	display.remove(playLine)
 	display.remove(exitBtn)
 	display.remove(curPlayPos)
 	display.remove(txtExit)
 	display.remove(txtPlay)
 	display.remove(playBtn)
-	display.remove(pauseBtn)
-	display.remove(txtPause)
+	--display.remove(pauseBtn)
+	--display.remove(txtPause)
+	display.remove(txtStop)
+	display.remove(stopBtn)
 	
 	Runtime:removeEventListener("enterFrame",play)
 end
@@ -162,44 +171,64 @@ local function onExit(event)
 	timer.performWithDelay(1000, showMainForm)
 end
 
+local function pause() 
+	txtPlay.text = "Pause"
+	isPaused = true
+end
+
 local function onPlay(event)
 	if (event.phase == "ended") then
-		curPlayPos.x = 10
-		openUserActList()
-		printUserActList()
-		beginPlayTime = system.getTimer()
-		relEndTrackTime = playUserActList[#playUserActList][1]
-		relPlayTime = system.getTimer() - beginPlayTime
-		actCounter = 1
-		speed = (w - 20)/relEndTrackTime
-		isPlayed = true
-		seekActiveTracks(calcPrerecordedTracks())
-		--play()
+		if (playPressCounter % 2 == 0) then
+			isStopped = false
+			isPaused = false
+			curPlayPos.x = 10
+			openUserActList()
+			printUserActList()
+			beginPlayTime = system.getTimer()
+			relEndTrackTime = playUserActList[#playUserActList][1]
+			relPlayTime = system.getTimer() - beginPlayTime
+			actCounter = 1
+			speed = (w - 20)/relEndTrackTime
+			isPlayed = true
+			seekActiveTracks(calcPrerecordedTracks())
+			play()
+		else
+			pause()
+		end
+		playPressCounter = playPressCounter + 1
 	end
 end
 
-local function onPause(event) 
+local function onStop(event)
 	if (event.phase == "ended") then
-		isPaused = true
+		local i = 1
+		while (i <= numTracks) do
+			audio.stop(tracks[i][1])
+			i = i + 1
+		end
+		curPlayPos.x = 10
+		isStopped = true
+		hideRepView()
+		showRepView()
 	end
 end
 
 local function bindListeners() 
 	exitBtn:addEventListener("touch",onExit)
 	playBtn:addEventListener("touch",onPlay)
-	pauseBtn:addEventListener("touch",onPause)
+	stopBtn:addEventListener("touch",onStop)
 	Runtime:addEventListener("enterFrame",play)
 end
 
 function showRepView()
 	playBtn = display.newRoundedRect(1,1,w/3,h/12,12)
-	pauseBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
-	curPlayPos = display.newRect(1,1,5,20)
+	curPlayPos = display.newRect(1,1,20,20)
 	playLine = display.newLine(10,h/2,w-10,h/2)
 	exitBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
+	stopBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
 	txtExit = display.newText("Exit", 0, 0, native.systemFont, 24)
 	txtPlay = display.newText("Play", 0, 0, native.systemFont, 24)
-	txtPause = display.newText("Pause", 0, 0, native.systemFont, 24)
+	txtStop = display.newText("Stop", 0, 0, native.systemFont, 24)
 	
 	playLine:setColor(255,0,0)
 	playLine.width = 5 
@@ -207,15 +236,15 @@ function showRepView()
 	curPlayPos.x,curPlayPos.y = 10,h/2
 	exitBtn.x, exitBtn.y = w/2, 5*h/6
 	playBtn.x, playBtn.y = w/3-5, 2*h/3
-	pauseBtn.x,pauseBtn.y = 2*w/3-5, 2*h/3
+	stopBtn.x,stopBtn.y = 2*w/3-5, 2*h/3
 	
 	txtExit.x,txtExit.y = w/2, 5*h/6
 	txtPlay.x,txtPlay.y = w/3, 2*h/3
-	txtPause.x,txtPause.y = 2*w/3-5, 2*h/3
+	txtStop.x,txtStop.y = 2*w/3-5, 2*h/3
 	
 	txtExit:setTextColor(0,0,0)
 	txtPlay:setTextColor(0,0,0)
-	txtPause:setTextColor(0,0,0)
+	txtStop:setTextColor(0,0,0)
 	
 	bindListeners()
 end

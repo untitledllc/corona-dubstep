@@ -101,7 +101,17 @@ local function playTrack(trIndex)
 end
 
 local function stopAllTracks(addToList)
+	--printActiveTracks()
 	local trCounter = 1
+	if (addToList == true) then
+		for idx,val in pairs(activeTracks) do
+			if (activeTracks[idx] and activeTracks[idx][3] ~= -1) then
+				userActList[#userActList+1] = {system.getTimer() - relatTime,idx,
+												0,activeTracks[idx][3]}
+			end
+		end
+		printUserActList()
+	end
 	while (trCounter <= numTracks) do
 		if (addToList == true) then
 			userActList[#userActList+1] = {system.getTimer() - relatTime,trCounter,0,-1}
@@ -153,7 +163,6 @@ local function recording(event)
             isRecStarted = true
             relatTime = system.getTimer()
         else
-			printUserActList()
         	stopAllTracks(true)
         	isRecStarted = false
         	txtRecBtn.text = "Recording is stopped"       
