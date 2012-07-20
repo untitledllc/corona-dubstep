@@ -194,7 +194,7 @@ function initSounds()
 	local track = {sound = nil,name = nil,startTime = nil}
 	while (i <= numTracks) do
 		str = "Track"..tostring(i)..".mp3"
-		track[1] = audio.loadStream(str)
+		track[1] = audio.loadSound(str)
 		track[2] = str
 		tracks[i] = track
 		track = {}

@@ -8,3 +8,8 @@ backRect:setFillColor(140, 140, 140)
 backRect.strokeWidth = 3
 
 mainForm.showMainForm()
+--[[local sound = audio.loadSound("Track3.mp3")
+
+--audio.stop(sound)
+audio.play(sound,{channel = 1})
+audio.seek(2000,{channel = 1})--]]
