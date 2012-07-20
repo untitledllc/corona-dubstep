@@ -2,21 +2,26 @@ module ("replayView",package.seeall)
 
 local w = display.contentWidth
 local h = display.contentHeight
+
 local playLine
 local playBtn
 local exitBtn
 local pauseBtn
 local stopBtn
 local curPlayPos
+
 local txtExit
 local txtPlay
 local txtPause
 local txtStop
+
 local playLineLen = w - 20
 local playUserActList = {}
+
 local beginPlayTime
 local relPlayTime = 2
 local relEndTrackTime = 1
+
 local actCounter = 1
 local speed
 local isPaused = false
@@ -71,17 +76,6 @@ local function getTrackNumber(index)
 	return playUserActList[index][2]
 end
 
-local function calcPrerecordedTracks() 
-	local i = 1
-	local result = 0
-	for idx,val in pairs(playUserActList) do
-		if (val[4] ~= -1) then
-			result = result + 1
-		end
-	end
-	return result
-end
-
 local function makeAction(index) 
 	local track = getTrackNumber(index)
 	--print(track)
@@ -98,39 +92,60 @@ local function makeAction(index)
 	end
 end
 
+local function calcPrerecordedTracks() 
+	local i = 1
+	local resTable = {}
+	for idx,val in pairs(playUserActList) do
+		if (val[4] ~= -1) then
+			resTable[#resTable + 1] = val[2]
+		end
+	end
+	return resTable
+end
+
+local function makeAction(index) 
+	local track = getTrackNumber(index)
+	local playStop = getActionActivity(index)
+	if (playUserActList[index][4] == -1) then
+		if (playStop == 1) then
+			audio.play(tracks[track][1],{channel = track,loops = 1})
+		else
+			audio.stop(track)
+			audio.rewind(tracks[track][1])
+			--audio.dispose(track)
+		end
+	else
+		audio.stop(tracks[track][1])
+		audio.rewind(tracks[track][1])
+	end
+end
+
 local function pauseActiveChannels()
-	if (audio.isChannelPlaying(1)) then
-		audio.pause(1)
-	end
-	if (audio.isChannelPlaying(2)) then
-		audio.pause(2)
-	end
-	if (audio.isChannelPlaying(3)) then
-		audio.pause(3)
+	local idx = 1
+	while (idx <= numTracks) do
+		audio.pause(idx)
+		idx = idx + 1
 	end
 	isPaused = true
 end
 
-local function seekActiveTracks(quaActTracks) 
+local function seekActiveTracks() 
 	local idx = 1	
-	while (idx <= quaActTracks) do
-		print("HERE")
-		audio.play(tracks[idx][1])
-		audio.seek(playUserActList[idx][4],tracks[idx][1])
+	local actTracks = calcPrerecordedTracks()
+
+	while (idx <= #actTracks) do
+		audio.play(tracks[actTracks[idx]][1],{channel = actTracks[idx]})
+		audio.seek(playUserActList[actTracks[idx]][4],tracks[actTracks[idx]][1])
 		--audio.pause(playUserActList[idx][2])
 		idx = idx + 1
 	end
 end
 
 local function resumePausedChannels()
-	if (audio.isChannelPaused(1)) then
-		audio.resume(1)
-	end
-	if (audio.isChannelPaused(1)) then
-		audio.resume(2)
-	end
-	if (audio.isChannelPaused(1)) then
-		audio.resume(3)
+	local idx = 1
+	while (idx <= numTracks) do
+		audio.resume(idx)
+		idx = idx + 1
 	end
 	isPaused = false
 end
@@ -158,7 +173,7 @@ local function hideRepView()
 	--display.remove(txtPause)
 	display.remove(txtStop)
 	display.remove(stopBtn)
-	
+
 	Runtime:removeEventListener("enterFrame",play)
 end
 
@@ -190,7 +205,7 @@ local function onPlay(event)
 			actCounter = 1
 			speed = (w - 20)/relEndTrackTime
 			isPlayed = true
-			seekActiveTracks(calcPrerecordedTracks())
+			seekActiveTracks()
 			play()
 		else
 			pause()
@@ -204,6 +219,7 @@ local function onStop(event)
 		local i = 1
 		while (i <= numTracks) do
 			audio.stop(tracks[i][1])
+			audio.rewind(tracks[i][1])
 			i = i + 1
 		end
 		curPlayPos.x = 10
@@ -229,22 +245,22 @@ function showRepView()
 	txtExit = display.newText("Exit", 0, 0, native.systemFont, 24)
 	txtPlay = display.newText("Play", 0, 0, native.systemFont, 24)
 	txtStop = display.newText("Stop", 0, 0, native.systemFont, 24)
-	
+
 	playLine:setColor(255,0,0)
 	playLine.width = 5 
-	
+
 	curPlayPos.x,curPlayPos.y = 10,h/2
 	exitBtn.x, exitBtn.y = w/2, 5*h/6
 	playBtn.x, playBtn.y = w/3-5, 2*h/3
 	stopBtn.x,stopBtn.y = 2*w/3-5, 2*h/3
-	
+
 	txtExit.x,txtExit.y = w/2, 5*h/6
 	txtPlay.x,txtPlay.y = w/3, 2*h/3
 	txtStop.x,txtStop.y = 2*w/3-5, 2*h/3
-	
+
 	txtExit:setTextColor(0,0,0)
 	txtPlay:setTextColor(0,0,0)
 	txtStop:setTextColor(0,0,0)
-	
+
 	bindListeners()
 end
