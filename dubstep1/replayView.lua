@@ -21,7 +21,7 @@ local playLineLen = w - 20
 local playUserActList = {}
 
 local beginPlayTime = 0
-local relPlayTime = 2
+local relPlayTime = 1000000
 local relEndTrackTime = 1
 local pausePressTime = 0
 local firstTimePlayPressed = nil
@@ -40,6 +40,14 @@ local function printUserActList()
         print("\n")
     end
     print("---------------------------------")
+end
+
+local function print1DTable(table)
+	print("-----------------------")
+	for idx,val in pairs(table) do
+		print(val)
+	end
+	print("-----------------------")
 end
 
 local function readAction(file)
@@ -135,8 +143,9 @@ local function play(event)
 				actCounter = actCounter + 1		
 			end
 		end
-		relPlayTime = relPlayTime + 16----system.getTimer() - firstTimePlayPressed - sumPauseTime
 		--print(relPlayTime)
+		relPlayTime = relPlayTime + 16----system.getTimer() - firstTimePlayPressed - sumPauseTime
+		print(relPlayTime)
 	end
 end
 
@@ -155,6 +164,60 @@ end
 
 local function showMainForm(event)
 	mainForm.showMainForm()
+end
+
+local function findStartActionForTrack(trackNumber,relativeTime)
+	local idx = #playUserActList
+	--print(trackNumber)
+	while(true) do
+		if (playUserActList[idx][3] == 1 
+				and 
+			playUserActList[idx][2] == trackNumber
+				and 
+			playUserActList[idx][1] <= relativeTime) then
+			break
+		end
+		idx = idx - 1
+	end
+	return idx
+end
+
+local function findActiveTracks(relativeTime)
+	local idx = 1
+	local trActivity = {}
+	while(playUserActList[idx][1] < relativeTime) do
+		if (playUserActList[idx][2] ~= -1) then
+			if (playUserActList[idx][3] == 0) then
+				trActivity[playUserActList[idx][2]] = nil
+			else
+				trActivity[playUserActList[idx][2]] = playUserActList[idx][2]
+			end
+		else 
+			trActivity = {}
+		end
+		idx = idx + 1
+	end
+	return trActivity,idx
+end
+
+local function findActiveActions(relativeTime)
+	local trActivity,actCount = findActiveTracks(relativeTime)
+	local actActivity = {}
+	for idx,val in pairs(trActivity) do
+		actActivity[#actActivity + 1] = findStartActionForTrack(val,relativeTime)
+	end
+	return actActivity,actCount
+end
+
+local function seek(activeActs,relativeTime)
+	local idx = 1
+	while(idx <= #activeActs) do
+		audio.play(tracks[playUserActList[activeActs[idx]][2]][1],
+			{channel = playUserActList[activeActs[idx]][2], loops = -1})
+		audio.seek(relativeTime - playUserActList[activeActs[idx]][1],
+					{channel = playUserActList[activeActs[idx]][2]})
+		idx = idx + 1
+	end
 end
 
 local function onExit(event)
@@ -218,10 +281,15 @@ end
 
 local function onSeek(event)
 	if (event.phase == "ended") then
-		transition.cancel(scrollTransition)
 		audio.stop(0)
 		curPlayPos.x = event.x
-		--[[if (playPressCounter == 0) then 
+		isPaused = false
+		
+		if (scrollTransition) then
+			transition.cancel(scrollTransition)
+		end
+		
+		if (playPressCounter == 0) then 
 			openUserActList()
 			printUserActList()
 			firstTimePlayPressed = system.getTimer()		
@@ -229,9 +297,18 @@ local function onSeek(event)
 			relPlayTime = 0
 			beginPlayTime = 0
 			playPressCounter = 1
-		end--]]
-		local relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
-		print(relPlayTime)
+		end
+		
+		relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
+		
+		activeActions,actCounter = findActiveActions(relPlayTime)
+		
+		seek(activeActions,relPlayTime)
+		
+		scrollTransition = transition.to(curPlayPos,
+				{time=relEndTrackTime - relPlayTime,x=(w-10)})
+		
+		play()
 	end
 end
 
@@ -272,4 +349,9 @@ function showRepView()
 	bindListeners()
 	
 	playPressCounter = 0
+	--[[openUserActList()
+	printUserActList()
+	local temp,I = findActiveActions(15000)
+	--print("I = ",I)
+	print1DTable(temp)--]]
 end
