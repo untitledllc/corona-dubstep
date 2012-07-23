@@ -101,20 +101,7 @@ local function playTrack(trIndex)
 end
 
 local function stopAllTracks(addToList)
-	--printActiveTracks()
-	--[[local trCounter = 1
-	if (addToList == true) then
-		for idx,val in pairs(activeTracks) do
-			if (activeTracks[idx] and activeTracks[idx][3] ~= -1) then
-				userActList[#userActList+1] = {system.getTimer() - relatTime,idx,
-												0,activeTracks[idx][3]}
-			end
-		end
-		printUserActList()
-	end--]]
-
 	audio.stop(0)
-
 	if (addToList == true) then
 			userActList[#userActList+1] = {system.getTimer() - relatTime,-1,0,-1}
 	end
@@ -187,7 +174,7 @@ end
 local function replay(event)
     if (event.phase == "ended") then
     	hideMainForm()   
-    	replayView.showRepView()   
+    	replayView.showRepView() 
     end
 end
 

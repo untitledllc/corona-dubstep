@@ -31,6 +31,8 @@ local actCounter = 1
 local isPaused = false
 local playPressCounter = 0
 local state
+local currentMeasure = 0
+local prevMeasure = 0
 
 local function printUserActList()
     for i,t in pairs(playUserActList) do
@@ -113,12 +115,12 @@ local function makeAction(index,delta)
 	local track = getTrackNumber(index)
 	local playStop = getActionActivity(index)
 	local actTime = getActionTime(index)
-	
+
 	if (track == -1) then 
 		audio.stop(0)
 		return true
 	end
-	
+
 	if (playStop == 1) then
 		if (actTime == 0) then
 			seekActiveTracks()
@@ -138,18 +140,20 @@ local function onStop(event)
 		audio.stop(idx)
 		idx = idx + 1
 	end
-	
+
 	if (scrollTransition) then
 		transition.cancel(scrollTransition)
 		scrollTransition = nil
 	end
-	
+
 	curPlayPos.x = 10
 	playUserActList = {}
 	relPlayTime = 1000000
 	relEndTrackTime = 1
 	txtPlay.text = "Play"
 	playPressCounter = 0
+	currentMeasure = 0
+	prevMeasure = 0
 end
 
 local function play(event)
@@ -165,7 +169,13 @@ local function play(event)
 				actCounter = actCounter + 1		
 			end
 		end
-		relPlayTime = relPlayTime + 16
+		local deltaT
+		currentMeasure = system.getTimer()
+		if (currentMeasure > prevMeasure) then
+			deltaT = currentMeasure - prevMeasure
+			prevMeasure = currentMeasure
+		end
+		relPlayTime = relPlayTime + deltaT
 	end
 end
 
@@ -242,6 +252,8 @@ end
 
 local function onExit(event)
 	hideRepView()
+	currentMeasure = 0
+	prevMeasure = 0
 	timer.performWithDelay(1000, showMainForm)
 end
 
@@ -251,27 +263,27 @@ local function onPlay(event)
 			if (playPressCounter == 0) then			
 				openUserActList()
 				printUserActList()
-				firstTimePlayPressed = system.getTimer()		
+				firstTimePlayPressed = system.getTimer()	
+				prevMeasure	= firstTimePlayPressed
 				relEndTrackTime = playUserActList[#playUserActList][1] + 100
 				relPlayTime = 0
 			else 
 				audio.resume()
 			end
-			
+
 			if (scrollTransition) then
 				transition.cancel(scrollTransition)
 				scrollTransition = nil
-			else	
-				scrollTransition = transition.to(curPlayPos,
-					{time=relEndTrackTime - relPlayTime,x=(w-10)})
 			end
-			
+			scrollTransition = transition.to(curPlayPos,
+				{time=relEndTrackTime - relPlayTime,x=(w-10)})
+
 			actCounter = 1
-		
+
 			txtPlay.text = "Pause"
-		
+
 			isPaused = false
-		
+
 			play()
 		else
 			audio.pause()		
@@ -291,7 +303,7 @@ local function onSeek(event)
 		audio.stop(0)
 		curPlayPos.x = event.x
 		txtPlay.text = "Pause"
-		
+
 		if (playPressCounter == 0) then 
 			openUserActList()
 			printUserActList()
@@ -300,23 +312,23 @@ local function onSeek(event)
 			relPlayTime = 0
 			beginPlayTime = 0
 		end
-		
+
 		playPressCounter = 1
-		
+
 		relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
-		
+
 		activeActions,actCounter = findActiveActions(relPlayTime)
-		
+
 		if (scrollTransition ~= nil) then
 			transition.cancel(scrollTransition)
 			scrollTransition = nil
 		end
-		
+
 		scrollTransition = transition.to(curPlayPos,
 					{time=relEndTrackTime - relPlayTime,x=(w-10)})
-					
+
 		seek(activeActions,relPlayTime)
-		
+
 		play()
 	end
 end
@@ -340,13 +352,13 @@ function showRepView()
 	txtStop= display.newText("Stop", 0, 0, native.systemFont, 24)
 
 	playLine:setFillColor(255,0,0)
-	
+
 	playLine.x,playLine.y = w/2,h/2
 	curPlayPos.x,curPlayPos.y = 10,h/2
 	exitBtn.x, exitBtn.y = w/2, 5*h/6
 	playBtn.x, playBtn.y = w/3-5, 2*h/3
 	stopBtn.x, stopBtn.y = 2*w/3-5, 2*h/3
-	
+
 	txtExit.x,txtExit.y = w/2, 5*h/6
 	txtPlay.x,txtPlay.y = w/3, 2*h/3
 	txtStop.x,txtStop.y = 2*w/3-5, 2*h/3
@@ -356,7 +368,7 @@ function showRepView()
 	txtStop:setTextColor(0,0,0)
 
 	bindListeners()
-	
+
 	playPressCounter = 0
 	--[[openUserActList()
 	printUserActList()
