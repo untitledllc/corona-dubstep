@@ -132,20 +132,40 @@ local function makeAction(index,delta)
 	return false
 end
 
+local function onStop(event)
+	local idx = 1
+	while (idx <= numTracks) do
+		audio.stop(idx)
+		idx = idx + 1
+	end
+	
+	if (scrollTransition) then
+		transition.cancel(scrollTransition)
+		scrollTransition = nil
+	end
+	
+	curPlayPos.x = 10
+	playUserActList = {}
+	relPlayTime = 1000000
+	relEndTrackTime = 1
+	txtPlay.text = "Play"
+	playPressCounter = 0
+end
+
 local function play(event)
 	if (relPlayTime <= relEndTrackTime and isPaused == false) then
 		if (relPlayTime > playUserActList[actCounter][1]) then
 			local delta = relPlayTime - playUserActList[actCounter][1]
 			state = makeAction(actCounter,delta)
 			if (state == true) then
+				txtPlay.text = "Play"
+				onStop(nil)
 				return
 			else
 				actCounter = actCounter + 1		
 			end
 		end
-		--print(relPlayTime)
-		relPlayTime = relPlayTime + 16----system.getTimer() - firstTimePlayPressed - sumPauseTime
-		print(relPlayTime)
+		relPlayTime = relPlayTime + 16
 	end
 end
 
@@ -234,16 +254,17 @@ local function onPlay(event)
 				firstTimePlayPressed = system.getTimer()		
 				relEndTrackTime = playUserActList[#playUserActList][1] + 100
 				relPlayTime = 0
-				--beginPlayTime = 0
 			else 
 				audio.resume()
-				--beginPlayTime = system.getTimer() - firstTimePlayPressed
-				--sumPauseTime = sumPauseTime + beginPlayTime - pausePressTime
-				--relPlayTime = system.getTimer() - firstTimePlayPressed - sumPauseTime
 			end
-					
-			scrollTransition = transition.to(curPlayPos,
+			
+			if (scrollTransition) then
+				transition.cancel(scrollTransition)
+				scrollTransition = nil
+			else	
+				scrollTransition = transition.to(curPlayPos,
 					{time=relEndTrackTime - relPlayTime,x=(w-10)})
+			end
 			
 			actCounter = 1
 		
@@ -255,39 +276,21 @@ local function onPlay(event)
 		else
 			audio.pause()		
 			txtPlay.text = "Play"
-			transition.cancel(scrollTransition)
-			--pausePressTime = system.getTimer() - firstTimePlayPressed
+			if (scrollTransition) then
+				transition.cancel(scrollTransition)
+				scrollTransition = nil
+			end
 			isPaused = true
 		end
 		playPressCounter = playPressCounter + 1
 	end
 end
 
-local function onStop(event)
-	local idx = 1
-	while (idx <= numTracks) do
-		audio.stop(idx)
-		idx = idx + 1
-	end
-	transition.cancel(scrollTransition)
-	curPlayPos.x = 10
-	playUserActList = {}
-	relPlayTime = 2
-	relEndTrackTime = 1
-	txtPlay.text = "Play"
-	playPressCounter = 0
-	sumPauseTime = 0
-end
-
 local function onSeek(event)
 	if (event.phase == "ended") then
 		audio.stop(0)
 		curPlayPos.x = event.x
-		isPaused = false
-		
-		if (scrollTransition) then
-			transition.cancel(scrollTransition)
-		end
+		txtPlay.text = "Pause"
 		
 		if (playPressCounter == 0) then 
 			openUserActList()
@@ -296,17 +299,23 @@ local function onSeek(event)
 			relEndTrackTime = playUserActList[#playUserActList][1] + 100		
 			relPlayTime = 0
 			beginPlayTime = 0
-			playPressCounter = 1
 		end
+		
+		playPressCounter = 1
 		
 		relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
 		
 		activeActions,actCounter = findActiveActions(relPlayTime)
 		
-		seek(activeActions,relPlayTime)
+		if (scrollTransition ~= nil) then
+			transition.cancel(scrollTransition)
+			scrollTransition = nil
+		end
 		
 		scrollTransition = transition.to(curPlayPos,
-				{time=relEndTrackTime - relPlayTime,x=(w-10)})
+					{time=relEndTrackTime - relPlayTime,x=(w-10)})
+					
+		seek(activeActions,relPlayTime)
 		
 		play()
 	end
