@@ -10,6 +10,16 @@ backRect.strokeWidth = 3
 mainForm.showMainForm()
 --[[local sound = audio.loadSound("Track3.mp3")
 
---audio.stop(sound)
-audio.play(sound,{channel = 1})
-audio.seek(2000,{channel = 1})--]]
+audio.play(sound,{channel = 1,loops = 2})
+
+local function pause(event) 
+	audio.pause()
+end
+
+local function resume(event) 
+	audio.resume()
+end
+
+timer.performWithDelay(1000,pause)
+
+timer.performWithDelay(1500,resume)--]]

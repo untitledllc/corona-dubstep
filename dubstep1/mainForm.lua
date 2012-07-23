@@ -94,15 +94,15 @@ local function playTrack(trIndex)
         activeTracks[trIndex] = tracks[trIndex]
     end
     if (isRecStarted == true) then
-        userActList[#userActList+1] = action
-    end
+    userActList[#userActList+1] = action
+   end
     --printActiveTracks()
     trackCounters[trIndex] = trackCounters[trIndex] + 1
 end
 
 local function stopAllTracks(addToList)
 	--printActiveTracks()
-	local trCounter = 1
+	--[[local trCounter = 1
 	if (addToList == true) then
 		for idx,val in pairs(activeTracks) do
 			if (activeTracks[idx] and activeTracks[idx][3] ~= -1) then
@@ -111,13 +111,22 @@ local function stopAllTracks(addToList)
 			end
 		end
 		printUserActList()
+	end--]]
+
+	audio.stop(0)
+
+	if (addToList == true) then
+			userActList[#userActList+1] = {system.getTimer() - relatTime,-1,0,-1}
 	end
-	while (trCounter <= numTracks) do
-		if (addToList == true) then
-			userActList[#userActList+1] = {system.getTimer() - relatTime,trCounter,0,-1}
+end
+
+local function addActiveTracksToActList() 
+	local idx = 1
+	while (idx <= numTracks) do
+		if (activeTracks[idx] and activeTracks[idx][3] ~= -1) then
+			userActList[#userActList + 1] = {0,idx,1,activeTime[idx]}
 		end
-		audio.stop(trCounter)
-		trCounter = trCounter + 1
+		idx = idx + 1
 	end
 end
 
@@ -159,11 +168,13 @@ local function recording(event)
         if (trackCounters[#trackCounters] % 2 == 0) then
             userActList = {}
             activeTime = calcActiveTime()
+            addActiveTracksToActList()
             txtRecBtn.text = "Recording is started"
             isRecStarted = true
             relatTime = system.getTimer()
         else
         	stopAllTracks(true)
+        	printUserActList()
         	isRecStarted = false
         	txtRecBtn.text = "Recording is stopped"       
         	hideMainForm()
