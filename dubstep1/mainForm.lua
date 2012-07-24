@@ -1,6 +1,7 @@
 isOkSaveDialogPressed = nil
 numTracks = 3
 tracks = {}
+orientation = nil
 require "saveRecDialog"
 require "replayView"
 module ("mainForm",package.seeall)
@@ -10,9 +11,14 @@ local action = {}
 local relatTime = 0
 local isRecStarted = false
 
+local w = display.contentWidth
+local h = display.contentHeight
+
 local activeTracks = {}
 local activeTime = {}
 local trackCounters = {}
+
+local btnsAndTxtsGroup = nil
 
 local btn1 = nil
 local btn2
@@ -178,12 +184,40 @@ local function replay(event)
     end
 end
 
+local function setNewOrientation(orient,prevOrient)
+	if (prevOrient == nil) then
+		return
+	end
+	if (orient == "portrait") then
+		transition.to(btnsAndTxtsGroup, { rotation = 0, time=500 } )
+	end
+	if (orient == "portraitUpsideDown") then
+		--print("hehe")
+		transition.to(btnsAndTxtsGroup, { rotation = -180, time=500 } )
+	end
+	if (orient == "landscapeLeft") then
+		transition.to( btnsAndTxtsGroup, { rotation = -90, time=500 } )
+	end
+	if (orient == "landscapeRight") then
+		transition.to( btnsAndTxtsGroup, { rotation = 90, time=500 } )
+	end
+end
+
+local function onOrientationChange(event)
+	if (orientation ~= system.orientation) then
+		local prevOrient = orientation
+		orientation = system.orientation
+		setNewOrientation(orientation,prevOrient)
+	end
+end
+
 local function bindEventListeners()
 	btn1:addEventListener("touch",playSound1)
 	btn2:addEventListener("touch",playSound2)
 	btn3:addEventListener("touch",playSound3)
 	recBtn:addEventListener("touch",recording)
 	repBtn:addEventListener("touch",replay)
+	Runtime:addEventListener("enterFrame",onOrientationChange)
 end
 
 function initSounds()
@@ -201,9 +235,6 @@ function initSounds()
 end
 
 function showMainForm()
-	local w = display.contentWidth
-	local h = display.contentHeight
-	
 	btn1 = display.newRoundedRect(w/8,h/6,3*w/4,28,12)
 	btn2 = display.newRoundedRect(w/8,h/3,3*w/4,28,12)
 	btn3 = display.newRoundedRect(w/8,h/2,3*w/4,28,12)
@@ -242,6 +273,22 @@ function showMainForm()
 	recBtn.strokeWidth = 2
 	repBtn.strokeWidth = 2
 	
+	btnsAndTxtsGroup = display.newGroup()
+	
+	btnsAndTxtsGroup:insert(btn1)
+	btnsAndTxtsGroup:insert(btn2)
+	btnsAndTxtsGroup:insert(btn3)
+	btnsAndTxtsGroup:insert(recBtn)
+	btnsAndTxtsGroup:insert(repBtn)
+	btnsAndTxtsGroup:insert(txtBtn1)
+	btnsAndTxtsGroup:insert(txtBtn2)
+	btnsAndTxtsGroup:insert(txtBtn3)
+	btnsAndTxtsGroup:insert(txtRecBtn)
+	btnsAndTxtsGroup:insert(txtRepBtn)
+	
+	btnsAndTxtsGroup.xReference = w/2
+	btnsAndTxtsGroup.yReference = h/2
+	
 	initSounds()
 	
 	audio.reserveChannels(3)
@@ -266,7 +313,7 @@ function showMainForm()
 end
 
 function hideMainForm()
-	display.remove(btn1)
+	--[[display.remove(btn1)
 	display.remove(btn2)
 	display.remove(btn3)
 	display.remove(recBtn)
@@ -275,8 +322,11 @@ function hideMainForm()
 	display.remove(txtBtn2)
 	display.remove(txtBtn3)
 	display.remove(txtRecBtn)
-	display.remove(txtRepBtn)
+	display.remove(txtRepBtn)--]]
+	display.remove(btnsAndTxtsGroup)
 	
 	stopAllTracks(false)
 	activeTracks = {}
+	
+	Runtime:removeEventListener("enterFrame",onOrientationChange)
 end
