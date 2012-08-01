@@ -1,7 +1,12 @@
 settings =
 {
-   androidPermissions =
-   {
+	orientation = 
+	{
+		default = "landscapeRight",
+		content = "landscapeRight"
+	},
+	androidPermissions =
+    {
        "android.permission.RECORD_AUDIO"
-   },
+    },
 }

@@ -1,7 +1,6 @@
 isOkSaveDialogPressed = nil
-numTracks = 3
+numTracks = 10
 tracks = {}
-orientation = nil
 require "saveRecDialog"
 require "replayView"
 module ("mainForm",package.seeall)
@@ -18,34 +17,29 @@ local activeTracks = {}
 local activeTime = {}
 local trackCounters = {}
 
-local btnsAndTxtsGroup = nil
+local startPlay = nil
+
+
+local btns = {}
 
 local btn1 = nil
 local btn2
 local btn3
+local btn4
 local recBtn
 local repBtn
 
 local txtBtn1
 local txtBtn2
 local txtBtn3
+local txtBtn4
 local txtRecBtn
 local txtRepBtn
-
-local function getTxtFromGui(trIndex)
-	if (trIndex == 1) then
-		return txtBtn1
-	end
-	if (trIndex == 2) then
-		return txtBtn2
-	end
-	return txtBtn3
-end
 
 local function resetCounters() 
 	local i = 1
 	while (i <= numTracks + 1) do
-		trackCounters[i] = 0
+		trackCounters[i] = -1
 		i = i + 1
 	end
 end
@@ -86,23 +80,30 @@ local function printActiveTracks()
 end
 
 local function playTrack(trIndex)
-	local txtBtn = getTxtFromGui(trIndex)
-	if (trackCounters[trIndex] % 2 ~= 0) then
-        txtBtn.text = "Track"..tostring(trIndex).." is stopped"
-        action = {system.getTimer() - relatTime,trIndex,0,activeTime[trIndex]}
-        audio.stop(trIndex)
-        activeTracks[trIndex][3] = -1 
-    else
-        txtBtn.text = "Track"..tostring(trIndex).." is started"
-        action = {system.getTimer() - relatTime,trIndex,1,activeTime[trIndex]}
-        audio.play(tracks[trIndex][1],{channel = trIndex,loops = -1})
-        tracks[trIndex][3] = system.getTimer()
-        activeTracks[trIndex] = tracks[trIndex]
+	if (startPlay == nil)  then
+		local idx = 1
+		while (idx < numTracks) do
+			audio.play(tracks[idx][1],{channel = idx,loops = -1})
+			audio.setVolume(0,{channel = idx})
+			trackCounters[idx] = trackCounters[idx] + 1
+			idx = idx + 1
+		end
+		startPlay = false
+	end
+	if (trIndex == 10) then
+		audio.stop(trIndex)
+    	audio.play(tracks[trIndex][1],{channel = trIndex})
+    	btns[trIndex].alpha = 1
+    	transition.to(btns[trIndex],{time = 2000,alpha = 0.5})
+    	return
     end
-    if (isRecStarted == true) then
-    userActList[#userActList+1] = action
-   end
-    --printActiveTracks()
+	if (trackCounters[trIndex] % 2 ~= 0) then
+        audio.setVolume(0,{channel = trIndex})
+        btns[trIndex].alpha = 0.5
+    else
+       	audio.setVolume(1,{channel = trIndex})    
+        btns[trIndex].alpha = 1
+    end
     trackCounters[trIndex] = trackCounters[trIndex] + 1
 end
 
@@ -111,6 +112,7 @@ local function stopAllTracks(addToList)
 	if (addToList == true) then
 			userActList[#userActList+1] = {system.getTimer() - relatTime,-1,0,-1}
 	end
+	startPlay = nil
 end
 
 local function addActiveTracksToActList() 
@@ -143,16 +145,49 @@ local function playSound1 (event)
 		playTrack(1)
     end
 end
-
 local function playSound2 (event)
     if (event.phase == "ended") then
 		playTrack(2)
     end
 end
-
 local function playSound3 (event)
     if (event.phase == "ended") then
 		playTrack(3)
+    end
+end
+local function playSound4 (event)
+    if (event.phase == "ended") then
+		playTrack(4)
+    end
+end
+local function playSound5 (event)
+    if (event.phase == "ended") then
+		playTrack(5)
+    end
+end
+local function playSound6 (event)
+    if (event.phase == "ended") then
+		playTrack(6)
+    end
+end
+local function playSound7 (event)
+    if (event.phase == "ended") then
+		playTrack(7)
+    end
+end
+local function playSound8 (event)
+    if (event.phase == "ended") then
+		playTrack(8)
+    end
+end
+local function playSound9 (event)
+    if (event.phase == "ended") then
+		playTrack(9)
+    end
+end
+local function playSound10 (event)
+    if (event.phase == "ended") then
+		playTrack(10)
     end
 end
 
@@ -184,40 +219,20 @@ local function replay(event)
     end
 end
 
-local function setNewOrientation(orient,prevOrient)
-	if (prevOrient == nil) then
-		return
-	end
-	if (orient == "portrait") then
-		transition.to(btnsAndTxtsGroup, { rotation = 0, time=500 } )
-	end
-	if (orient == "portraitUpsideDown") then
-		--print("hehe")
-		transition.to(btnsAndTxtsGroup, { rotation = -180, time=500 } )
-	end
-	if (orient == "landscapeLeft") then
-		transition.to( btnsAndTxtsGroup, { rotation = -90, time=500 } )
-	end
-	if (orient == "landscapeRight") then
-		transition.to( btnsAndTxtsGroup, { rotation = 90, time=500 } )
-	end
-end
-
-local function onOrientationChange(event)
-	if (orientation ~= system.orientation) then
-		local prevOrient = orientation
-		orientation = system.orientation
-		setNewOrientation(orientation,prevOrient)
-	end
-end
-
 local function bindEventListeners()
 	btn1:addEventListener("touch",playSound1)
 	btn2:addEventListener("touch",playSound2)
 	btn3:addEventListener("touch",playSound3)
-	recBtn:addEventListener("touch",recording)
-	repBtn:addEventListener("touch",replay)
-	Runtime:addEventListener("enterFrame",onOrientationChange)
+	btn4:addEventListener("touch",playSound4)
+	btn5:addEventListener("touch",playSound5)
+	btn6:addEventListener("touch",playSound6)
+	btn7:addEventListener("touch",playSound7)
+	btn8:addEventListener("touch",playSound8)
+	btn9:addEventListener("touch",playSound9)
+	btn10:addEventListener("touch",playSound10)
+
+	--recBtn:addEventListener("touch",recording)
+	--repBtn:addEventListener("touch",replay)
 end
 
 function initSounds()
@@ -225,7 +240,7 @@ function initSounds()
 	local str
 	local track = {sound = nil,name = nil,startTime = nil}
 	while (i <= numTracks) do
-		str = "Track"..tostring(i)..".mp3"
+		str = "Track"..tostring(i)..".wav"
 		track[1] = audio.loadSound(str)
 		track[2] = str
 		tracks[i] = track
@@ -235,70 +250,78 @@ function initSounds()
 end
 
 function showMainForm()
-	btn1 = display.newRoundedRect(w/8,h/6,3*w/4,28,12)
-	btn2 = display.newRoundedRect(w/8,h/3,3*w/4,28,12)
-	btn3 = display.newRoundedRect(w/8,h/2,3*w/4,28,12)
-	recBtn = display.newRoundedRect(w/8,2*h/3,3*w/4,28,12)
-	repBtn = display.newRoundedRect(w/8,5*h/6,3*w/4,28,12)
+	btn1 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn2 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn3 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn4 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn5 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn6 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn7 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn8 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn9 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn10 = display.newRoundedRect(1,1,w/8,h/8,2)
 
-	txtBtn1 = display.newText("Track1 is stopped", w/8, h/6+3, native.systemFont, 16)
-	txtBtn2 = display.newText("Track2 is stopped", w/8, h/3+3, native.systemFont, 16)
-	txtBtn3 = display.newText("Track3 is stopped", w/8, h/2+3, native.systemFont, 16)
-	txtRecBtn = display.newText("Recording is stopped", w/8, 2*h/3+3, native.systemFont, 16)
-	txtRepBtn = display.newText("Replaying is stopped", w/8, 5*h/6+3, native.systemFont, 16)
+	--recBtn = display.newRoundedRect(1,1,3*w/4,28,2)
+	--repBtn = display.newRoundedRect(1,1,3*w/4,28,2)
+	
+	btns[#btns + 1] = btn1
+	btns[#btns + 1] = btn2
+	btns[#btns + 1] = btn3
+	btns[#btns + 1] = btn4
+	btns[#btns + 1] = btn5
+	btns[#btns + 1] = btn6
+	btns[#btns + 1] = btn7
+	btns[#btns + 1] = btn8
+	btns[#btns + 1] = btn9
+	btns[#btns + 1] = btn10
 
-	txtBtn1:setTextColor(0,0,0)
-	txtBtn2:setTextColor(0,0,0)
-	txtBtn3:setTextColor(0,0,0)
-	txtRecBtn:setTextColor(0,0,0)
-	txtRepBtn:setTextColor(0,0,0)
+	btn1.x,btn2.x = w/3,2*w/3
+	btn1.y,btn2.y = h/6,h/6
+	btn3.x,btn4.x,btn5.x,btn6.x = w/5,2*w/5,3*w/5,4*w/5
+	btn3.y,btn4.y,btn5.y,btn6.y = h/3,h/3,h/3,h/3
+	btn7.x,btn8.x,btn9.x = w/4,w/2,3*w/4
+	btn7.y,btn8.y,btn9.y = h/2,h/2,h/2
+	btn10.x,btn10.y = w/2,2*h/3
+	
+	btn1:setFillColor(255,0,0)
+	btn2:setFillColor(255,0,0)
+	btn3:setFillColor(0,255,0)
+	btn4:setFillColor(0,255,0)
+	btn5:setFillColor(0,255,0)
+	btn6:setFillColor(0,255,0)
+	btn7:setFillColor(0,0,255)
+	btn8:setFillColor(0,0,255)
+	btn9:setFillColor(0,0,255)
+	btn10:setFillColor(255,0,255)
 
-	txtBtn1.x,txtBtn2.x,txtBtn3.x,txtRecBtn.x,txtRepBtn.x = w/2,w/2,w/2,w/2,w/2
-
-	btn1:setFillColor(255,255,255)
-	btn2:setFillColor(255,255,255)
-	btn3:setFillColor(255,255,255)
-	recBtn:setFillColor(255,255,255)
-	repBtn:setFillColor(255,255,255)
+	btn1.alpha = 0.5
+	btn2.alpha = 0.5
+	btn3.alpha = 0.5
+	btn4.alpha = 0.5
+	btn5.alpha = 0.5
+	btn6.alpha = 0.5
+	btn7.alpha = 0.5
+	btn8.alpha = 0.5
+	btn9.alpha = 0.5
+	btn10.alpha = 0.5
+	--recBtn:setFillColor(0,0,0)
+	--repBtn:setFillColor(0,0,0)
 
 	btn1:setStrokeColor(0,0,0)
 	btn2:setStrokeColor(0,0,0)
 	btn3:setStrokeColor(0,0,0)
-	recBtn:setStrokeColor(0,0,0)
-	repBtn:setStrokeColor(0,0,0)
+	btn4:setStrokeColor(0,0,0)
 
-	btn1.strokeWidth = 2
-	btn2.strokeWidth = 2
-	btn3.strokeWidth = 2
-	recBtn.strokeWidth = 2
-	repBtn.strokeWidth = 2
-	
-	btnsAndTxtsGroup = display.newGroup()
-	
-	btnsAndTxtsGroup:insert(btn1)
-	btnsAndTxtsGroup:insert(btn2)
-	btnsAndTxtsGroup:insert(btn3)
-	btnsAndTxtsGroup:insert(recBtn)
-	btnsAndTxtsGroup:insert(repBtn)
-	btnsAndTxtsGroup:insert(txtBtn1)
-	btnsAndTxtsGroup:insert(txtBtn2)
-	btnsAndTxtsGroup:insert(txtBtn3)
-	btnsAndTxtsGroup:insert(txtRecBtn)
-	btnsAndTxtsGroup:insert(txtRepBtn)
-	
-	btnsAndTxtsGroup.xReference = w/2
-	btnsAndTxtsGroup.yReference = h/2
-	
 	initSounds()
-	
-	audio.reserveChannels(3)
-	
+
+	audio.reserveChannels(4)
+
 	bindEventListeners()
-	
+
 	stopAllTracks(false)
-	
+
 	resetCounters()
-	
+
 	print("IM HERE")
 	if (isOkSaveDialogPressed == true and #userActList > 0) then
 		--print("Ok")
@@ -313,20 +336,27 @@ function showMainForm()
 end
 
 function hideMainForm()
-	--[[display.remove(btn1)
+	display.remove(btn1)
 	display.remove(btn2)
 	display.remove(btn3)
-	display.remove(recBtn)
+	display.remove(btn4)
+	display.remove(btn5)
+	display.remove(btn6)
+	display.remove(btn7)
+	display.remove(btn8)	
+	display.remove(btn9)
+	display.remove(btn10)
+
+	--[[display.remove(recBtn)
 	display.remove(repBtn)
 	display.remove(txtBtn1)
 	display.remove(txtBtn2)
 	display.remove(txtBtn3)
+	display.remove(txtBtn4)
 	display.remove(txtRecBtn)
 	display.remove(txtRepBtn)--]]
-	display.remove(btnsAndTxtsGroup)
-	
+
 	stopAllTracks(false)
 	activeTracks = {}
-	
-	Runtime:removeEventListener("enterFrame",onOrientationChange)
+	startPlay = nil
 end
