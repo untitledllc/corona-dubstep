@@ -1,5 +1,6 @@
 isOkSaveDialogPressed = nil
-numTracks = 10
+numTracks = 12
+numVoices = 3
 tracks = {}
 require "saveRecDialog"
 require "replayView"
@@ -17,8 +18,7 @@ local activeTracks = {}
 local activeTime = {}
 local trackCounters = {}
 
-local startPlay = nil
-
+local playPressFirstTime = nil
 
 local btns = {}
 
@@ -39,7 +39,7 @@ local txtRepBtn
 local function resetCounters() 
 	local i = 1
 	while (i <= numTracks + 1) do
-		trackCounters[i] = -1
+		trackCounters[i] = 0
 		i = i + 1
 	end
 end
@@ -80,24 +80,25 @@ local function printActiveTracks()
 end
 
 local function playTrack(trIndex)
-	if (startPlay == nil)  then
+	if (playPressFirstTime == nil)  then
+		playPressFirstTime = system.getTimer()
 		local idx = 1
-		while (idx < numTracks) do
+		while (idx <= numTracks-numVoices) do
 			audio.play(tracks[idx][1],{channel = idx,loops = -1})
 			audio.setVolume(0,{channel = idx})
 			trackCounters[idx] = trackCounters[idx] + 1
 			idx = idx + 1
 		end
-		startPlay = false
 	end
-	if (trIndex == 10) then
+	
+	if (trIndex > numTracks - numVoices) then
 		audio.stop(trIndex)
     	audio.play(tracks[trIndex][1],{channel = trIndex})
     	btns[trIndex].alpha = 1
     	transition.to(btns[trIndex],{time = 2000,alpha = 0.5})
     	return
     end
-	if (trackCounters[trIndex] % 2 ~= 0) then
+	if (trackCounters[trIndex] % 2 == 0) then
         audio.setVolume(0,{channel = trIndex})
         btns[trIndex].alpha = 0.5
     else
@@ -190,6 +191,16 @@ local function playSound10 (event)
 		playTrack(10)
     end
 end
+local function playSound11 (event)
+    if (event.phase == "ended") then
+		playTrack(11)
+    end
+end
+local function playSound12 (event)
+    if (event.phase == "ended") then
+		playTrack(12)
+    end
+end
 
 local function recording(event)
     if (event.phase == "ended") then
@@ -230,7 +241,9 @@ local function bindEventListeners()
 	btn8:addEventListener("touch",playSound8)
 	btn9:addEventListener("touch",playSound9)
 	btn10:addEventListener("touch",playSound10)
-
+	btn11:addEventListener("touch",playSound11)
+	btn12:addEventListener("touch",playSound12)
+	
 	--recBtn:addEventListener("touch",recording)
 	--repBtn:addEventListener("touch",replay)
 end
@@ -260,7 +273,8 @@ function showMainForm()
 	btn8 = display.newRoundedRect(1,1,w/8,h/8,2)
 	btn9 = display.newRoundedRect(1,1,w/8,h/8,2)
 	btn10 = display.newRoundedRect(1,1,w/8,h/8,2)
-
+	btn11 = display.newRoundedRect(1,1,w/8,h/8,2)
+	btn12 = display.newRoundedRect(1,1,w/8,h/8,2)
 	--recBtn = display.newRoundedRect(1,1,3*w/4,28,2)
 	--repBtn = display.newRoundedRect(1,1,3*w/4,28,2)
 	
@@ -274,6 +288,8 @@ function showMainForm()
 	btns[#btns + 1] = btn8
 	btns[#btns + 1] = btn9
 	btns[#btns + 1] = btn10
+	btns[#btns + 1] = btn11
+	btns[#btns + 1] = btn12
 
 	btn1.x,btn2.x = w/3,2*w/3
 	btn1.y,btn2.y = h/6,h/6
@@ -281,7 +297,9 @@ function showMainForm()
 	btn3.y,btn4.y,btn5.y,btn6.y = h/3,h/3,h/3,h/3
 	btn7.x,btn8.x,btn9.x = w/4,w/2,3*w/4
 	btn7.y,btn8.y,btn9.y = h/2,h/2,h/2
-	btn10.x,btn10.y = w/2,2*h/3
+	btn10.x,btn10.y = w/4,2*h/3
+	btn11.x,btn11.y = w/2,2*h/3
+	btn12.x,btn12.y = 3*w/4,2*h/3
 	
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
@@ -293,7 +311,9 @@ function showMainForm()
 	btn8:setFillColor(0,0,255)
 	btn9:setFillColor(0,0,255)
 	btn10:setFillColor(255,0,255)
-
+	btn11:setFillColor(255,0,255)
+	btn12:setFillColor(255,0,255)
+	
 	btn1.alpha = 0.5
 	btn2.alpha = 0.5
 	btn3.alpha = 0.5
@@ -304,6 +324,8 @@ function showMainForm()
 	btn8.alpha = 0.5
 	btn9.alpha = 0.5
 	btn10.alpha = 0.5
+	btn11.alpha = 0.5
+	btn12.alpha = 0.5
 	--recBtn:setFillColor(0,0,0)
 	--repBtn:setFillColor(0,0,0)
 
@@ -358,5 +380,5 @@ function hideMainForm()
 
 	stopAllTracks(false)
 	activeTracks = {}
-	startPlay = nil
+	playPressFirstTime = nil
 end
