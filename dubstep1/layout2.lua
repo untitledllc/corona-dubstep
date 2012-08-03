@@ -29,8 +29,9 @@ function new()
     	end
 	end
 	local function playSound3 (event)
-    	if (event.phase == "ended") then
+    	if (event.phase == "ended") then		
 			gl.play(localGroup,sampleKit,trackCounters,3,false,numSamples,numVoices)
+
     	end
 	end
 	local function playSound4 (event)
@@ -86,9 +87,11 @@ function new()
 	end
 	
 	gl.firstTimePlayPressed = nil
+	
 	for idx,val in pairs(gl.btns) do
 		gl.btns[idx].alpha = 0.5
 	end
+	
 	gl.btns[2].alpha = 1
 	if (localGroup.numChildren == 0) then
 		btn1 = display.newRoundedRect(1,1,w/8,h/8,2)
@@ -151,5 +154,6 @@ function new()
 		
 		bindEventListeners()
 	end
+	
 	return localGroup
 end

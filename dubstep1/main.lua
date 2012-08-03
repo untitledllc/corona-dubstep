@@ -16,7 +16,7 @@ end
 --Runtime:addEventListener("enterFrame",listener)
 --]]
 
-system.activate("multitouch")
+--system.activate("multitouch")
 
 local director = require("director")
 

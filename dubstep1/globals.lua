@@ -11,6 +11,11 @@ function drawLayoutBtns()
 	local btns = {}
 	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
+	
+	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
+	loading.x,loading.y = w/2,h/2
+	loading.isVisible = false
+	
 	btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/4,15*h/16
 	btn1:setFillColor(140,255,0)
 	btn2:setFillColor(140,255,0)
@@ -22,6 +27,7 @@ function drawLayoutBtns()
 	
 	function changeScene(event)
 		audio.stop()
+		loading.isVisible = true
 		if (event.phase == "ended") then
 			director:changeScene(event.target.scene)
 		end
@@ -29,7 +35,6 @@ function drawLayoutBtns()
 	
 	btn1:addEventListener("touch",changeScene)
 	btn2:addEventListener("touch",changeScene)
-	
 	btns[#btns + 1] = btn1
 	btns[#btns + 1] = btn2
 	return btns
