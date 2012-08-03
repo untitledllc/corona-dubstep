@@ -9,7 +9,9 @@ function new()
 
 	local w = gl.w
 	local h = gl.h
+	
 	gl.btns = gl.drawLayoutBtns()
+	
 	gl.firstTimePlayPressed = nil
 	
 	local trackCounters = {}
@@ -89,13 +91,17 @@ function new()
 			idx = idx + 1
 		end
 	end
+	
 	for idx,val in pairs(gl.btns) do
 		gl.btns[idx].alpha = 0.5
 	end
+	
 	gl.btns[1].alpha = 1	
+	
 	if (samplekit == nil) then
 		sampleKit = gl.initSounds(kitAddress,numSamples,numVoices)
 	end
+	
 	if (localGroup.numChildren == 0) then 
 		btn1 = display.newRoundedRect(1,1,w/8,h/8,2)
 		btn2 = display.newRoundedRect(1,1,w/8,h/8,2)
@@ -161,5 +167,6 @@ function new()
 	
 		bindEventListeners()
 	end
+	
 	return localGroup
 end
