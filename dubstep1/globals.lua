@@ -5,6 +5,8 @@ h = display.contentHeight
 
 currentLayout = require("layout1")
 
+firstTimePlayPressed = nil
+
 function drawLayoutBtns()
 	local btns = {}
 	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
@@ -32,8 +34,6 @@ function drawLayoutBtns()
 	btns[#btns + 1] = btn2
 	return btns
 end
-
-local firstTimePlayPressed = nil
 
 local function playVoice(group,kit,index)
 	audio.stop(index)
