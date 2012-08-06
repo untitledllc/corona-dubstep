@@ -4,15 +4,16 @@ function new()
 	local localGroup = display.newGroup()	
 
 	local numSamples = 9
-	local numVoices = 3	
+	local numFX = 3
+	local numVoices = 3
 	local gl = require("globals")	
 	local kitAddress = "sounds1/"
 
-	local playParams = {false,true,false,true,2,4,3,3}
+	local playParams = {false,true,false,true,true,2,4,3,3,3}
 
 	local w = gl.w
 	local h = gl.h
-	
+
 	gl.btns = gl.drawLayoutBtns()
 	
 	gl.firstTimePlayPressed = nil
@@ -24,62 +25,77 @@ function new()
 
 	local function playSound1 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,1,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,1,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound2 (event)
  	   if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,2,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,2,numSamples,numFX,numVoices,playParams)
    	   end
 	end
 	local function playSound3 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,3,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,3,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound4 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,4,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,4,numSamples,numFX,numVoices,playParams)
    	 	end
 	end
 	local function playSound5 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,5,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,5,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound6 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,6,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,6,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound7 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,7,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,7,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound8 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,8,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,8,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound9 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,9,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,9,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound10 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,10,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,10,numSamples,numFX,numVoices,playParams)
    		end
 	end
 	local function playSound11 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,11,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,11,numSamples,numFX,numVoices,playParams)
    		end
 	end
 	local function playSound12 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,12,numSamples,numVoices,playParams)
+			gl.play(localGroup,sampleKit,trackCounters,12,numSamples,numFX,numVoices,playParams)
+    	end
+	end
+	local function playSound13 (event)
+    	if (event.phase == "ended") then
+			gl.play(localGroup,sampleKit,trackCounters,13,numSamples,numFX,numVoices,playParams)
+    	end
+	end
+	local function playSound14 (event)
+    	if (event.phase == "ended") then
+			gl.play(localGroup,sampleKit,trackCounters,14,numSamples,numFX,numVoices,playParams)
+    	end
+	end
+	local function playSound15 (event)
+    	if (event.phase == "ended") then
+			gl.play(localGroup,sampleKit,trackCounters,15,numSamples,numFX,numVoices,playParams)
     	end
 	end
 
@@ -87,7 +103,8 @@ function new()
 		local handlerTable = {playSound1,playSound2,playSound3,
 				playSound4,playSound5,playSound6,
 				playSound7,playSound8,playSound9,
-				playSound10,playSound11,playSound12}
+				playSound10,playSound11,playSound12,
+				playSound13,playSound14,playSound15}
 		local idx = 1
 		while(idx <= localGroup.numChildren) do
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
@@ -102,32 +119,37 @@ function new()
 	gl.btns[1].alpha = 1	
 	
 	if (samplekit == nil) then
-		sampleKit = gl.initSounds(kitAddress,numSamples,numVoices)
+		sampleKit = gl.initSounds(kitAddress,numSamples,numFX,numVoices)
 	end
 	
 	if (localGroup.numChildren == 0) then 
-		btn1 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn2 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn3 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn4 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn5 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn6 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn7 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn8 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn9 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn10 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn11 = display.newRoundedRect(1,1,w/8,h/8,2)
-		btn12 = display.newRoundedRect(1,1,w/8,h/8,2)
+		btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn3 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn4 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn5 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn6 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn7 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn8 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn9 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn10 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn11 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn12 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn13 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn15 = display.newRoundedRect(1,1,w/10,h/10,2)
 
 		btn1.x,btn2.x = w/3,2*w/3
-		btn1.y,btn2.y = h/6,h/6
+		btn1.y,btn2.y = h/8,h/8
 		btn3.x,btn4.x,btn5.x,btn6.x = w/5,2*w/5,3*w/5,4*w/5
-		btn3.y,btn4.y,btn5.y,btn6.y = h/3,h/3,h/3,h/3
+		btn3.y,btn4.y,btn5.y,btn6.y = h/4,h/4,h/4,h/4
 		btn7.x,btn8.x,btn9.x = w/4,w/2,3*w/4
-		btn7.y,btn8.y,btn9.y = h/2,h/2,h/2
-		btn10.x,btn10.y = w/4,2*h/3
-		btn11.x,btn11.y = w/2,2*h/3
-		btn12.x,btn12.y = 3*w/4,2*h/3
+		btn7.y,btn8.y,btn9.y = 3*h/8,3*h/8,3*h/8
+		btn10.x,btn10.y = w/4,h/2
+		btn11.x,btn11.y = w/2,h/2
+		btn12.x,btn12.y = 3*w/4,h/2
+		btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
+		btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
 	
 		btn1:setFillColor(255,0,0)
 		btn2:setFillColor(255,0,0)
@@ -141,6 +163,9 @@ function new()
 		btn10:setFillColor(255,0,255)
 		btn11:setFillColor(255,0,255)
 		btn12:setFillColor(255,0,255)
+		btn13:setFillColor(0,255,255)
+		btn14:setFillColor(0,255,255)
+		btn15:setFillColor(0,255,255)
 	
 		btn1.alpha = 0.5
 		btn2.alpha = 0.5
@@ -154,6 +179,9 @@ function new()
 		btn10.alpha = 0.5
 		btn11.alpha = 0.5
 		btn12.alpha = 0.5
+		btn13.alpha = 0.5
+		btn14.alpha = 0.5
+		btn15.alpha = 0.5
 	
 		localGroup:insert(btn1)
 		localGroup:insert(btn2)
@@ -167,6 +195,9 @@ function new()
 		localGroup:insert(btn10)
 		localGroup:insert(btn11)
 		localGroup:insert(btn12)
+		localGroup:insert(btn13)
+		localGroup:insert(btn14)
+		localGroup:insert(btn15)
 
 		bindEventListeners()
 	end
