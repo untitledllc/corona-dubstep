@@ -8,7 +8,7 @@ function new()
 	local gl = require("globals")	
 	local kitAddress = "sounds1/"
 
-	local playParams = {true,true,true,true,2,4,3,3}
+	local playParams = {false,true,false,true,2,4,3,3}
 
 	local w = gl.w
 	local h = gl.h
