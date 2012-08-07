@@ -6,7 +6,7 @@ function new()
 	local numFX = 3
 	local numVoices = 3
 	local gl = require("globals")	
-	local kitAddress = "s1/"
+	local kitAddress = ""
 
 	local playParams = {false,true,false,true,true,2,4,3,3,3}
 

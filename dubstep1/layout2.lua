@@ -14,7 +14,7 @@ function new()
 	
 	local playParams = {true,true,false,true,false,3,3,3,3,2}
 	
-	local kitAddress = "s2/"
+	local kitAddress = "T"
 
 	local trackCounters = {}
 	trackCounters = gl.resetCounters(numSamples)
