@@ -5,22 +5,92 @@ local h = display.contentHeight
 
 local volumePressCounter = 0
 
-local regulatorPanel = nil
+regulatorPanel = nil
 
 local lineLen = h/4
+local topLimit = h/4 + h/8 + h/2
+local bottomLimit = h/4 - h/8 + h/2
 
 scrolls = {}
 
-function setScrollPosition(volumeLevel,index)
-	scrolls[index]["scroll"].y = scrolls[index]["top"] - volumeLevel*lineLen - h/2
-	print(scrolls[index]["scroll"].y)
+voiceVolume = 0.5
+fxVolume = 0.5
+
+local gl = require("globals")
+
+function setVolume(volumeLevel,channels)
+	local idx = 1
+	while (idx <= #channels) do
+		audio.setVolume(volumeLevel,{channel = channels[idx]})
+		idx = idx + 1
+	end
 end
 
+function getVolume(scrollTmp)
+	return (topLimit - scrollTmp.y - h/2)/lineLen
+end
+
+local function calcScrollIndex(scroll)
+	local idx = 1
+	while (idx <= #scrolls) do
+		if (scroll == scrolls[idx]) then
+			return idx
+		end
+		idx = idx + 1
+	end
+	return "Error"
+end
+
+local function calcChannels(index) 
+	local beginIndex 
+	local endIndex = nil
+	local result = {}
+	if (gl.partSumms[index - 1] == nil) then
+		beginIndex = 1
+
+	else
+		beginIndex = gl.partSumms[index - 1] + 1
+	end		
+	
+	endIndex = gl.partSumms[index]
+	
+	local idx = beginIndex
+	while (idx <= endIndex) do
+		if (gl.activeChannels[idx] ~= nil) then
+			result[#result + 1] = idx
+		end
+		idx = idx + 1
+	end
+	
+	for i,val in pairs(result) do
+		print(val)
+	end
+	print("______________________________")
+	return result
+end
+
+local function moveScroll(event)
+	if (event.phase == "moved") then
+		if (bottomLimit <= event.y and event.y <= topLimit) then
+			event.target.y = event.y - h/2
+			local index = calcScrollIndex(event.target)
+			if (index <= 3) then 
+				local channels = calcChannels(index)
+				setVolume(getVolume(event.target),channels)
+			end
+			if (index == 5) then	
+				voiceVolume = getVolume(scrolls[5])
+			end
+			if (index == 4) then
+				fxVolume = getVolume(scrolls[4])
+			end
+		end
+	end
+end
+	
 local function createVolumeRegulator(x,y)
 	local line = display.newRoundedRect(1,1,4,h/4,2)
-	local scroll = display.newRoundedRect(1,1,10,5,2)
-	local topLimit = y + h/8 + h/2
-	local bottomLimit = y - h/8 + h/2
+	local scroll = display.newRoundedRect(1,1,20,10,2)
 	local scTable = {}
 	
 	scroll:setFillColor(255,255,255)
@@ -28,21 +98,9 @@ local function createVolumeRegulator(x,y)
 	scroll.x,scroll.y = x,y
 	line.x,line.y = x,y
 	
-	local function moveScroll(event)
-		if (event.phase == "moved") then
-			if (bottomLimit <= event.y and event.y <= topLimit) then
-				event.target.y = event.y - h/2
-				print((topLimit - event.y)/lineLen)
-			end
-		end
-	end
-	
 	scroll:addEventListener("touch",moveScroll)
 	
-	scTable["scroll"] = scroll
-	scTable["top"] = topLimit
-	scTable["bottom"] = bottomLimit
-	scrolls[#scrolls + 1] = scTable
+	scrolls[#scrolls + 1] = scroll
 	
 	return scroll,line
 end
@@ -63,6 +121,8 @@ end
 
 function createVolumeRegulatorPanel()
 	regulatorPanel = display.newGroup()
+
+	scrolls = {}
 
 	local backGroundRect = display.newRect(0,0,w,h/2)
 	backGroundRect:setFillColor(140,140,140)
