@@ -12,12 +12,14 @@ local numSampleTypes = 5
 local activeTracks = {} --track = {index,activeTime}
 
 local recording = require("recording")
+local volumePanel = require("volumeRegulatorPanel")
 
 function drawLayoutBtns()
 	local btns = {}
 	local localGroup = display.newGroup()
 	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
+	volume = display.newRoundedRect(1,1,w/8,h/8,10)
 	recBtn = display.newRoundedRect(1,1,w/8,h/8,10)
 	
 	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
@@ -29,6 +31,9 @@ function drawLayoutBtns()
 	btn2:setFillColor(140,255,0)
 	btn1.alpha = 0.5
 	btn2.alpha = 0.5
+	
+	volume.x,volume.y = w/16,h/16
+	volume.alpha = 0.5
 	
 	recBtn.x,recBtn.y = 15*w/16,15*h/16
 	recBtn:setFillColor(140,255,140)
@@ -48,6 +53,7 @@ function drawLayoutBtns()
 	
 	btn1:addEventListener("touch",changeScene)
 	btn2:addEventListener("touch",changeScene)
+	volume:addEventListener("touch",volumePanel.showHidePanel)
 	recBtn:addEventListener("touch",recording.startRecording)
 	
 	btns[#btns + 1] = btn1
@@ -131,6 +137,7 @@ end
 
 local function playVoice(group,kit,index)
 	audio.stop(index)
+	audio.setVolume(0.1,{channel = index})
     audio.play(kit[index][1],{channel = index})
     group[index].alpha = 1
     transition.to(group[index],{time = 2000,alpha = 0.5})
@@ -152,7 +159,7 @@ local function playMelody(group,index,trackCounters)
         audio.setVolume(0,{channel = index})
         group[index].alpha = 0.5
     else
-       	audio.setVolume(1,{channel = index})    
+       	audio.setVolume(1,{channel = index})  
         group[index].alpha = 1
     end
     trackCounters[index] = trackCounters[index] + 1
