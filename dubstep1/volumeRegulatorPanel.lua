@@ -90,7 +90,7 @@ end
 	
 local function createVolumeRegulator(x,y)
 	local line = display.newRoundedRect(1,1,4,h/4,2)
-	local scroll = display.newRoundedRect(1,1,20,10,2)
+	local scroll = display.newRoundedRect(1,1,20,20,2)
 	local scTable = {}
 	
 	scroll:setFillColor(255,255,255)
