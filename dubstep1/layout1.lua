@@ -2,12 +2,11 @@ module(...,package.seeall)
 
 function new()	
 	local localGroup = display.newGroup()	
-
 	local numSamples = 9
 	local numFX = 3
 	local numVoices = 3
 	local gl = require("globals")	
-	local kitAddress = "sounds1/"
+	local kitAddress = ""
 
 	local playParams = {false,true,false,true,true,2,4,3,3,3}
 

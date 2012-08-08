@@ -9,15 +9,28 @@ firstTimePlayPressed = nil
 
 local numSampleTypes = 5
 
-local activeTracks = {} --track = {index,activeTime}
+partSumms = {}
 
-local recording = require("recording")
+activeChannels = {} --track = {index,activeTime}
 
+local recording = nil
+local volumePanel = nil
+
+
+	
 function drawLayoutBtns()
+	activeChannels = {}
+	partSumms = {}
+	
+	recording = require("recording")
+	volumePanel = require("volumeRegulatorPanel")
+	volumePanel.regulatorPanel = nil
+	
 	local btns = {}
 	local localGroup = display.newGroup()
 	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
+	volume = display.newRoundedRect(1,1,w/8,h/8,10)
 	recBtn = display.newRoundedRect(1,1,w/8,h/8,10)
 	
 	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
@@ -29,6 +42,9 @@ function drawLayoutBtns()
 	btn2:setFillColor(140,255,0)
 	btn1.alpha = 0.5
 	btn2.alpha = 0.5
+	
+	volume.x,volume.y = w/16,h/16
+	volume.alpha = 0.5
 	
 	recBtn.x,recBtn.y = 15*w/16,15*h/16
 	recBtn:setFillColor(140,255,140)
@@ -48,6 +64,7 @@ function drawLayoutBtns()
 	
 	btn1:addEventListener("touch",changeScene)
 	btn2:addEventListener("touch",changeScene)
+	volume:addEventListener("touch",volumePanel.showHidePanel)
 	recBtn:addEventListener("touch",recording.startRecording)
 	
 	btns[#btns + 1] = btn1
@@ -79,6 +96,7 @@ local function shutUpDrums(group,isShut,partSumms,trackCounters)
 				trackCounters[idx] = 0
 			end
 			audio.setVolume(0,{channel = idx})
+			activeChannels[idx] = nil
 			idx = idx + 1
 		end
 	end
@@ -96,6 +114,7 @@ local function shutUpMelodies(group,isShut,partSumms,trackCounters)
 				trackCounters[idx] = 0
 			end
 			audio.setVolume(0,{channel = idx})
+			activeChannels[idx] = nil
 			idx = idx + 1
 		end
 	end
@@ -113,6 +132,7 @@ local function shutUpIntros(group,isShut,partSumms,trackCounters)
 				trackCounters[idx] = 0
 			end
 			audio.setVolume(0,{channel = idx})
+			activeChannels[idx] = nil
 			idx = idx + 1
 		end
 	end
@@ -131,6 +151,7 @@ end
 
 local function playVoice(group,kit,index)
 	audio.stop(index)
+	audio.setVolume(volumePanel.voiceVolume,{channel = index})
     audio.play(kit[index][1],{channel = index})
     group[index].alpha = 1
     transition.to(group[index],{time = 2000,alpha = 0.5})
@@ -140,9 +161,15 @@ local function playIntro(group,index,trackCounters)
 	if (trackCounters[index] % 2 ~= 0) then
         audio.setVolume(0,{channel = index})
         group[index].alpha = 0.5
+        activeChannels[index] = nil
     else
-       	audio.setVolume(1,{channel = index})    
+    	if (volumePanel.scrolls[1] == nil) then
+    		audio.setVolume(0.5,{channel = index})
+    	else
+       		audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[1]),{channel = index})    
+       	end
         group[index].alpha = 1
+        activeChannels[index] = index
     end
     trackCounters[index] = trackCounters[index] + 1
 end
@@ -151,9 +178,15 @@ local function playMelody(group,index,trackCounters)
 	if (trackCounters[index] % 2 ~= 0) then
         audio.setVolume(0,{channel = index})
         group[index].alpha = 0.5
+        activeChannels[index] = nil
     else
-       	audio.setVolume(1,{channel = index})    
+    	if (volumePanel.scrolls[2] ~= nil) then
+       		audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[2]),{channel = index})  
+       	else
+       		audio.setVolume(0.5,{channel = index})  
+       	end
         group[index].alpha = 1
+        activeChannels[index] = index
     end
     trackCounters[index] = trackCounters[index] + 1
 end
@@ -162,30 +195,29 @@ local function playDrums(group,index,trackCounters)
 	if (trackCounters[index] % 2 ~= 0) then
         audio.setVolume(0,{channel = index})
         group[index].alpha = 0.5
+        activeChannels[index] = nil
     else
-       	audio.setVolume(1,{channel = index})    
+       	 if (volumePanel.scrolls[3] ~= nil) then
+       		audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[3]),{channel = index})  
+       	else
+       		audio.setVolume(0.5,{channel = index})  
+       	end   
         group[index].alpha = 1
+        activeChannels[index] = index
     end
     trackCounters[index] = trackCounters[index] + 1
 end
 
 local function playFX(group,kit,index)
 	audio.stop(index)
+	print(volumePanel.fxVolume)
+	audio.setVolume(volumePanel.fxVolume,{channel = index})
     audio.play(kit[index][1],{channel = index})
     group[index].alpha = 1
     transition.to(group[index],{time = 2000,alpha = 0.5})
 end
 
 local function playSample(group,kit,trackCounters,index,playParams,numSamples,numFX,numVoices)
-	local partSumms = {}
-	local idx = 1
-	local summ = 0
-	while (idx <= numSampleTypes) do
-		partSumms[idx] = summ + playParams[numSampleTypes+idx]
-		summ = summ + playParams[numSampleTypes+idx]
-		idx = idx + 1
-	end 
-	
 	if (index <= partSumms[1]) then
 		shutUpIntros(group,playParams[1],partSumms,trackCounters)
 		playIntro(group,index,trackCounters)
@@ -214,8 +246,18 @@ end
 
 function play(group,sampleKit,trackCounters,sampleIndex,numSamples,numFX,numVoices,playParams)
 	if (firstTimePlayPressed == nil) then
+		currentKit = sampleKit
 		firstTimePlayPressed = system.getTimer()
+		partSumms = {}
 		local idx = 1
+		local summ = 0
+		while (idx <= numSampleTypes) do
+			partSumms[idx] = summ + playParams[numSampleTypes+idx]
+			summ = summ + playParams[numSampleTypes+idx]
+			idx = idx + 1
+		end 
+		
+		idx = 1
 		while (idx <= numSamples) do
 			audio.play(sampleKit[idx][1],{channel = idx,loops = -1})
 			audio.setVolume(0,{channel = idx})
