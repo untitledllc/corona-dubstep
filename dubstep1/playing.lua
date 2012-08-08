@@ -228,7 +228,9 @@ end
 
 function play(group,sampleKit,trackCounters,sampleIndex,numSamples,numFX,numVoices,playParams)
 	if (firstTimePlayPressed == nil) then
-	
+		
+		gl.currentKit = sampleKit
+		
 		firstTimePlayPressed = system.getTimer()
 		
 		partSumms = {}
@@ -281,4 +283,8 @@ function resetCounters(numSamples)
 		i = i + 1
 	end
 	return trackCounters
+end
+
+function getActiveChannels()
+	return activeChannels
 end

@@ -4,6 +4,7 @@ function new()
 	local localGroup = display.newGroup()
 		
 	local gl = require("globals")	
+	local playModule = require("playing")
 	
 	local w = gl.w
 	local h = gl.h

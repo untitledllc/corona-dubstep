@@ -3,6 +3,8 @@ module(...,package.seeall)
 w = display.contentWidth
 h = display.contentHeight
 
+currentKit = nil
+
 function mySeek(time,sound,chan,loop)
 	if (loop == nil) then
 		loop = 0
@@ -16,13 +18,11 @@ function mySeek(time,sound,chan,loop)
 	if (time <= audio.getDuration(sound)) then
 		audio.play(sound,{channel = chan})
 		audio.seek(time,{channel = chan})
-		return
 	end
 	
 	if (time > audio.getDuration(sound)) then
 		audio.play(sound,{channel = chan})
-		audio.seek(time % audio.getDuration(sound),{channel = chan})
-		return
+		audio.seek(time % audio.getDuration(sound),{channel = chan}) 
 	end
 end
 
