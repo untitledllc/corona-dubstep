@@ -2,11 +2,11 @@ module(...,package.seeall)
 
 function new()	
 	local localGroup = display.newGroup()	
-
 	local numSamples = 9
 	local numFX = 3
 	local numVoices = 3
 	local gl = require("globals")	
+	local playModule = require("playing")
 	local kitAddress = "sounds1/"
 
 	local playParams = {false,true,false,true,true,2,4,3,3,3}
@@ -16,86 +16,86 @@ function new()
 
 	gl.btns = gl.drawLayoutBtns()
 	
-	gl.firstTimePlayPressed = nil
+	playModule.firstTimePlayPressed = nil
 	
 	local trackCounters = {}
-	trackCounters = gl.resetCounters(numSamples)
+	trackCounters = playModule.resetCounters(numSamples)
 
 	local sampleKit = nil
 
 	local function playSound1 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,1,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,1,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound2 (event)
  	   if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,2,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,2,numSamples,numFX,numVoices,playParams)
    	   end
 	end
 	local function playSound3 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,3,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,3,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound4 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,4,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,4,numSamples,numFX,numVoices,playParams)
    	 	end
 	end
 	local function playSound5 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,5,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,5,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound6 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,6,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,6,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound7 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,7,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,7,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound8 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,8,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,8,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound9 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,9,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,9,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound10 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,10,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,10,numSamples,numFX,numVoices,playParams)
    		end
 	end
 	local function playSound11 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,11,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,11,numSamples,numFX,numVoices,playParams)
    		end
 	end
 	local function playSound12 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,12,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,12,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound13 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,13,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,13,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound14 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,14,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,14,numSamples,numFX,numVoices,playParams)
     	end
 	end
 	local function playSound15 (event)
     	if (event.phase == "ended") then
-			gl.play(localGroup,sampleKit,trackCounters,15,numSamples,numFX,numVoices,playParams)
+			playModule.play(localGroup,sampleKit,trackCounters,15,numSamples,numFX,numVoices,playParams)
     	end
 	end
 
@@ -119,7 +119,7 @@ function new()
 	gl.btns[1].alpha = 1	
 	
 	if (samplekit == nil) then
-		sampleKit = gl.initSounds(kitAddress,numSamples,numFX,numVoices)
+		sampleKit = playModule.initSounds(kitAddress,numSamples,numFX,numVoices)
 	end
 	
 	if (localGroup.numChildren == 0) then 
