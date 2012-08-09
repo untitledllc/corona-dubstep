@@ -29,8 +29,7 @@ end
 local function completeUserActList()
 	local idx = 1
 	while (idx <= #gl.currentKit) do	
-		audio.stop(idx)
-		addAction(endRecordingTime,idx,0,0,-1,-1)
+		addAction(endRecordingTime - recPressTime,idx,0,0,-1,-1)
 		idx = idx + 1
 	end
 end
@@ -42,12 +41,6 @@ local function calcSeekTimeInActiveChannels(activeChannels)
 		end
 	end
 end
-
---[[local function seekActiveChannels()
-	for idx,val in pairs(userActionList) do
-		gl.mySeek(val.channelsActiveTime,gl.currentKit[val.channel][1],val.channel,0)
-	end
-end--]]
 
 local function saveUserActList()
     local path = system.pathForFile( "test.txt", system.DocumentsDirectory )

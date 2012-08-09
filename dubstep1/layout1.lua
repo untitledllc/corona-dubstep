@@ -14,6 +14,9 @@ function new()
 	local gl = require("globals")	
 	
 	gl.currentLayout = "layout1"
+	gl.currentNumSamples = numSamples
+	gl.currnetNumFX = numFX
+	gl.currentNumVoices = numVoices
 	
 	local playModule = require("playing")
 	local kitAddress = "sounds1/"

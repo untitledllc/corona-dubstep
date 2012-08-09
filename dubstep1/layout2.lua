@@ -1,10 +1,21 @@
 module(...,package.seeall)
 
+local layoutAppearTime = nil
+
+function getLayoutAppearTime()
+	return layoutAppearTime
+end
+
 function new()
 	local localGroup = display.newGroup()
 		
 	local gl = require("globals")	
 	local playModule = require("playing")
+	
+	gl.currentLayout = "layout2"
+	gl.currentNumSamples = numSamples
+	gl.currnetNumFX = numFX
+	gl.currentNumVoices = numVoices
 	
 	playModule.layoutAppearTime = system.getTimer()
 	
@@ -23,6 +34,8 @@ function new()
 	trackCounters = playModule.resetCounters(numSamples)
 
 	local sampleKit = playModule.initSounds(kitAddress,numSamples,numFX,numVoices)
+
+	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
 	local function playSound1 (event)
     	if (event.phase == "ended") then

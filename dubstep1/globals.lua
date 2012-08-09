@@ -5,6 +5,10 @@ h = display.contentHeight
 
 currentKit = nil
 currentLayout = nil
+currentNumSamples = nil
+currnetNumFX = nil
+currentNumVoices = nil
+
 function mySeek(time,sound,chan,loop)
 	if (loop == nil) then
 		loop = 0
@@ -31,12 +35,14 @@ function drawLayoutBtns()
 	partSumms = {}
 	
 	recording = require("recording")
+	replaying = require("replayModule")
 	
 	local btns = {}
-	local localGroup = display.newGroup()
+	
 	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
 	recBtn = display.newRoundedRect(1,1,w/8,h/8,10)
+	repBtn = display.newRoundedRect(1,1,w/8,h/8,10)
 	
 	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
 	loading.x,loading.y = w/2,h/2
@@ -52,9 +58,14 @@ function drawLayoutBtns()
 	recBtn:setFillColor(140,255,140)
 	recBtn.alpha = 0.5
 	
+	repBtn.x,repBtn.y = 15*w/16,h/16
+	repBtn:setFillColor(255,140,140)
+	repBtn.alpha = 0.5
+	
 	btn1.scene = "layout1"
 	btn2.scene = "layout2"
 	recBtn.scene = "recording"
+	repBtn.scene = "replayModule"
 	
 	function changeScene(event)
 		audio.stop()
@@ -67,9 +78,11 @@ function drawLayoutBtns()
 	btn1:addEventListener("touch",changeScene)
 	btn2:addEventListener("touch",changeScene)
 	recBtn:addEventListener("touch",recording.startRecording)
+	repBtn:addEventListener("touch",changeScene)
 	
-	btns[#btns + 1] = btn1
-	btns[#btns + 1] = btn2
-	btns[#btns + 1] = recBtn
+	btns[1] = btn1
+	btns[2] = btn2
+	btns[3] = recBtn
+	btns[4] = repBtn
 	return btns
 end

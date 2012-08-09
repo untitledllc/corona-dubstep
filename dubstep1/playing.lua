@@ -50,7 +50,7 @@ local function shutUpVoices(group,isShut,numSamples,numFX,numVoices)
 			if (recording.isRecStarted() == true) then
       			if (recording.isRecStarted() == true) then
     				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),5,-1)
+    							idx,0,audio.getVolume({channel = index}),5,-1)
    				end
    			end
 			
@@ -74,7 +74,7 @@ local function shutUpDrums(group,isShut,partSumms,trackCounters)
 			activeChannels[idx] = {-1}
 			
 			if (recording.isRecStarted() == true) then
-				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(),
+				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
 										idx,0,audio.getVolume({channel = index}),3,-1)
    			end
 			
@@ -98,7 +98,7 @@ local function shutUpMelodies(group,isShut,partSumms,trackCounters)
 			activeChannels[idx] = {-1}
 			
 			if (recording.isRecStarted() == true) then
-				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(),
+				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
 										idx,0,audio.getVolume({channel = index}),2,-1)
    			end
 			
@@ -122,7 +122,7 @@ local function shutUpIntros(group,isShut,partSumms,trackCounters)
 			activeChannels[idx] = {-1}
 			
 			if (recording.isRecStarted() == true) then
-				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(),
+				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
 										idx,0,audio.getVolume({channel = index}),1,-1)
    			end
    			
@@ -141,7 +141,7 @@ local function shutUpFX(group,isShut,numSamples,numFX,numVoices)
 			if (recording.isRecStarted() == true) then
     			if (recording.isRecStarted() == true) then
     				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),4,-1)
+    							idx,0,audio.getVolume({channel = index}),4,-1)
    				end
    			end
 			
@@ -174,7 +174,7 @@ local function playIntro(group,index,trackCounters)
     end
     
     if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(),
+    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
     							index,startStop,audio.getVolume({channel = index}),1,-1)
    	end
    	
@@ -206,7 +206,7 @@ local function playMelody(group,index,trackCounters)
     end
     
     if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(),
+    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
     							index,startStop,audio.getVolume({channel = index}),3,-1)
    	end
     
@@ -237,8 +237,8 @@ local function playDrums(group,index,trackCounters)
     end
     
     if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(),
-    							index,startStop,audio.getVolume({channel = index}),2,-1)
+    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    							index,startStop,audio.getVolume({channel = index}),3,-1)
    	end
    	
     trackCounters[index] = trackCounters[index] + 1
