@@ -4,7 +4,7 @@ w = display.contentWidth
 h = display.contentHeight
 
 currentKit = nil
-
+currentLayout = nil
 function mySeek(time,sound,chan,loop)
 	if (loop == nil) then
 		loop = 0

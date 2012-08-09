@@ -1,13 +1,24 @@
 module(...,package.seeall)
 
+local layoutAppearTime = nil
+
+function getLayoutAppearTime()
+	return layoutAppearTime
+end
+
 function new()	
 	local localGroup = display.newGroup()	
 	local numSamples = 9
 	local numFX = 3
 	local numVoices = 3
 	local gl = require("globals")	
+	
+	gl.currentLayout = "layout1"
+	
 	local playModule = require("playing")
 	local kitAddress = "sounds1/"
+
+	layoutAppearTime = system.getTimer()
 
 	local playParams = {false,true,false,true,true,2,4,3,3,3}
 
@@ -21,7 +32,9 @@ function new()
 	local trackCounters = {}
 	trackCounters = playModule.resetCounters(numSamples)
 
-	local sampleKit = nil
+	local sampleKit = playModule.initSounds(kitAddress,numSamples,numFX,numVoices)
+	
+	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
 	local function playSound1 (event)
     	if (event.phase == "ended") then
@@ -117,10 +130,6 @@ function new()
 	end
 	
 	gl.btns[1].alpha = 1	
-	
-	if (samplekit == nil) then
-		sampleKit = playModule.initSounds(kitAddress,numSamples,numFX,numVoices)
-	end
 	
 	if (localGroup.numChildren == 0) then 
 		btn1 = display.newRoundedRect(1,1,w/10,h/10,2)

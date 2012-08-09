@@ -6,6 +6,8 @@ function new()
 	local gl = require("globals")	
 	local playModule = require("playing")
 	
+	playModule.layoutAppearTime = system.getTimer()
+	
 	local w = gl.w
 	local h = gl.h
 	gl.btns = gl.drawLayoutBtns()
