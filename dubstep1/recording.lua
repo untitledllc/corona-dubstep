@@ -28,10 +28,8 @@ end
 
 local function completeUserActList()
 	local idx = 1
-	while (idx <= #gl.currentKit) do	
-		addAction(endRecordingTime - recPressTime,idx,0,0,-1,-1)
-		idx = idx + 1
-	end
+	addAction(endRecordingTime - recPressTime,-1,0,0,-1,-1)
+	idx = idx + 1
 end
 
 local function calcSeekTimeInActiveChannels(activeChannels)

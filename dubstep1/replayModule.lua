@@ -64,6 +64,90 @@ function new()
 	local txtStop= display.newText("Stop", 0, 0, native.systemFont, 24)
 	
 	local playPressCounter = 0
+	local relEndTrackTime = 1
+	local relPlayTime = 2
+	local firstTimePlayPressed = nil
+	
+	local actCounter = 1
+	local isPaused = false
+	
+	local scrollTransition = nil
+	
+	local function stopPressed(event)
+		audio.stop(0)
+		if (scrollTransition) then
+			transition.cancel(scrollTransition)
+			scrollTransition = nil
+		end
+
+		curPlayPos.x = 10
+		userActionList = {}
+		relPlayTime = 1000000
+		relEndTrackTime = 1
+		txtPlay.text = "Play"
+		playPressCounter = 0
+		currentMeasure = 0
+		prevMeasure = 0
+		
+		if (scrollTransition) then
+			transition.cancel(scrollTransition)
+			scrollTransition = nil
+		end
+	end
+	
+	local function makeAction(index,delta) 
+		local track = userActionList[index].channel
+		local playStop = userActionList[index].actType
+		local actTime = userActionList[index].actionTime
+		local category = userActionList[index].category
+		
+		print(index,#userActionList)
+
+		if (track == -1) then 
+			audio.stop(0)
+			return true
+		end
+		
+		if (playStop == 1 and category > 3) then
+			audio.play(gl.currentKit[track][1],{channel = track})
+		end
+		
+		if (playStop == 0 and category > 3) then
+			audio.stop(track)
+		end
+		
+		if (playStop == 1 and category <=  3) then
+			audio.setVolume(userActionList[index].volume,{channel = track})
+		end
+		
+		if (playStop == 0 and category <= 3) then
+			audio.setVolume(0,{channel = track})
+		end
+		
+		return false
+	end
+	
+	local function play(event)
+		if (relPlayTime <= relEndTrackTime and isPaused == false) then
+			if (relPlayTime > userActionList[actCounter].actionTime) then
+				state = makeAction(actCounter)
+				if (state == true) then
+					txtPlay.text = "Play"
+					stopPressed(nil)
+					return
+				else
+					actCounter = actCounter + 1		
+				end
+			end
+			local deltaT
+			currentMeasure = system.getTimer()
+			if (currentMeasure > prevMeasure) then
+				deltaT = currentMeasure - prevMeasure
+				prevMeasure = currentMeasure
+			end
+			relPlayTime = relPlayTime + deltaT
+		end
+	end
 	
 	local function prepareToReplay()
 		idx = 1
@@ -104,32 +188,58 @@ function new()
 		end
 	end
 	
-	local function play(event)
+	local function playPressed(event)
 		if (event.phase == "ended") then
 			if (playPressCounter % 2 == 0) then
-				makePreRecordActions()
-			else
-				audio.stop()
+				if (playPressCounter == 0) then	
+					openUserActList()		
+					prepareToReplay()
+					firstTimePlayPressed = system.getTimer()	
+					prevMeasure	= firstTimePlayPressed
+					relEndTrackTime = userActionList[#userActionList].actionTime + 100
+					relPlayTime = 0
+					makePreRecordActions()
+				else
+					audio.resume()
+					isPaused = false
+				end 
+				
+			if (scrollTransition) then
+				transition.cancel(scrollTransition)
+				scrollTransition = nil
 			end
+			scrollTransition = transition.to(curPlayPos,
+				{time=relEndTrackTime - relPlayTime,x=(w-10)})
+				
+				txtPlay.text = "Pause"
+					
+				actCounter = 1
+				
+				play()
+			else
+				audio.pause()
+				isPaused = true
+				txtPlay.text = "Play"
+				if (scrollTransition) then
+					transition.cancel(scrollTransition)
+					scrollTransition = nil
+				end
+			end
+			playPressCounter = playPressCounter + 1
 		end
 	end
 	
-	local function stop(event)
-		if (event.phase == "ended") then
-			audio.stop()
-		end
-	end
-	
-	local function exit(event)
+	local function exitPressed(event)
 		if (event.phase == "ended") then
 			director:changeScene(gl.currentLayout)
 		end
 	end
 	
 	local function bindListeners()
-		playBtn:addEventListener("touch",play)
-		stopBtn:addEventListener("touch",stop)
-		exitBtn:addEventListener("touch",exit)
+		playBtn:addEventListener("touch",playPressed)
+		stopBtn:addEventListener("touch",stopPressed)
+		exitBtn:addEventListener("touch",exitPressed)
+		Runtime:addEventListener("enterFrame",play)
 	end
 	
 	playLine:setFillColor(255,0,0)
@@ -158,10 +268,6 @@ function new()
 	localGroup:insert(txtStop)
 
 	bindListeners()	
-	
-	prepareToReplay()
-	
-	openUserActList()
 	
 	return localGroup
 end

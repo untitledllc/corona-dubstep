@@ -13,25 +13,27 @@ function new()
 	local playModule = require("playing")
 	
 	gl.currentLayout = "layout2"
-	gl.currentNumSamples = numSamples
-	gl.currnetNumFX = numFX
-	gl.currentNumVoices = numVoices
 	
 	playModule.layoutAppearTime = system.getTimer()
 	
 	local w = gl.w
 	local h = gl.h
+	
 	gl.btns = gl.drawLayoutBtns()
+	
 	local numSamples = 9
 	local numFX = 3
 	local numVoices = 2
+	
+	gl.currentNumSamples = numSamples
+	gl.currnetNumFX = numFX
+	gl.currentNumVoices = numVoices
 	
 	local playParams = {true,true,false,true,false,3,3,3,3,2}
 	
 	local kitAddress = "sounds2/"
 
-	local trackCounters = {}
-	trackCounters = playModule.resetCounters(numSamples)
+	local trackCounters = playModule.resetCounters(numSamples)
 
 	local sampleKit = playModule.initSounds(kitAddress,numSamples,numFX,numVoices)
 
