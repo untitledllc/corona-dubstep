@@ -247,14 +247,14 @@ function new()
 			else
 				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
 					{channel = userActionList[activeActs[idx]].channel, loops = -1})
-				--gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime 
-				--			+ userActionList[activeActs[idx]].channelActiveTime,
-				--	gl.currentKit[userActionList[activeActs[idx]].channel][1],
-				--		userActionList[activeActs[idx]].channel,
-				--			-1)
-				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
-						userActionList[activeActs[idx]].channelActiveTime,
-					{channel = userActionList[activeActs[idx]].channel})
+				gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime 
+							+ userActionList[activeActs[idx]].channelActiveTime,
+					gl.currentKit[userActionList[activeActs[idx]].channel][1],
+						userActionList[activeActs[idx]].channel,
+							-1)
+				--audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
+				--		userActionList[activeActs[idx]].channelActiveTime,
+				--	{channel = userActionList[activeActs[idx]].channel})
 					
 				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
 			end

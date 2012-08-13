@@ -175,7 +175,7 @@ local function playIntro(group,index,trackCounters)
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),1,0)
+    							index,startStop,audio.getVolume({channel = index}),1,system.getTimer() - curLayout.getLayoutAppearTime())
    	end
    	
     trackCounters[index] = trackCounters[index] + 1
@@ -207,7 +207,7 @@ local function playMelody(group,index,trackCounters)
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),3,0)
+    							index,startStop,audio.getVolume({channel = index}),3,system.getTimer() - curLayout.getLayoutAppearTime())
    	end
     
     trackCounters[index] = trackCounters[index] + 1
@@ -238,7 +238,7 @@ local function playDrums(group,index,trackCounters)
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),3,0)
+    							index,startStop,audio.getVolume({channel = index}),3,system.getTimer() - curLayout.getLayoutAppearTime())
    	end
    	
     trackCounters[index] = trackCounters[index] + 1
