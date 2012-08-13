@@ -15,11 +15,11 @@ function new()
 	
 	gl.currentLayout = "layout1"
 	gl.currentNumSamples = numSamples
-	gl.currnetNumFX = numFX
+	gl.currentNumFX = numFX
 	gl.currentNumVoices = numVoices
 	
 	local playModule = require("playing")
-	local kitAddress = "sounds1/"
+	local kitAddress = ""
 
 	layoutAppearTime = system.getTimer()
 

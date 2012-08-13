@@ -25,15 +25,17 @@ function new()
 	local numFX = 3
 	local numVoices = 2
 	
+	print("here")
+	
 	gl.currentNumSamples = numSamples
-	gl.currnetNumFX = numFX
+	gl.currentNumFX = numFX
 	gl.currentNumVoices = numVoices
 	
 	playModule.firstTimePlayPressed = nil
 	
 	local playParams = {true,true,false,true,false,3,3,3,3,2}
 	
-	local kitAddress = "sounds2/"
+	local kitAddress = "T"
 
 	local trackCounters = playModule.resetCounters(numSamples)
 

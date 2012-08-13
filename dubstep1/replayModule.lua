@@ -67,6 +67,7 @@ function new()
 	local relEndTrackTime = 1
 	local relPlayTime = 2
 	local firstTimePlayPressed = nil
+	local playerAppearTime = nil
 	
 	local actCounter = 1
 	local isPaused = false
@@ -237,18 +238,26 @@ function new()
 					{channel = userActionList[activeActs[idx]].channel, loops = -1})
 				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime,
 					{channel = userActionList[activeActs[idx]].channel})
+					audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
+			else
+				gl.mySeek(relativeTime,
+					gl.currentKit[userActionList[activeActs[idx]].channel][1],
+						userActionList[activeActs[idx]].channel,
+							-1)
+				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
 			end
-			--gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime,
-			--		gl.currentKit[userActionList[activeActs[idx]].channel][1],
-			--			userActionList[activeActs[idx]].channel,
-			--				-1)
 			idx = idx + 1
 		end
 	end
 	
 	local function onSeek(event)
 	if (event.phase == "ended") then
-		audio.stop(0)
+		local idx = 1
+		while (idx <= gl.currentNumSamples + gl.currentNumFX + gl.currentNumVoices) do
+			audio.setVolume(0,{channel = idx})
+			idx = idx + 1
+		end
+		
 		curPlayPos.x = event.x
 		txtPlay.text = "Pause"
 
@@ -325,6 +334,7 @@ end
 	
 	local function exitPressed(event)
 		if (event.phase == "ended") then
+			stopPressed(nil)
 			director:changeScene(gl.currentLayout)
 		end
 	end
@@ -363,6 +373,8 @@ end
 	localGroup:insert(txtStop)
 
 	bindListeners()	
+	
+	playerAppearTime = system.getTimer()
 	
 	return localGroup
 end

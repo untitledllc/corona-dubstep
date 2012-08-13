@@ -6,7 +6,7 @@ h = display.contentHeight
 currentKit = nil
 currentLayout = nil
 currentNumSamples = nil
-currnetNumFX = nil
+currentNumFX = nil
 currentNumVoices = nil
 
 function mySeek(time,sound,chan,loop)
