@@ -73,6 +73,45 @@ function new()
 	
 	local scrollTransition = nil
 	
+	local function prepareToReplay()
+		idx = 1
+		while (idx <= gl.currentNumSamples) do
+			audio.play(gl.currentKit[idx][1],{channel = idx,loops = -1})
+			audio.setVolume(0,{channel = idx})
+			idx = idx + 1
+		end
+	end
+	
+	local function findSeekSamplesTime()
+		local idx = 1
+		while (userActionList[idx].actionTime == 0) do
+			if (userActionList[idx].category <= 3) then
+				return userActionList[idx].channelActiveTime
+			end
+			idx = idx + 1
+		end
+		return nil
+	end
+	
+	local function makePreRecordActions()
+		local idx = 1
+		local toSeekSampleTime = findSeekSamplesTime()
+		while (userActionList[idx].actionTime == 0) do
+			if (userActionList[idx].category <= 3) then
+				gl.mySeek(toSeekSampleTime,
+					gl.currentKit[userActionList[idx].channel][1],
+								userActionList[idx].channel,-1)
+				audio.setVolume(userActionList[idx].volume,
+						{channel = userActionList[idx].channel})
+			else
+				gl.mySeek(userActionList[idx].channelActiveTime,
+					gl.currentKit[userActionList[idx].channel][1],
+								userActionList[idx].channel,0)
+			end
+			idx = idx + 1
+		end
+	end
+	
 	local function stopPressed(event)
 		audio.stop(0)
 		if (scrollTransition) then
@@ -100,8 +139,6 @@ function new()
 		local playStop = userActionList[index].actType
 		local actTime = userActionList[index].actionTime
 		local category = userActionList[index].category
-		
-		print(index,#userActionList)
 
 		if (track == -1) then 
 			audio.stop(0)
@@ -149,44 +186,101 @@ function new()
 		end
 	end
 	
-	local function prepareToReplay()
-		idx = 1
-		while (idx <= gl.currentNumSamples) do
-			audio.play(gl.currentKit[idx][1],{channel = idx,loops = -1})
-			audio.setVolume(0,{channel = idx})
+	local function findStartActionForTrack(trackNumber,relativeTime)
+		local idx = #userActionList
+		--print(trackNumber)
+		while(true) do
+			if (userActionList[idx].actType == 1 
+				and 
+			userActionList[idx].channel == trackNumber
+				and 
+			userActionList[idx].actionTime <= relativeTime) then
+			break
+		end
+		idx = idx - 1
+		end
+		return idx
+	end
+
+	local function findActiveTracks(relativeTime)
+		local idx = 1
+		local trActivity = {}
+		while(userActionList[idx].actionTime < relativeTime) do
+			if (userActionList[idx].channel ~= -1) then
+				if (userActionList[idx].actType == 0) then
+					trActivity[userActionList[idx].channel] = nil
+				else
+					trActivity[userActionList[idx].channel] = userActionList[idx].channel
+				end
+			else 
+				trActivity = {}
+			end
+			idx = idx + 1
+		end
+		return trActivity,idx
+	end
+
+	local function findActiveActions(relativeTime)
+		local trActivity,actCount = findActiveTracks(relativeTime)
+		local actActivity = {}
+		for idx,val in pairs(trActivity) do
+			actActivity[#actActivity + 1] = findStartActionForTrack(val,relativeTime)
+		end
+		return actActivity,actCount
+	end
+
+	local function seek(activeActs,relativeTime)
+		local idx = 1
+		while(idx <= #activeActs) do
+			if (userActionList[activeActs[idx]].category > 3) then
+				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
+					{channel = userActionList[activeActs[idx]].channel, loops = -1})
+				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime,
+					{channel = userActionList[activeActs[idx]].channel})
+			end
+			--gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime,
+			--		gl.currentKit[userActionList[activeActs[idx]].channel][1],
+			--			userActionList[activeActs[idx]].channel,
+			--				-1)
 			idx = idx + 1
 		end
 	end
 	
-	local function findSeekSamplesTime()
-		local idx = 1
-		while (userActionList[idx].actionTime == 0) do
-			if (userActionList[idx].category <= 3) then
-				return userActionList[idx].channelActiveTime
-			end
-			idx = idx + 1
+	local function onSeek(event)
+	if (event.phase == "ended") then
+		audio.stop(0)
+		curPlayPos.x = event.x
+		txtPlay.text = "Pause"
+
+		if (playPressCounter == 0) then 
+			openUserActList()		
+			prepareToReplay()
+			firstTimePlayPressed = system.getTimer()	
+			prevMeasure	= firstTimePlayPressed
+			relEndTrackTime = userActionList[#userActionList].actionTime + 100
+			relPlayTime = 0
+			makePreRecordActions()
 		end
-		return nil
-	end
-	
-	local function makePreRecordActions()
-		local idx = 1
-		local toSeekSampleTime = findSeekSamplesTime()
-		while (userActionList[idx].actionTime == 0) do
-			if (userActionList[idx].category <= 3) then
-				gl.mySeek(toSeekSampleTime,
-					gl.currentKit[userActionList[idx].channel][1],
-								userActionList[idx].channel,-1)
-				audio.setVolume(userActionList[idx].volume,
-						{channel = userActionList[idx].channel})
-			else
-				gl.mySeek(userActionList[idx].channelActiveTime,
-					gl.currentKit[userActionList[idx].channel][1],
-								userActionList[idx].channel,0)
-			end
-			idx = idx + 1
+
+		playPressCounter = 1
+
+		relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
+
+		activeActions,actCounter = findActiveActions(relPlayTime)
+
+		if (scrollTransition ~= nil) then
+			transition.cancel(scrollTransition)
+			scrollTransition = nil
 		end
+
+		scrollTransition = transition.to(curPlayPos,
+					{time=relEndTrackTime - relPlayTime,x=(w-10)})
+
+		seek(activeActions,relPlayTime)
+
+		play()
 	end
+end
 	
 	local function playPressed(event)
 		if (event.phase == "ended") then
@@ -239,6 +333,7 @@ function new()
 		playBtn:addEventListener("touch",playPressed)
 		stopBtn:addEventListener("touch",stopPressed)
 		exitBtn:addEventListener("touch",exitPressed)
+		playLine:addEventListener("touch",onSeek)
 		Runtime:addEventListener("enterFrame",play)
 	end
 	

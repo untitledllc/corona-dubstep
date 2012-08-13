@@ -29,6 +29,8 @@ function new()
 	gl.currnetNumFX = numFX
 	gl.currentNumVoices = numVoices
 	
+	playModule.firstTimePlayPressed = nil
+	
 	local playParams = {true,true,false,true,false,3,3,3,3,2}
 	
 	local kitAddress = "sounds2/"
@@ -113,17 +115,15 @@ function new()
 	
 	local function bindEventListeners()
 		local handlerTable = {playSound1,playSound2,playSound3,
-				playSound4,playSound5,playSound6,playSound7,playSound8,
-				playSound9,playSound10,playSound11,
-				playSound12,playSound13,playSound14}
+					playSound4,playSound5,playSound6,playSound7,playSound8,
+					playSound9,playSound10,playSound11,
+					playSound12,playSound13,playSound14}
 		local idx = 1
 		while(idx <= localGroup.numChildren) do
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
 			idx = idx + 1
 		end
 	end
-	
-	playModule.firstTimePlayPressed = nil
 	
 	for idx,val in pairs(gl.btns) do
 		gl.btns[idx].alpha = 0.5
@@ -146,17 +146,18 @@ function new()
 		btn13 = display.newRoundedRect(1,1,w/10,h/10,2)
 		btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
 		
+		
 		btn1.x,btn2.x,btn3.x = w/4,w/2,3*w/4
 		btn4.x,btn5.x,btn6.x = w/4,w/2,3*w/4
 		btn7.x,btn8.x,btn9.x = w/4,w/2,3*w/4
-		btn10.x,btn11.x = w/3,2*w/3
-		btn12.x,btn13.x,btn14.x = w/4,w/2,3*w/4
+		btn10.x,btn11.x,btn12.x = w/4,w/2,3*w/4
+		btn13.x,btn14.x = w/3,2*w/3
 		
 		btn1.y,btn2.y,btn3.y = h/8,h/8,h/8
 		btn4.y,btn5.y,btn6.y = h/4,h/4,h/4
 		btn7.y,btn8.y,btn9.y = 3*h/8,3*h/8,3*h/8
-		btn10.y,btn11.y = 5*h/8,5*h/8
-		btn12.y,btn13.y,btn14.y = h/2,h/2,h/2
+		btn10.y,btn11.y,btn12.y =  h/2,h/2,h/2
+		btn13.y,btn14.y = 5*h/8,5*h/8
 		
 		btn1:setFillColor(255,0,0)
 		btn2:setFillColor(255,0,0)
@@ -169,7 +170,7 @@ function new()
 		btn9:setFillColor(0,0,255)
 		btn10:setFillColor(255,255,0)
 		btn11:setFillColor(255,255,0)
-		btn12:setFillColor(255,0,255)
+		btn12:setFillColor(255,255,0)
 		btn13:setFillColor(255,0,255)
 		btn14:setFillColor(255,0,255)
 	
@@ -198,7 +199,7 @@ function new()
 		localGroup:insert(btn8)
 		localGroup:insert(btn9)
 		localGroup:insert(btn10)
-		localGroup:insert(btn11)
+		localGroup:insert(btn11)	
 		localGroup:insert(btn12)
 		localGroup:insert(btn13)
 		localGroup:insert(btn14)

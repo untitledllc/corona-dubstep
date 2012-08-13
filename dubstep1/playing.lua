@@ -321,12 +321,14 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 		playDrums(group,index,trackCounters)
 	end
 	
+	print(index,partSumms[3],partSumms[4])
+	
 	if (index > partSumms[3] and index <= partSumms[4]) then
 		shutUpFX(group,playParams[4],numSamples,numFX,numVoices)
 		playFX(group,kit,index)
 	end
 	
-	if (index > partSumms[4]) then
+	if (index >= partSumms[4]) then
 		shutUpVoices(group,playParams[5],numSamples,numFX,numVoices)
 		playVoice(group,kit,index)
 	end
