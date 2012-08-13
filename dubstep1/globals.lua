@@ -42,7 +42,7 @@ function drawLayoutBtns()
 	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
 	recBtn = display.newRoundedRect(1,1,w/8,h/8,10)
-	repBtn = display.newRoundedRect(1,1,w/8,h/8,10)
+	repBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
 	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
 	loading.x,loading.y = w/2,h/2
