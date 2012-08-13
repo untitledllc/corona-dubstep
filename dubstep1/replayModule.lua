@@ -162,6 +162,8 @@ function new()
 			audio.setVolume(0,{channel = track})
 		end
 		
+		print(index)
+		
 		return false
 	end
 	
@@ -232,18 +234,28 @@ function new()
 
 	local function seek(activeActs,relativeTime)
 		local idx = 1
+		
 		while(idx <= #activeActs) do
 			if (userActionList[activeActs[idx]].category > 3) then
 				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
 					{channel = userActionList[activeActs[idx]].channel, loops = -1})
-				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime,
+				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
+						userActionList[activeActs[idx]].channelActiveTime,
 					{channel = userActionList[activeActs[idx]].channel})
 					audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
+				print("here")
 			else
-				gl.mySeek(relativeTime,
-					gl.currentKit[userActionList[activeActs[idx]].channel][1],
-						userActionList[activeActs[idx]].channel,
-							-1)
+				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
+					{channel = userActionList[activeActs[idx]].channel, loops = -1})
+				--gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime 
+				--			+ userActionList[activeActs[idx]].channelActiveTime,
+				--	gl.currentKit[userActionList[activeActs[idx]].channel][1],
+				--		userActionList[activeActs[idx]].channel,
+				--			-1)
+				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
+						userActionList[activeActs[idx]].channelActiveTime,
+					{channel = userActionList[activeActs[idx]].channel})
+					
 				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
 			end
 			idx = idx + 1

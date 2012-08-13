@@ -175,7 +175,7 @@ local function playIntro(group,index,trackCounters)
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),1,-1)
+    							index,startStop,audio.getVolume({channel = index}),1,0)
    	end
    	
     trackCounters[index] = trackCounters[index] + 1
@@ -207,7 +207,7 @@ local function playMelody(group,index,trackCounters)
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),3,-1)
+    							index,startStop,audio.getVolume({channel = index}),3,0)
    	end
     
     trackCounters[index] = trackCounters[index] + 1
@@ -238,7 +238,7 @@ local function playDrums(group,index,trackCounters)
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),3,-1)
+    							index,startStop,audio.getVolume({channel = index}),3,0)
    	end
    	
     trackCounters[index] = trackCounters[index] + 1
@@ -262,13 +262,13 @@ local function playFX(group,kit,index)
     	
     	if (recording.isRecStarted() == true) then
     		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),4,-1)
+    							index,0,audio.getVolume({channel = index}),4,0)
    		end
     end
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,1,audio.getVolume({channel = index}),4,-1)
+    							index,1,audio.getVolume({channel = index}),4,0)
    	end
    	
     timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
@@ -293,13 +293,13 @@ local function playVoice(group,kit,index)
     	
     	if (recording.isRecStarted() == true) then
     		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),5,-1)
+    							index,0,audio.getVolume({channel = index}),5,0)
    		end
     end
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,1,audio.getVolume({channel = index}),5,-1)
+    							index,1,audio.getVolume({channel = index}),5,0)
    	end
     
     timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
