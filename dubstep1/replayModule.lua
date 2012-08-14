@@ -140,7 +140,20 @@ function new()
 		end
 	end
 	
-	local function makeAction(index,delta) 
+	local function makeAction(index) 
+	
+		print("---------------")
+		print("NEW ACTION")
+		print("---------------")
+		print(relPlayTime)
+		print("---------------")
+		print("actionTime=",userActionList[index].actionTime)
+		print("channel=",userActionList[index].channel)
+		print("actType=",userActionList[index].actType)
+		print("volume=",userActionList[index].volume)
+		print("category=",userActionList[index].category)
+		print("channelActiveTime=",userActionList[index].channelActiveTime)
+
 		local track = userActionList[index].channel
 		local playStop = userActionList[index].actType
 		local actTime = userActionList[index].actionTime
@@ -201,9 +214,9 @@ function new()
 			userActionList[idx].channel == trackNumber
 				and 
 			userActionList[idx].actionTime <= relativeTime) then
-			break
-		end
-		idx = idx - 1
+				break
+			end
+			idx = idx - 1
 		end
 		return idx
 	end
@@ -238,35 +251,56 @@ function new()
 	local function seek(activeActs,relativeTime)
 		local idx = 1
 		
-		while(idx <= #activeActs) do
+		print("---------------")
+		print("SEEK BEGIN")
+		print(relativeTime)
+		print("---------------")
+		for i,val in pairs(activeActs) do
+			print("seekTime=",toSeekAtBeginTime - userActionList[val].actionTime + relativeTime)
+			print("actionTime=",userActionList[val].actionTime)
+			print("channel=",userActionList[val].channel)
+			print("actType=",userActionList[val].actType)
+			print("volume=",userActionList[val].volume)
+			print("category=",userActionList[val].category)
+			print("channelActiveTime=",userActionList[val].channelActiveTime)
+			print("---------------")
+		end
+		print("SEEK END")
+		
+		while(idx <= gl.currentNumSamples) do
+			--if (userActionList[activeActs[idx]].category > 3) then
+			--	audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
+			--		{channel = userActionList[activeActs[idx]].channel})
+					
+			--	audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
+			--			userActionList[activeActs[idx]].channelActiveTime,
+			--		{channel = userActionList[activeActs[idx]].channel})
+					
+			--	audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
+			--else
+			--	gl.mySeek(toSeekAtBeginTime - userActionList[activeActs[idx]].actionTime + relativeTime,
+			gl.mySeek(toSeekAtBeginTime + relativeTime,gl.currentKit[idx][1],idx,-1,true)
+			if (activeActs[idx]) then	
+				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
+			end
+			idx = idx + 1
+		end
+		
+		idx = 1
+		while (idx <= #activeActs) do
 			if (userActionList[activeActs[idx]].category > 3) then
 				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
 					{channel = userActionList[activeActs[idx]].channel})
+					
 				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
 						userActionList[activeActs[idx]].channelActiveTime,
 					{channel = userActionList[activeActs[idx]].channel})
-					audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
-			else
-				--audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
-				--	{channel = userActionList[activeActs[idx]].channel, loops = -1})
-				--gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime 
-				--			+ userActionList[activeActs[idx]].channelActiveTime,
-				--	gl.currentKit[userActionList[activeActs[idx]].channel][1],
-				--		userActionList[activeActs[idx]].channel,
-				--			-1)
-				--audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
-				--		userActionList[activeActs[idx]].channelActiveTime,
-				--	{channel = userActionList[activeActs[idx]].channel})
-				print(relativeTime)
-				gl.mySeek(toSeekAtBeginTime + relativeTime,
-					gl.currentKit[userActionList[activeActs[idx]].channel][1],
-						userActionList[activeActs[idx]].channel,
-							-1)
 					
 				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
 			end
 			idx = idx + 1
 		end
+		
 	end
 	
 	local function onSeek(event)
@@ -288,14 +322,16 @@ function new()
 
 		if (playPressCounter == 0) then 
 			openUserActList()		
-			prepareToReplay()
+			
 			firstTimePlayPressed = system.getTimer()	
 			prevMeasure	= firstTimePlayPressed
 			relEndTrackTime = userActionList[#userActionList].actionTime + 100
 			relPlayTime = 0
 			makePreRecordActions()
 		end
-
+		
+		--prepareToReplay()
+		
 		playPressCounter = 1
 
 		relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
@@ -401,6 +437,10 @@ end
 	bindListeners()	
 	
 	playerAppearTime = system.getTimer()
+	
+	--openUserActList()
+	
+	--prepareToReplay()
 	
 	return localGroup
 end

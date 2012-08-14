@@ -9,7 +9,7 @@ currentNumSamples = nil
 currentNumFX = nil
 currentNumVoices = nil
 
-function mySeek(time,sound,chan,loop)
+function mySeek(time,sound,chan,loop,debug)
 	if (loop == nil) then
 		loop = 0
 	end
@@ -20,13 +20,29 @@ function mySeek(time,sound,chan,loop)
 	end
 	
 	if (time <= audio.getDuration(sound)) then
+		if (debug ~= nil) then
+			if (debug == true) then
+				print("---------------")
+				print("time=",audio.getDuration(sound) - (time % audio.getDuration(sound)))
+				print("duration=",audio.getDuration(sound))
+				print("---------------")
+			end
+		end
 		audio.play(sound,{channel = chan,loops = loop})
-		audio.seek(time,{channel = chan})
+		audio.seek(audio.getDuration(sound) - (time % audio.getDuration(sound)),{channel = chan})
 	end
 	
 	if (time > audio.getDuration(sound)) then
-		audio.play(sound,{channel = chan})
-		audio.seek(time % audio.getDuration(sound),{channel = chan,loops = loop}) 
+		if (debug ~= nil) then
+			if (debug == true) then
+				print("---------------")
+				print("time=",time % audio.getDuration(sound))
+				print("duration=",audio.getDuration(sound))
+				print("---------------")
+			end
+		end
+		audio.play(sound,{channel = chan,loops = loop})
+		audio.seek(audio.getDuration(sound) - (time % audio.getDuration(sound)),{channel = chan}) 
 	end
 end
 
