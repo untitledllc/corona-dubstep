@@ -141,19 +141,17 @@ function new()
 	end
 	
 	local function makeAction(index,delta) 
-		print(index)
 		local track = userActionList[index].channel
 		local playStop = userActionList[index].actType
 		local actTime = userActionList[index].actionTime
 		local category = userActionList[index].category
-
+		
 		if (track == -1) then 
 			audio.stop(0)
 			return true
 		end
 		
 		if (playStop == 1 and category > 3) then
-			print("here")
 			audio.play(gl.currentKit[track][1],{channel = track})
 		end
 		
@@ -248,7 +246,6 @@ function new()
 						userActionList[activeActs[idx]].channelActiveTime,
 					{channel = userActionList[activeActs[idx]].channel})
 					audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
-				print("here")
 			else
 				--audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
 				--	{channel = userActionList[activeActs[idx]].channel, loops = -1})

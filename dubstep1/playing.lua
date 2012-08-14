@@ -244,7 +244,20 @@ local function playDrums(group,index,trackCounters)
     trackCounters[index] = trackCounters[index] + 1
 end
 
-local function playFX(group,kit,index)
+local function playFX(group,kit,index)   
+	local function closeActiveChannel(event)
+    	activeChannels[index] = {-1}
+    	
+    	if (recording.isRecStarted() == true) then
+    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    							index,0,audio.getVolume({channel = index}),4,0)
+   		end
+    end
+    
+	if (audio.isChannelPlaying(index)) then
+		closeActiveChannel(nil)
+	end
+	
 	audio.stop(index)
     audio.play(kit[index][1],{channel = index})
     group[index].alpha = 1
@@ -256,16 +269,7 @@ local function playFX(group,kit,index)
     activeChannel.category = 4
     activeChannel.volume = audio.getVolume({channel = index})
     activeChannels[index] = activeChannel
-    
-    local function closeActiveChannel(event)
-    	activeChannels[index] = {-1}
-    	
-    	if (recording.isRecStarted() == true) then
-    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),4,0)
-   		end
-    end
-    
+     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
     							index,1,audio.getVolume({channel = index}),4,0)
@@ -275,6 +279,19 @@ local function playFX(group,kit,index)
 end
 
 local function playVoice(group,kit,index)
+	local function closeActiveChannel(event)
+    	activeChannels[index] = {-1}
+    	
+    	if (recording.isRecStarted() == true) then
+    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    							index,0,audio.getVolume({channel = index}),5,0)
+   		end
+    end
+    
+	if (audio.isChannelPlaying(index)) then
+		closeActiveChannel(nil)
+	end
+	
 	audio.stop(index)
     audio.play(kit[index][1],{channel = index})
     group[index].alpha = 1
@@ -287,15 +304,6 @@ local function playVoice(group,kit,index)
     activeChannel.category = 5
     activeChannel.volume = audio.getVolume({channel = index})
     activeChannels[index] = activeChannel  
-    
-    local function closeActiveChannel(event)
-    	activeChannels[index] = {-1}
-    	
-    	if (recording.isRecStarted() == true) then
-    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),5,0)
-   		end
-    end
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
