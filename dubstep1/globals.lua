@@ -15,18 +15,18 @@ function mySeek(time,sound,chan,loop)
 	end
 	
 	if (time <= 0) then
-		audio.play(sound,{channel = chan})
+		audio.play(sound,{channel = chan,loops = loop})
 		return
 	end
 	
 	if (time <= audio.getDuration(sound)) then
-		audio.play(sound,{channel = chan})
+		audio.play(sound,{channel = chan,loops = loop})
 		audio.seek(time,{channel = chan})
 	end
 	
 	if (time > audio.getDuration(sound)) then
 		audio.play(sound,{channel = chan})
-		audio.seek(time % audio.getDuration(sound),{channel = chan}) 
+		audio.seek(time % audio.getDuration(sound),{channel = chan,loops = loop}) 
 	end
 end
 

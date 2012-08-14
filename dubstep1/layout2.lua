@@ -22,10 +22,8 @@ function new()
 	gl.btns = gl.drawLayoutBtns()
 	
 	local numSamples = 15
-	local numFX = 3
+	local numFX = 5
 	local numVoices = 5
-	
-	print("here")
 	
 	gl.currentNumSamples = numSamples
 	gl.currentNumFX = numFX
@@ -33,7 +31,7 @@ function new()
 	
 	playModule.firstTimePlayPressed = nil
 	
-	local playParams = {true,true,false,true,false,6,5,4,3,5}
+	local playParams = {true,true,false,false,false,6,5,4,5,5}
 	
 	local kitAddress = "T"
 
@@ -160,6 +158,16 @@ function new()
 			playModule.play(localGroup,sampleKit,trackCounters,23,numSamples,numFX,numVoices,playParams)
     	end
 	end
+	local function playSound24 (event)
+    	if (event.phase == "ended") then
+			playModule.play(localGroup,sampleKit,trackCounters,24,numSamples,numFX,numVoices,playParams)
+    	end
+	end
+	local function playSound25 (event)
+    	if (event.phase == "ended") then
+			playModule.play(localGroup,sampleKit,trackCounters,25,numSamples,numFX,numVoices,playParams)
+    	end
+	end
 	
 	local function bindEventListeners()
 		local handlerTable = {playSound1,playSound2,playSound3,
@@ -168,7 +176,8 @@ function new()
 					playSound12,playSound13,playSound14,
 					playSound15,playSound16,playSound17,
 					playSound18,playSound19,playSound20,
-					playSound21,playSound22,playSound23}
+					playSound21,playSound22,playSound23,
+					playSound24,playSound25}
 		local idx = 1
 		while(idx <= localGroup.numChildren) do
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
@@ -205,19 +214,20 @@ function new()
 		btn21 = display.newRoundedRect(1,1,w/10,h/10,2)
 		btn22 = display.newRoundedRect(1,1,w/10,h/10,2)
 		btn23 = display.newRoundedRect(1,1,w/10,h/10,2)
-		
+		btn24 = display.newRoundedRect(1,1,w/10,h/10,2)
+		btn25 = display.newRoundedRect(1,1,w/10,h/10,2)
 		
 		btn1.x,btn2.x,btn3.x,btn4.x,btn5.x,btn6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
 		btn7.x,btn8.x,btn9.x,btn10.x,btn11.x = w/6,w/3,w/2,2*w/3,5*w/6
 		btn12.x,btn13.x,btn14.x,btn15.x= w/5,2*w/5,3*w/5,4*w/5
-		btn16.x,btn17.x,btn18.x = w/4,w/2,3*w/4
-		btn19.x,btn20.x,btn21.x,btn22.x,btn23.x = w/6,w/3,w/2,2*w/3,5*w/6
+		btn16.x,btn17.x,btn18.x,btn19.x,btn20.x = w/6,w/3,w/2,2*w/3,5*w/6
+		btn21.x,btn22.x,btn23.x,btn24.x,btn25.x = w/6,w/3,w/2,2*w/3,5*w/6
 		
 		btn1.y,btn2.y,btn3.y,btn4.y,btn5.y,btn6.y = h/7,h/7,h/7,h/7,h/7,h/7
 		btn7.y,btn8.y,btn9.y,btn10.y,btn11.y = 2*h/7,2*h/7,2*h/7,2*h/7,2*h/7
 		btn12.y,btn13.y,btn14.y,btn15.y = 3*h/7,3*h/7,3*h/7,3*h/7
-		btn16.y,btn17.y,btn18.y = 4*h/7,4*h/7,4*h/7
-		btn19.y,btn20.y,btn21.y,btn22.y,btn23.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
+		btn16.y,btn17.y,btn18.y,btn19.y,btn20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
+		btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
 		
 		btn1:setFillColor(255,0,0)
 		btn2:setFillColor(255,0,0)
@@ -236,13 +246,15 @@ function new()
 		btn15:setFillColor(255,0,255)
 		btn16:setFillColor(0,255,255)
 		btn17:setFillColor(0,255,255)
-		btn18:setFillColor(0,255,255)
-		btn19:setFillColor(0,255,0)
-		btn20:setFillColor(0,255,0)
+		btn18:setFillColor(0,255,255)	
+		btn19:setFillColor(0,255,255)
+		btn20:setFillColor(0,255,255)
 		btn21:setFillColor(0,255,0)
 		btn22:setFillColor(0,255,0)
 		btn23:setFillColor(0,255,0)
-	
+		btn24:setFillColor(0,255,0)
+		btn25:setFillColor(0,255,0)
+
 		btn1.alpha = 0.5
 		btn2.alpha = 0.5
 		btn3.alpha = 0.5
@@ -266,6 +278,8 @@ function new()
 		btn21.alpha = 0.5
 		btn22.alpha = 0.5
 		btn23.alpha = 0.5
+		btn24.alpha = 0.5
+		btn25.alpha = 0.5
 		
 		localGroup:insert(btn1)
 		localGroup:insert(btn2)
@@ -290,6 +304,8 @@ function new()
 		localGroup:insert(btn21)
 		localGroup:insert(btn22)
 		localGroup:insert(btn23)
+		localGroup:insert(btn24)
+		localGroup:insert(btn25)
 		
 		bindEventListeners()
 	end

@@ -14,6 +14,8 @@ local layout = require(gl.currentLayout)
 local isRecSwitchedOn = false
 
 local function printUserActList()
+	print("Start rec =",recPressTime)
+
 	for idx,val in pairs(userActionList) do
 		print("actionTime = ",val["actionTime"])
 		print("Channel = ",val["channel"])
@@ -28,7 +30,7 @@ end
 
 local function completeUserActList()
 	local idx = 1
-	addAction(endRecordingTime - recPressTime,-1,0,0,-1,-1)
+	addAction(endRecordingTime - recPressTime,-1,0,0,-1,0)
 	idx = idx + 1
 end
 
@@ -46,6 +48,9 @@ local function saveUserActList()
     if (not f) then
         print("not ok")
     end
+    
+    f:write(tostring(recPressTime).." ")
+    
     for idx,val in pairs(userActionList) do
     	f:write(tostring(val["actionTime"]).." ")
 		f:write(tostring(val["channel"]).." ")

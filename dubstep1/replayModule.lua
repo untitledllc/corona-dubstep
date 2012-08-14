@@ -4,6 +4,8 @@ local userActionList = {}
 
 local actionSize = 6
 
+local toSeekAtBeginTime = nil
+
 local function printUserActList()
 	for idx,val in pairs(userActionList) do
 		print("actionTime = ",val["actionTime"])
@@ -39,6 +41,9 @@ local function openUserActList()
 	local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
     local f = io.open(path,"r")
     local act = 0
+    
+    toSeekAtBeginTime = f:read("*number")
+    
     while (act) do
     	act = readAction(f)
     	userActionList[#userActionList+1] = act
@@ -77,7 +82,7 @@ function new()
 	local function prepareToReplay()
 		idx = 1
 		while (idx <= gl.currentNumSamples) do
-			audio.play(gl.currentKit[idx][1],{channel = idx,loops = -1})
+			gl.mySeek(toSeekAtBeginTime,gl.currentKit[idx][1],idx,-1)
 			audio.setVolume(0,{channel = idx})
 			idx = idx + 1
 		end
@@ -136,6 +141,7 @@ function new()
 	end
 	
 	local function makeAction(index,delta) 
+		print(index)
 		local track = userActionList[index].channel
 		local playStop = userActionList[index].actType
 		local actTime = userActionList[index].actionTime
@@ -147,6 +153,7 @@ function new()
 		end
 		
 		if (playStop == 1 and category > 3) then
+			print("here")
 			audio.play(gl.currentKit[track][1],{channel = track})
 		end
 		
@@ -161,8 +168,6 @@ function new()
 		if (playStop == 0 and category <= 3) then
 			audio.setVolume(0,{channel = track})
 		end
-		
-		print(index)
 		
 		return false
 	end
@@ -238,23 +243,28 @@ function new()
 		while(idx <= #activeActs) do
 			if (userActionList[activeActs[idx]].category > 3) then
 				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
-					{channel = userActionList[activeActs[idx]].channel, loops = -1})
+					{channel = userActionList[activeActs[idx]].channel})
 				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
 						userActionList[activeActs[idx]].channelActiveTime,
 					{channel = userActionList[activeActs[idx]].channel})
 					audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
 				print("here")
 			else
-				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
-					{channel = userActionList[activeActs[idx]].channel, loops = -1})
-				gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime 
-							+ userActionList[activeActs[idx]].channelActiveTime,
-					gl.currentKit[userActionList[activeActs[idx]].channel][1],
-						userActionList[activeActs[idx]].channel,
-							-1)
+				--audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
+				--	{channel = userActionList[activeActs[idx]].channel, loops = -1})
+				--gl.mySeek(relativeTime - userActionList[activeActs[idx]].actionTime 
+				--			+ userActionList[activeActs[idx]].channelActiveTime,
+				--	gl.currentKit[userActionList[activeActs[idx]].channel][1],
+				--		userActionList[activeActs[idx]].channel,
+				--			-1)
 				--audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
 				--		userActionList[activeActs[idx]].channelActiveTime,
 				--	{channel = userActionList[activeActs[idx]].channel})
+				print(relativeTime)
+				gl.mySeek(toSeekAtBeginTime + relativeTime,
+					gl.currentKit[userActionList[activeActs[idx]].channel][1],
+						userActionList[activeActs[idx]].channel,
+							-1)
 					
 				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
 			end
@@ -265,8 +275,14 @@ function new()
 	local function onSeek(event)
 	if (event.phase == "ended") then
 		local idx = 1
-		while (idx <= gl.currentNumSamples + gl.currentNumFX + gl.currentNumVoices) do
+		while (idx <= gl.currentNumSamples) do
 			audio.setVolume(0,{channel = idx})
+			idx = idx + 1
+		end
+		idx = gl.currentNumSamples + 1
+		
+		while (idx <= gl.currentNumFX + gl.currentNumVoices) do
+			audio.stop(idx)
 			idx = idx + 1
 		end
 		
@@ -346,6 +362,7 @@ end
 	
 	local function exitPressed(event)
 		if (event.phase == "ended") then
+			Runtime:removeEventListener("enterFrame",play)
 			stopPressed(nil)
 			director:changeScene(gl.currentLayout)
 		end

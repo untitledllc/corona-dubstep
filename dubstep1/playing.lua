@@ -207,7 +207,7 @@ local function playMelody(group,index,trackCounters)
     
     if (recording.isRecStarted() == true) then
     	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),3,system.getTimer() - curLayout.getLayoutAppearTime())
+    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
    	end
     
     trackCounters[index] = trackCounters[index] + 1
@@ -326,22 +326,10 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 		playFX(group,kit,index)
 	end
 	
-	if (index >= partSumms[4]) then
+	if (index > partSumms[4]) then
 		shutUpVoices(group,playParams[5],numSamples,numFX,numVoices)
 		playVoice(group,kit,index)
 	end
-	
-	--[[for idx,val in pairs(activeChannels) do
-		for i,v in pairs(val) do
-			if (val[1] ~= -1) then
-				print(v)
-			end
-		end
-		if (val[1] ~= -1) then
-			print("___________________")
-		end
-	end
-	print("\nEND TRACK\n")--]]
 end
 
 function initSounds(kitAddress,numSamples,numFX,numVoices)
