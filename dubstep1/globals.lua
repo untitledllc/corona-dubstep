@@ -19,31 +19,17 @@ function mySeek(time,sound,chan,loop,debug)
 		return
 	end
 	
-	if (time <= audio.getDuration(sound)) then
-		if (debug ~= nil) then
-			if (debug == true) then
-				print("---------------")
-				print("time=",audio.getDuration(sound) - (time % audio.getDuration(sound)))
-				print("duration=",audio.getDuration(sound))
-				print("---------------")
-			end
+	if (debug ~= nil) then
+		if (debug == true) then
+			print("---------------")
+			print("time=",audio.getDuration(sound) - (time % audio.getDuration(sound)))
+			print("duration=",audio.getDuration(sound))
+			print("---------------")
 		end
-		audio.play(sound,{channel = chan,loops = loop})
-		audio.seek(audio.getDuration(sound) - (time % audio.getDuration(sound)),{channel = chan})
 	end
-	
-	if (time > audio.getDuration(sound)) then
-		if (debug ~= nil) then
-			if (debug == true) then
-				print("---------------")
-				print("time=",time % audio.getDuration(sound))
-				print("duration=",audio.getDuration(sound))
-				print("---------------")
-			end
-		end
-		audio.play(sound,{channel = chan,loops = loop})
-		audio.seek(audio.getDuration(sound) - (time % audio.getDuration(sound)),{channel = chan}) 
-	end
+
+	audio.play(sound,{channel = chan,loops = loop})
+	audio.seek(audio.getDuration(sound) - (time % audio.getDuration(sound)),{channel = chan}) 
 end
 
 function drawLayoutBtns()

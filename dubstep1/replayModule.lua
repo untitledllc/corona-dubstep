@@ -142,7 +142,7 @@ function new()
 	
 	local function makeAction(index) 
 	
-		print("---------------")
+		--[[print("---------------")
 		print("NEW ACTION")
 		print("---------------")
 		print(relPlayTime)
@@ -152,7 +152,7 @@ function new()
 		print("actType=",userActionList[index].actType)
 		print("volume=",userActionList[index].volume)
 		print("category=",userActionList[index].category)
-		print("channelActiveTime=",userActionList[index].channelActiveTime)
+		print("channelActiveTime=",userActionList[index].channelActiveTime)--]]
 
 		local track = userActionList[index].channel
 		local playStop = userActionList[index].actType
@@ -251,7 +251,7 @@ function new()
 	local function seek(activeActs,relativeTime)
 		local idx = 1
 		
-		print("---------------")
+		--[[print("---------------")
 		print("SEEK BEGIN")
 		print(relativeTime)
 		print("---------------")
@@ -265,21 +265,10 @@ function new()
 			print("channelActiveTime=",userActionList[val].channelActiveTime)
 			print("---------------")
 		end
-		print("SEEK END")
+		print("SEEK END")--]]
 		
 		while(idx <= gl.currentNumSamples) do
-			--if (userActionList[activeActs[idx]].category > 3) then
-			--	audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
-			--		{channel = userActionList[activeActs[idx]].channel})
-					
-			--	audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
-			--			userActionList[activeActs[idx]].channelActiveTime,
-			--		{channel = userActionList[activeActs[idx]].channel})
-					
-			--	audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
-			--else
-			--	gl.mySeek(toSeekAtBeginTime - userActionList[activeActs[idx]].actionTime + relativeTime,
-			gl.mySeek(toSeekAtBeginTime + relativeTime,gl.currentKit[idx][1],idx,-1,true)
+			gl.mySeek(toSeekAtBeginTime + relativeTime,gl.currentKit[idx][1],idx,-1)
 			if (activeActs[idx]) then	
 				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
 			end
@@ -296,11 +285,11 @@ function new()
 						userActionList[activeActs[idx]].channelActiveTime,
 					{channel = userActionList[activeActs[idx]].channel})
 					
-				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
+				audio.setVolume(userActionList[activeActs[idx]].volume,
+						{channel = userActionList[activeActs[idx]].channel})
 			end
 			idx = idx + 1
 		end
-		
 	end
 	
 	local function onSeek(event)
@@ -312,7 +301,8 @@ function new()
 		end
 		idx = gl.currentNumSamples + 1
 		
-		while (idx <= gl.currentNumFX + gl.currentNumVoices) do
+		while (idx <= gl.currentNumSamples + gl.currentNumFX + gl.currentNumVoices) do
+			print("here")
 			audio.stop(idx)
 			idx = idx + 1
 		end
@@ -329,8 +319,6 @@ function new()
 			relPlayTime = 0
 			makePreRecordActions()
 		end
-		
-		--prepareToReplay()
 		
 		playPressCounter = 1
 
