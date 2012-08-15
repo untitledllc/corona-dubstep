@@ -4,12 +4,21 @@ firstTimePlayPressed = nil
 
 local gl = require("globals") 
 local recording = require("recording")
+local volumePanel = require("volumeRegulator")
 local curLayout = require(gl.currentLayout)
 local numSampleTypes = 5
 
 local partSumms = {}
 
 local activeChannels = {}
+
+function getPartSumms()
+	return partSumms
+end
+
+function getActiveChannels()
+	return activeChannels
+end
 
 function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 	gl.currentKit = sampleKit
@@ -161,7 +170,13 @@ local function playIntro(group,index,trackCounters)
     else
     	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
     	
-       	audio.setVolume(1,{channel = index})    
+       --	audio.setVolume(1,{channel = index})    
+       	
+       	if (volumePanel.scrolls[1] ~= nil) then	
+        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[1]),{channel = index})  	
+    	else	
+    		audio.setVolume(0.5,{channel = index})  
+        end 
         group[index].alpha = 1
         
         activeChannel.channel = index
@@ -193,7 +208,15 @@ local function playMelody(group,index,trackCounters)
     else
     	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
     
-       	audio.setVolume(1,{channel = index})    
+       --	audio.setVolume(1,{channel = index})
+       	
+		if (volumePanel.scrolls[2] ~= nil) then	
+        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[2]),{channel = index})  	
+    	else	
+    		audio.setVolume(0.5,{channel = index})  
+        end 
+        
+           
         group[index].alpha = 1
         
     	activeChannel.channel = index
@@ -225,7 +248,12 @@ local function playDrums(group,index,trackCounters)
     else
     	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
     
-       	audio.setVolume(1,{channel = index})    
+       	audio.setVolume(1,{channel = index}) 
+       	if (volumePanel.scrolls[3] ~= nil) then	
+        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[3]),{channel = index})  	
+    	else	
+    		audio.setVolume(0.5,{channel = index})  
+        end    
         group[index].alpha = 1
         
         activeChannel.channel = index
@@ -260,6 +288,13 @@ local function playFX(group,kit,index)
 	
 	audio.stop(index)
     audio.play(kit[index][1],{channel = index})
+    
+    if (volumePanel.scrolls[4] ~= nil) then	
+        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = index})  	
+    	else	
+    		audio.setVolume(0.5,{channel = index})  
+    end 
+    
     group[index].alpha = 1
     transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
     
@@ -294,6 +329,13 @@ local function playVoice(group,kit,index)
 	
 	audio.stop(index)
     audio.play(kit[index][1],{channel = index})
+    
+    if (volumePanel.scrolls[5] ~= nil) then	
+        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = index})  	
+    	else	
+    		audio.setVolume(0.5,{channel = index})  
+    end 
+    
     group[index].alpha = 1
     transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
     

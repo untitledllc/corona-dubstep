@@ -9,7 +9,7 @@ currentNumSamples = nil
 currentNumFX = nil
 currentNumVoices = nil
 
-function mySeek(time,sound,chan,loop,debug)
+function mySeek(time,sound,chan,loop)
 	if (loop == nil) then
 		loop = 0
 	end
@@ -17,15 +17,6 @@ function mySeek(time,sound,chan,loop,debug)
 	if (time <= 0) then
 		audio.play(sound,{channel = chan,loops = loop})
 		return
-	end
-	
-	if (debug ~= nil) then
-		if (debug == true) then
-			print("---------------")
-			print("time=",audio.getDuration(sound) - (time % audio.getDuration(sound)))
-			print("duration=",audio.getDuration(sound))
-			print("---------------")
-		end
 	end
 
 	audio.play(sound,{channel = chan,loops = loop})
@@ -38,6 +29,8 @@ function drawLayoutBtns()
 	
 	recording = require("recording")
 	replaying = require("replayModule")
+	volumePanel = require("volumeRegulator")
+	volumePanel.regulatorPanel = nil
 	
 	local btns = {}
 	
@@ -45,6 +38,7 @@ function drawLayoutBtns()
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
 	recBtn = display.newRoundedRect(1,1,w/8,h/8,10)
 	repBtn = display.newRoundedRect(1,1,w/10,h/15,4)
+	volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
 	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
 	loading.x,loading.y = w/2,h/2
@@ -64,10 +58,15 @@ function drawLayoutBtns()
 	repBtn:setFillColor(255,140,140)
 	repBtn.alpha = 0.5
 	
+	volumeBtn.x,volumeBtn.y = w/16,h/16
+	volumeBtn:setFillColor(140,255,140)
+	volumeBtn.alpha = 0.5
+	
 	btn1.scene = "layout1"
 	btn2.scene = "layout2"
 	recBtn.scene = "recording"
 	repBtn.scene = "replayModule"
+	volumeBtn.scene = "volumeRegulator"
 	
 	function changeScene(event)
 		audio.stop()
@@ -81,10 +80,12 @@ function drawLayoutBtns()
 	btn2:addEventListener("touch",changeScene)
 	recBtn:addEventListener("touch",recording.startRecording)
 	repBtn:addEventListener("touch",changeScene)
+	volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
 	
 	btns[1] = btn1
 	btns[2] = btn2
 	btns[3] = recBtn
 	btns[4] = repBtn
+	btns[5] = volumeBtn
 	return btns
 end

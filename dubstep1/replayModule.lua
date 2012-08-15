@@ -142,7 +142,7 @@ function new()
 	
 	local function makeAction(index) 
 	
-		--[[print("---------------")
+		print("---------------")
 		print("NEW ACTION")
 		print("---------------")
 		print(relPlayTime)
@@ -152,7 +152,7 @@ function new()
 		print("actType=",userActionList[index].actType)
 		print("volume=",userActionList[index].volume)
 		print("category=",userActionList[index].category)
-		print("channelActiveTime=",userActionList[index].channelActiveTime)--]]
+		print("channelActiveTime=",userActionList[index].channelActiveTime)
 
 		local track = userActionList[index].channel
 		local playStop = userActionList[index].actType
@@ -202,6 +202,7 @@ function new()
 				prevMeasure = currentMeasure
 			end
 			relPlayTime = relPlayTime + deltaT
+			print(relPlayTime)
 		end
 	end
 	
@@ -270,7 +271,8 @@ function new()
 		while(idx <= gl.currentNumSamples) do
 			gl.mySeek(toSeekAtBeginTime + relativeTime,gl.currentKit[idx][1],idx,-1)
 			if (activeActs[idx]) then	
-				audio.setVolume(1,{channel = userActionList[activeActs[idx]].channel})
+				audio.setVolume(userActionList[activeActs[idx]].volume,
+						{channel = userActionList[activeActs[idx]].channel})
 			end
 			idx = idx + 1
 		end
@@ -302,13 +304,18 @@ function new()
 		idx = gl.currentNumSamples + 1
 		
 		while (idx <= gl.currentNumSamples + gl.currentNumFX + gl.currentNumVoices) do
-			print("here")
 			audio.stop(idx)
 			idx = idx + 1
 		end
 		
 		curPlayPos.x = event.x
 		txtPlay.text = "Pause"
+
+		if (isPaused == true) then
+			audio.resume()
+		end
+
+		isPaused = false
 
 		if (playPressCounter == 0) then 
 			openUserActList()		
@@ -354,6 +361,7 @@ end
 				else
 					audio.resume()
 					isPaused = false
+					prevMeasure = system.getTimer()
 				end 
 				
 			if (scrollTransition) then
@@ -383,6 +391,8 @@ end
 	
 	local function exitPressed(event)
 		if (event.phase == "ended") then
+			local vol = require("volumeRegulator")
+			vol.scrolls = {}
 			Runtime:removeEventListener("enterFrame",play)
 			stopPressed(nil)
 			director:changeScene(gl.currentLayout)
