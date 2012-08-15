@@ -168,9 +168,7 @@ local function playIntro(group,index,trackCounters)
         
         activeChannels[index] = {-1}
     else
-    	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-    	
-       --	audio.setVolume(1,{channel = index})    
+    	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}  
        	
        	if (volumePanel.scrolls[1] ~= nil) then	
         	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[1]),{channel = index})  	
@@ -208,8 +206,6 @@ local function playMelody(group,index,trackCounters)
     else
     	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
     
-       --	audio.setVolume(1,{channel = index})
-       	
 		if (volumePanel.scrolls[2] ~= nil) then	
         	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[2]),{channel = index})  	
     	else	

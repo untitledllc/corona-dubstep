@@ -1,55 +1,6 @@
 module (...,package.seeall)
 
-local userActionList = {}
 
-local actionSize = 6
-
-local toSeekAtBeginTime = nil
-
-local function printUserActList()
-	for idx,val in pairs(userActionList) do
-		print("actionTime = ",val["actionTime"])
-		print("Channel = ",val["channel"])
-		print("actionType = ",val["actType"])
-		print("Volume = ",val["volume"])
-		print("Category = ",val["category"])
-		print("channelActiveTime = ",val["channelActiveTime"])
-		print("\n")
-	end
-	print("-----------------------------------------------")
-end
-
-local function readAction(file)
-	local action = {}
-
-	action["actionTime"] = file:read("*number")
-	
-	if (action["actionTime"] == nil) then
-		return nil
-	end
-	
-	action["channel"] = file:read("*number")
-	action["actType"] = file:read("*number")
-	action["volume"] = file:read("*number")
-	action["category"] = file:read("*number")
-	action["channelActiveTime"] = file:read("*number")
-
-	return action
-end
-
-local function openUserActList()
-	local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
-    local f = io.open(path,"r")
-    local act = 0
-    
-    toSeekAtBeginTime = f:read("*number")
-    
-    while (act) do
-    	act = readAction(f)
-    	userActionList[#userActionList+1] = act
-    end
-    f:close()
-end
 
 function new()
 	local gl = require("globals")
@@ -78,6 +29,63 @@ function new()
 	local isPaused = false
 	
 	local scrollTransition = nil
+	local userActionList = {}
+
+	local actionSize = 6
+
+	local toSeekAtBeginTime = nil
+
+	local function printUserActList()
+		for idx,val in pairs(userActionList) do
+			print("actionTime = ",val["actionTime"])
+			print("Channel = ",val["channel"])
+			print("actionType = ",val["actType"])
+			print("Volume = ",val["volume"])
+			print("Category = ",val["category"])
+			print("channelActiveTime = ",val["channelActiveTime"])
+			print("\n")
+		end
+		print("-----------------------------------------------")
+	end
+
+	local function readAction(file)
+		local action = {}
+
+		action["actionTime"] = file:read("*number")
+	
+		if (action["actionTime"] == nil) then
+			return nil
+		end
+	
+		action["channel"] = file:read("*number")
+		action["actType"] = file:read("*number")
+		action["volume"] = file:read("*number")
+		action["category"] = file:read("*number")
+		action["channelActiveTime"] = file:read("*number")
+
+		return action
+	end
+
+	local function openUserActList()
+		local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
+  	  local f = io.open(path,"r")
+    
+   		if (not f) then
+   	 		local errorTxt = display.newText("No records found", 0, 0, native.systemFont, 32)
+    		errorTxt.x,errorTxt.y = w/2,h/2
+    		return
+   		end
+    
+    	local act = 0
+    
+    	toSeekAtBeginTime = f:read("*number")
+    
+    	while (act) do
+    		act = readAction(f)
+    		userActionList[#userActionList+1] = act
+    	end
+    	f:close()
+	end
 	
 	local function prepareToReplay()
 		idx = 1

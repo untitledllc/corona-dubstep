@@ -10,27 +10,25 @@ function new()
 	local localGroup = display.newGroup()
 		
 	local gl = require("globals")	
+		
+	local numSamples = 15
+	local numFX = 5
+	local numVoices = 5
 	
-
 	gl.currentLayout = "layout2"	
 	gl.currentNumSamples = numSamples
 	gl.currentNumFX = numFX
 	gl.currentNumVoices = numVoices
 	
 	local playModule = require("playing")
-	playModule.layoutAppearTime = system.getTimer()
+	layoutAppearTime = system.getTimer()
 	local kitAddress = "T"
 	
 	local w = gl.w
 	local h = gl.h
 	
 	gl.btns = gl.drawLayoutBtns()
-	
-	local numSamples = 15
-	local numFX = 5
-	local numVoices = 5
 
-	
 	playModule.firstTimePlayPressed = nil
 	
 	local playParams = {true,true,false,false,false,6,5,4,5,5}
