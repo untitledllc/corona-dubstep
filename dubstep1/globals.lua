@@ -10,12 +10,10 @@ currentNumFX = nil
 currentNumVoices = nil
 mainGroup = nil
 localGroup = nil
+isRecordingTimeRestricted = true
 
 function changeBackGround(object) 
 	object.isVisible = true
-	if (object == nil) then
-		print("PIZDEC")
-	end
 	mainGroup:insert(1,object)
 	mainGroup:insert(2,localGroup)
 end

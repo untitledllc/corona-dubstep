@@ -26,8 +26,6 @@ function new()
 	local mainGroup = display.newGroup()
 	local localGroup = display.newGroup()
 	
-	print(gl.mainGroup)
-	
 	local numSamples = 15
 	local numFX = 5
 	local numVoices = 5

@@ -17,6 +17,7 @@ local timer3 = nil
 local timer4 = nil
 local timer5 = nil
 local timer6 = nil
+local timer7 = nil
 
 local isRecSwitchedOn = false
 
@@ -127,30 +128,10 @@ local function change1_2(event)
 	timer2 = timer.performWithDelay(3000,change2_3)
 end
 
+
+
 function startRecording(event)
-	if (event.phase == "ended") then
-		if (recPressCounter % 2 == 0) then
-			recPressTime = system.getTimer() - layout.getLayoutAppearTime()
-			calcSeekTimeInActiveChannels(pl.getActiveChannels())
-			event.target.alpha = 1
-			isRecSwitchedOn = true
-			
-			gl.mainGroup[2][3].alpha = 0.5
-			gl.mainGroup[2][9].alpha = 0.5
-			gl.mainGroup[2][12].alpha = 0.5
-			
-			gl.mainGroup[2][3].isVisible = false
-			gl.mainGroup[2][9].isVisible = false
-			gl.mainGroup[2][12].isVisible = false
-			   
-			audio.setVolume(0,{channel = 3})
-			audio.setVolume(0,{channel = 9})
-			audio.setVolume(0,{channel = 12})
-			
-			timer1 = timer.performWithDelay(3000,change1_2)
-		
-		else
-			
+	local function stopRecording(e)
 			if (timer1 ~= nil) then
 				timer.cancel(timer1)
 			end
@@ -185,6 +166,34 @@ function startRecording(event)
 			event.target.alpha = 0.5
 			printUserActList()
 			userActionList = {}
+			recPressCounter = 0
+	end
+	
+	if (event.phase == "ended") then
+		if (recPressCounter % 2 == 0) then
+			recPressTime = system.getTimer() - layout.getLayoutAppearTime()
+			calcSeekTimeInActiveChannels(pl.getActiveChannels())
+			event.target.alpha = 1
+			isRecSwitchedOn = true
+			
+			gl.mainGroup[2][3].alpha = 0.5
+			gl.mainGroup[2][9].alpha = 0.5
+			gl.mainGroup[2][12].alpha = 0.5
+			
+			gl.mainGroup[2][3].isVisible = false
+			gl.mainGroup[2][9].isVisible = false
+			gl.mainGroup[2][12].isVisible = false
+			   
+			audio.setVolume(0,{channel = 3})
+			audio.setVolume(0,{channel = 9})
+			audio.setVolume(0,{channel = 12})
+			
+			timer1 = timer.performWithDelay(3000,change1_2)
+			if (gl.isRecordingTimeRestricted == true) then
+				timer7 = timer.performWithDelay(15000,stopRecording)
+			end
+		else
+			stopRecording(nil)
 		end
 		recPressCounter = recPressCounter + 1
 	end
