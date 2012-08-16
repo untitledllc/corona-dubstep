@@ -9,6 +9,24 @@ currentNumSamples = nil
 currentNumFX = nil
 currentNumVoices = nil
 
+back1 = display.newRect(0,0,w,h)
+back2 = display.newRect(0,0,w,h)
+back3 = display.newRect(0,0,w,h)
+back4 = display.newRect(0,0,w,h)
+back5 = display.newRect(0,0,w,h)
+
+back1:setFillColor(10,100,10)
+back2:setFillColor(140,150,140)
+back3:setFillColor(100,150,120)
+back4:setFillColor(100,100,150)
+back5:setFillColor(50,150,10)
+
+back1.isVisible = false
+back2.isVisible = false
+back3.isVisible = false
+back4.isVisible = false
+back5.isVisible = false
+
 function mySeek(time,sound,chan,loop)
 	if (loop == nil) then
 		loop = 0

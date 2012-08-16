@@ -2,15 +2,23 @@ module(...,package.seeall)
 
 local layoutAppearTime = nil
 
+local gl = require("globals")	
+
+local w = gl.w
+local h = gl.h
+
+changeBackGround = nil
+
+mainGroup = nil
+
 function getLayoutAppearTime()
 	return layoutAppearTime
 end
 
 function new()
+	mainGroup = display.newGroup()
 	local localGroup = display.newGroup()
-		
-	local gl = require("globals")	
-		
+	
 	local numSamples = 15
 	local numFX = 5
 	local numVoices = 5
@@ -23,11 +31,6 @@ function new()
 	local playModule = require("playing")
 	layoutAppearTime = system.getTimer()
 	local kitAddress = "T"
-	
-	local w = gl.w
-	local h = gl.h
-	
-	gl.btns = gl.drawLayoutBtns()
 
 	playModule.firstTimePlayPressed = nil
 	
@@ -168,7 +171,7 @@ function new()
 	end
 	
 	local function bindEventListeners()
-		local handlerTable = {playSound1,playSound2,playSound3,
+		local handlerTable = {playSound1, playSound2,playSound3,
 					playSound4,playSound5,playSound6,playSound7,playSound8,
 					playSound9,playSound10,playSound11,
 					playSound12,playSound13,playSound14,
@@ -182,13 +185,14 @@ function new()
 			idx = idx + 1
 		end
 	end
+			gl.btns = gl.drawLayoutBtns()
+		
+		for idx,val in pairs(gl.btns) do
+			gl.btns[idx].alpha = 0.5
+		end
 	
-	for idx,val in pairs(gl.btns) do
-		gl.btns[idx].alpha = 0.5
-	end
-	
-	gl.btns[2].alpha = 1
-	if (localGroup.numChildren == 0) then
+		gl.btns[2].alpha = 1
+		
 		btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
 		btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
 		btn3 = display.newRoundedRect(1,1,w/10,h/10,2)
@@ -304,8 +308,22 @@ function new()
 		localGroup:insert(btn23)
 		localGroup:insert(btn24)
 		localGroup:insert(btn25)
+			
+		bindEventListeners()	
 		
-		bindEventListeners()
-	end
-	return localGroup
+		gl.back1.isVisible = true
+		mainGroup:insert(1,gl.back1)
+		mainGroup:insert(2,localGroup)
+
+		local function redrawLayout(object) 
+			object.isVisible = true
+		--	mainGroup[1]:removeSelf()
+			mainGroup[1] = nil
+			mainGroup:insert(1,object)
+			mainGroup:insert(2,localGroup)
+		end
+	
+	changeBackGround = redrawLayout
+
+	return mainGroup
 end

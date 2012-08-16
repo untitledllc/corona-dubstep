@@ -11,6 +11,13 @@ local pl = require("playing")
 local gl = require("globals")
 local layout = require(gl.currentLayout)
 
+local timer1 = nil
+local timer2 = nil
+local timer3 = nil
+local timer4 = nil
+local timer5 = nil
+local timer6 = nil
+
 local isRecSwitchedOn = false
 
 local function printUserActList()
@@ -62,6 +69,54 @@ local function saveUserActList()
     f:close()
 end
 
+local function change5_1(event)
+	gl.back5.isVisible = false
+	layout.changeBackGround(gl.back1)
+	
+	timer6 = timer.performWithDelay(3000,change1_2)
+end
+
+local function change4_5(event)
+	gl.back4.isVisible = false
+	
+	layout.mainGroup[2][12].isVisible = false
+
+	audio.setVolume(0,{channel = 12})
+	
+	layout.changeBackGround(gl.back5)
+	timer5 = timer.performWithDelay(3000,change5_1)
+end
+
+local function change3_4(event)
+	gl.back3.isVisible = false
+	layout.mainGroup[2][9].isVisible = false
+	layout.mainGroup[2][12].isVisible = true
+
+	audio.setVolume(0,{channel = 9})
+	
+	layout.changeBackGround(gl.back4)
+	timer4 = timer.performWithDelay(3000,change4_5)
+end
+
+local function change2_3(event)
+	gl.back2.isVisible = false
+	layout.mainGroup[2][3].isVisible = false
+	layout.mainGroup[2][9].isVisible = true
+	
+	audio.setVolume(0,{channel = 3})
+
+	layout.changeBackGround(gl.back3)
+	timer3 = timer.performWithDelay(3000,change3_4)
+end
+
+local function change1_2(event)
+	gl.back1.isVisible = false
+	layout.changeBackGround(gl.back2)
+
+	layout.mainGroup[2][3].isVisible = true
+	timer2 = timer.performWithDelay(3000,change2_3)
+end
+
 function startRecording(event)
 	if (event.phase == "ended") then
 		if (recPressCounter % 2 == 0) then
@@ -69,7 +124,50 @@ function startRecording(event)
 			calcSeekTimeInActiveChannels(pl.getActiveChannels())
 			event.target.alpha = 1
 			isRecSwitchedOn = true
+			
+			layout.mainGroup[2][3].alpha = 0.5
+			layout.mainGroup[2][9].alpha = 0.5
+			layout.mainGroup[2][12].alpha = 0.5
+			
+			layout.mainGroup[2][3].isVisible = false
+			layout.mainGroup[2][9].isVisible = false
+			layout.mainGroup[2][12].isVisible = false
+			
+			audio.setVolume(0,{channel = 3})
+			audio.setVolume(0,{channel = 9})
+			audio.setVolume(0,{channel = 12})
+			
+			timer1 = timer.performWithDelay(3000,change1_2)
+		
 		else
+			
+			if (timer1 ~= nil) then
+				timer.cancel(timer1)
+			end
+			if (timer2 ~= nil) then
+				timer.cancel(timer2)
+			end
+			if (timer3 ~= nil) then
+				timer.cancel(timer3)
+			end
+			if (timer4 ~= nil) then
+				timer.cancel(timer4)
+			end
+			if (timer5 ~= nil) then
+				timer.cancel(timer5)
+			end
+			if (timer6 ~= nil) then
+				timer.cancel(timer6)
+			end
+		
+			layout.mainGroup[2][3].alpha = 0.5
+			layout.mainGroup[2][9].alpha = 0.5
+			layout.mainGroup[2][12].alpha = 0.5
+		
+			layout.mainGroup[2][3].isVisible = true
+			layout.mainGroup[2][9].isVisible = true
+			layout.mainGroup[2][12].isVisible = true
+		
 			endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
 			completeUserActList()
 			saveUserActList()
