@@ -70,50 +70,60 @@ local function saveUserActList()
 end
 
 local function change5_1(event)
-	gl.back5.isVisible = false
-	layout.changeBackGround(gl.back1)
+	gl.currentBacks[5].isVisible = false
+	gl.changeBackGround(gl.currentBacks[1])
 	
 	timer6 = timer.performWithDelay(3000,change1_2)
 end
 
 local function change4_5(event)
-	gl.back4.isVisible = false
+	gl.currentBacks[4].isVisible = false
 	
-	layout.mainGroup[2][12].isVisible = false
+	gl.mainGroup[2][12].isVisible = false
 
 	audio.setVolume(0,{channel = 12})
 	
-	layout.changeBackGround(gl.back5)
+	addAction(system.getTimer() - layout.getLayoutAppearTime() - recPressTime,
+    		12,0,audio.getVolume({channel = 12}),4,system.getTimer() - layout.getLayoutAppearTime())
+	
+	gl.changeBackGround(gl.currentBacks[5])
 	timer5 = timer.performWithDelay(3000,change5_1)
 end
 
 local function change3_4(event)
-	gl.back3.isVisible = false
-	layout.mainGroup[2][9].isVisible = false
-	layout.mainGroup[2][12].isVisible = true
+	gl.currentBacks[3].isVisible = false
+	gl.mainGroup[2][9].isVisible = false
+	gl.mainGroup[2][12].isVisible = true
 
 	audio.setVolume(0,{channel = 9})
 	
-	layout.changeBackGround(gl.back4)
+	addAction(system.getTimer() - layout.getLayoutAppearTime() - recPressTime,
+    		9,0,audio.getVolume({channel = 9}),3,system.getTimer() - layout.getLayoutAppearTime())
+	
+	gl.changeBackGround(gl.currentBacks[4])
 	timer4 = timer.performWithDelay(3000,change4_5)
 end
 
 local function change2_3(event)
-	gl.back2.isVisible = false
-	layout.mainGroup[2][3].isVisible = false
-	layout.mainGroup[2][9].isVisible = true
+	gl.currentBacks[2].isVisible = false
+	gl.mainGroup[2][3].isVisible = false
+	gl.mainGroup[2][9].isVisible = true
 	
 	audio.setVolume(0,{channel = 3})
+	
+	addAction(system.getTimer() - layout.getLayoutAppearTime() - recPressTime,
+    			3,0,audio.getVolume({channel = 3}),2,system.getTimer() - layout.getLayoutAppearTime())
 
-	layout.changeBackGround(gl.back3)
+	gl.changeBackGround(gl.currentBacks[3])
 	timer3 = timer.performWithDelay(3000,change3_4)
 end
 
 local function change1_2(event)
-	gl.back1.isVisible = false
-	layout.changeBackGround(gl.back2)
+	gl.currentBacks[1].isVisible = false
+	gl.changeBackGround(gl.currentBacks[2])
 
-	layout.mainGroup[2][3].isVisible = true
+	gl.mainGroup[2][3].isVisible = true
+	
 	timer2 = timer.performWithDelay(3000,change2_3)
 end
 
@@ -125,14 +135,14 @@ function startRecording(event)
 			event.target.alpha = 1
 			isRecSwitchedOn = true
 			
-			layout.mainGroup[2][3].alpha = 0.5
-			layout.mainGroup[2][9].alpha = 0.5
-			layout.mainGroup[2][12].alpha = 0.5
+			gl.mainGroup[2][3].alpha = 0.5
+			gl.mainGroup[2][9].alpha = 0.5
+			gl.mainGroup[2][12].alpha = 0.5
 			
-			layout.mainGroup[2][3].isVisible = false
-			layout.mainGroup[2][9].isVisible = false
-			layout.mainGroup[2][12].isVisible = false
-			
+			gl.mainGroup[2][3].isVisible = false
+			gl.mainGroup[2][9].isVisible = false
+			gl.mainGroup[2][12].isVisible = false
+			   
 			audio.setVolume(0,{channel = 3})
 			audio.setVolume(0,{channel = 9})
 			audio.setVolume(0,{channel = 12})
@@ -160,13 +170,13 @@ function startRecording(event)
 				timer.cancel(timer6)
 			end
 		
-			layout.mainGroup[2][3].alpha = 0.5
-			layout.mainGroup[2][9].alpha = 0.5
-			layout.mainGroup[2][12].alpha = 0.5
+			gl.mainGroup[2][3].alpha = 0.5
+			gl.mainGroup[2][9].alpha = 0.5
+			gl.mainGroup[2][12].alpha = 0.5
 		
-			layout.mainGroup[2][3].isVisible = true
-			layout.mainGroup[2][9].isVisible = true
-			layout.mainGroup[2][12].isVisible = true
+			gl.mainGroup[2][3].isVisible = true
+			gl.mainGroup[2][9].isVisible = true
+			gl.mainGroup[2][12].isVisible = true
 		
 			endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
 			completeUserActList()

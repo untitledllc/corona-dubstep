@@ -2,22 +2,31 @@ module(...,package.seeall)
 
 local layoutAppearTime = nil
 
-local gl = require("globals")	
+local gl = nil
+if (package.loaded.globals == nil) then
+	gl = require("globals")
+else
+	gl = package.loaded.globals
+end	
 
 local w = gl.w
 local h = gl.h
 
-changeBackGround = nil
+local backs = {}
 
-mainGroup = nil
+function getLayoutBacks()
+	return backs
+end
 
 function getLayoutAppearTime()
 	return layoutAppearTime
 end
 
 function new()
-	mainGroup = display.newGroup()
+	local mainGroup = display.newGroup()
 	local localGroup = display.newGroup()
+	
+	print(gl.mainGroup)
 	
 	local numSamples = 15
 	local numFX = 5
@@ -185,145 +194,158 @@ function new()
 			idx = idx + 1
 		end
 	end
-			gl.btns = gl.drawLayoutBtns()
-		
-		for idx,val in pairs(gl.btns) do
-			gl.btns[idx].alpha = 0.5
-		end
 	
-		gl.btns[2].alpha = 1
+	gl.btns = gl.drawLayoutBtns()
 		
-		btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn3 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn4 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn5 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn6 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn7 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn8 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn9 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn10 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn11 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn12 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn13 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn15 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn16 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn17 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn18 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn19 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn20 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn21 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn22 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn23 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn24 = display.newRoundedRect(1,1,w/10,h/10,2)
-		btn25 = display.newRoundedRect(1,1,w/10,h/10,2)
+	for idx,val in pairs(gl.btns) do
+		gl.btns[idx].alpha = 0.5
+	end
+	
+	gl.btns[2].alpha = 1
 		
-		btn1.x,btn2.x,btn3.x,btn4.x,btn5.x,btn6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
-		btn7.x,btn8.x,btn9.x,btn10.x,btn11.x = w/6,w/3,w/2,2*w/3,5*w/6
-		btn12.x,btn13.x,btn14.x,btn15.x= w/5,2*w/5,3*w/5,4*w/5
-		btn16.x,btn17.x,btn18.x,btn19.x,btn20.x = w/6,w/3,w/2,2*w/3,5*w/6
-		btn21.x,btn22.x,btn23.x,btn24.x,btn25.x = w/6,w/3,w/2,2*w/3,5*w/6
+	btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn3 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn4 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn5 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn6 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn7 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn8 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn9 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn10 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn11 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn12 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn13 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn15 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn16 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn17 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn18 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn19 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn20 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn21 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn22 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn23 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn24 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn25 = display.newRoundedRect(1,1,w/10,h/10,2)
 		
-		btn1.y,btn2.y,btn3.y,btn4.y,btn5.y,btn6.y = h/7,h/7,h/7,h/7,h/7,h/7
-		btn7.y,btn8.y,btn9.y,btn10.y,btn11.y = 2*h/7,2*h/7,2*h/7,2*h/7,2*h/7
-		btn12.y,btn13.y,btn14.y,btn15.y = 3*h/7,3*h/7,3*h/7,3*h/7
-		btn16.y,btn17.y,btn18.y,btn19.y,btn20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
-		btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
+	btn1.x,btn2.x,btn3.x,btn4.x,btn5.x,btn6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
+	btn7.x,btn8.x,btn9.x,btn10.x,btn11.x = w/6,w/3,w/2,2*w/3,5*w/6
+	btn12.x,btn13.x,btn14.x,btn15.x= w/5,2*w/5,3*w/5,4*w/5
+	btn16.x,btn17.x,btn18.x,btn19.x,btn20.x = w/6,w/3,w/2,2*w/3,5*w/6
+	btn21.x,btn22.x,btn23.x,btn24.x,btn25.x = w/6,w/3,w/2,2*w/3,5*w/6
 		
-		btn1:setFillColor(255,0,0)
-		btn2:setFillColor(255,0,0)
-		btn3:setFillColor(255,0,0)
-		btn4:setFillColor(255,0,0)
-		btn5:setFillColor(255,0,0)
-		btn6:setFillColor(255,0,0)
-		btn7:setFillColor(0,0,255)
-		btn8:setFillColor(0,0,255)
-		btn9:setFillColor(0,0,255)
-		btn10:setFillColor(0,0,255)
-		btn11:setFillColor(0,0,255)
-		btn12:setFillColor(255,0,255)
-		btn13:setFillColor(255,0,255)
-		btn14:setFillColor(255,0,255)
-		btn15:setFillColor(255,0,255)
-		btn16:setFillColor(0,255,255)
-		btn17:setFillColor(0,255,255)
-		btn18:setFillColor(0,255,255)	
-		btn19:setFillColor(0,255,255)
-		btn20:setFillColor(0,255,255)
-		btn21:setFillColor(0,255,0)
-		btn22:setFillColor(0,255,0)
-		btn23:setFillColor(0,255,0)
-		btn24:setFillColor(0,255,0)
-		btn25:setFillColor(0,255,0)
+	btn1.y,btn2.y,btn3.y,btn4.y,btn5.y,btn6.y = h/7,h/7,h/7,h/7,h/7,h/7
+	btn7.y,btn8.y,btn9.y,btn10.y,btn11.y = 2*h/7,2*h/7,2*h/7,2*h/7,2*h/7
+	btn12.y,btn13.y,btn14.y,btn15.y = 3*h/7,3*h/7,3*h/7,3*h/7
+	btn16.y,btn17.y,btn18.y,btn19.y,btn20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
+	btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
+		
+	btn1:setFillColor(255,0,0)
+	btn2:setFillColor(255,0,0)
+	btn3:setFillColor(255,0,0)
+	btn4:setFillColor(255,0,0)
+	btn5:setFillColor(255,0,0)
+	btn6:setFillColor(255,0,0)
+	btn7:setFillColor(0,0,255)
+	btn8:setFillColor(0,0,255)
+	btn9:setFillColor(0,0,255)
+	btn10:setFillColor(0,0,255)
+	btn11:setFillColor(0,0,255)
+	btn12:setFillColor(255,0,255)
+	btn13:setFillColor(255,0,255)
+	btn14:setFillColor(255,0,255)
+	btn15:setFillColor(255,0,255)
+	btn16:setFillColor(0,255,255)
+	btn17:setFillColor(0,255,255)
+	btn18:setFillColor(0,255,255)	
+	btn19:setFillColor(0,255,255)
+	btn20:setFillColor(0,255,255)
+	btn21:setFillColor(0,255,0)
+	btn22:setFillColor(0,255,0)
+	btn23:setFillColor(0,255,0)
+	btn24:setFillColor(0,255,0)
+	btn25:setFillColor(0,255,0)
 
-		btn1.alpha = 0.5
-		btn2.alpha = 0.5
-		btn3.alpha = 0.5
-		btn4.alpha = 0.5
-		btn5.alpha = 0.5
-		btn6.alpha = 0.5
-		btn7.alpha = 0.5
-		btn8.alpha = 0.5
-		btn9.alpha = 0.5
-		btn10.alpha = 0.5
-		btn11.alpha = 0.5
-		btn12.alpha = 0.5
-		btn13.alpha = 0.5
-		btn14.alpha = 0.5
-		btn15.alpha = 0.5
-		btn16.alpha = 0.5
-		btn17.alpha = 0.5
-		btn18.alpha = 0.5
-		btn19.alpha = 0.5
-		btn20.alpha = 0.5
-		btn21.alpha = 0.5
-		btn22.alpha = 0.5
-		btn23.alpha = 0.5
-		btn24.alpha = 0.5
-		btn25.alpha = 0.5
+	btn1.alpha = 0.5
+	btn2.alpha = 0.5
+	btn3.alpha = 0.5
+	btn4.alpha = 0.5
+	btn5.alpha = 0.5
+	btn6.alpha = 0.5
+	btn7.alpha = 0.5
+	btn8.alpha = 0.5
+	btn9.alpha = 0.5
+	btn10.alpha = 0.5
+	btn11.alpha = 0.5
+	btn12.alpha = 0.5
+	btn13.alpha = 0.5
+	btn14.alpha = 0.5
+	btn15.alpha = 0.5
+	btn16.alpha = 0.5
+	btn17.alpha = 0.5
+	btn18.alpha = 0.5
+	btn19.alpha = 0.5
+	btn20.alpha = 0.5
+	btn21.alpha = 0.5
+	btn22.alpha = 0.5
+	btn23.alpha = 0.5
+	btn24.alpha = 0.5
+	btn25.alpha = 0.5
 		
-		localGroup:insert(btn1)
-		localGroup:insert(btn2)
-		localGroup:insert(btn3)
-		localGroup:insert(btn4)
-		localGroup:insert(btn5)
-		localGroup:insert(btn6)
-		localGroup:insert(btn7)
-		localGroup:insert(btn8)
-		localGroup:insert(btn9)
-		localGroup:insert(btn10)
-		localGroup:insert(btn11)	
-		localGroup:insert(btn12)
-		localGroup:insert(btn13)
-		localGroup:insert(btn14)
-		localGroup:insert(btn15)
-		localGroup:insert(btn16)
-		localGroup:insert(btn17)
-		localGroup:insert(btn18)
-		localGroup:insert(btn19)
-		localGroup:insert(btn20)
-		localGroup:insert(btn21)
-		localGroup:insert(btn22)
-		localGroup:insert(btn23)
-		localGroup:insert(btn24)
-		localGroup:insert(btn25)
+	localGroup:insert(btn1)
+	localGroup:insert(btn2)
+	localGroup:insert(btn3)
+	localGroup:insert(btn4)
+	localGroup:insert(btn5)
+	localGroup:insert(btn6)
+	localGroup:insert(btn7)
+	localGroup:insert(btn8)
+	localGroup:insert(btn9)
+	localGroup:insert(btn10)
+	localGroup:insert(btn11)	
+	localGroup:insert(btn12)
+	localGroup:insert(btn13)
+	localGroup:insert(btn14)
+	localGroup:insert(btn15)
+	localGroup:insert(btn16)
+	localGroup:insert(btn17)
+	localGroup:insert(btn18)
+	localGroup:insert(btn19)
+	localGroup:insert(btn20)
+	localGroup:insert(btn21)
+	localGroup:insert(btn22)
+	localGroup:insert(btn23)
+	localGroup:insert(btn24)
+	localGroup:insert(btn25)
 			
-		bindEventListeners()	
+	bindEventListeners()	
 		
-		gl.back1.isVisible = true
-		mainGroup:insert(1,gl.back1)
-		mainGroup:insert(2,localGroup)
-
-		local function redrawLayout(object) 
-			object.isVisible = true
-		--	mainGroup[1]:removeSelf()
-			mainGroup[1] = nil
-			mainGroup:insert(1,object)
-			mainGroup:insert(2,localGroup)
-		end
+	backs[1] = display.newRect(0,0,w,h)
+	backs[2] = display.newRect(0,0,w,h)
+	backs[3] = display.newRect(0,0,w,h)
+	backs[4] = display.newRect(0,0,w,h)
+	backs[5] = display.newRect(0,0,w,h)	
 	
-	changeBackGround = redrawLayout
+	backs[1]:setFillColor(10,150,100)
+	backs[2]:setFillColor(150,150,150)
+	backs[3]:setFillColor(50,50,50)
+	backs[4]:setFillColor(10,10,10)
+	backs[5]:setFillColor(100,100,100)
+	
+	backs[1].isVisible = false
+	backs[2].isVisible = false
+	backs[3].isVisible = false
+	backs[4].isVisible = false
+	backs[5].isVisible = false
+	
+	backs[1].isVisible = true
+	mainGroup:insert(1,backs[1])
+	mainGroup:insert(2,localGroup)
 
+	gl.mainGroup = mainGroup
+	gl.localGroup = localGroup 
+	gl.currentBacks = backs
+	
 	return mainGroup
 end
