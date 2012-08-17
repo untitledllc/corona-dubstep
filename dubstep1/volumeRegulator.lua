@@ -18,6 +18,10 @@ fxVolume = 0.5
 
 local gl = require("globals")
 local pl = require("playing")
+local rc = require("recording")
+local layout = require(gl.currentLayout)
+
+local ptSumms = nil
 
 function setVolume(volumeLevel,channels)
 	local idx = 1
@@ -42,39 +46,39 @@ local function calcScrollIndex(scroll)
 	return "Error"
 end
 
-local function calcChannels(index) 
-	local beginIndex 
-	local endIndex = nil
-	local result = {}
-	local ptSumms = pl.getPartSumms()
-	
-	if (ptSumms[index - 1] == nil) then
-		beginIndex = 1
-
-	else
-		beginIndex = ptSumms[index - 1] + 1
-	end		
-	
-	endIndex = ptSumms[index]
-
-	local actChannels = pl.getActiveChannels()
-
-	local idx = beginIndex
-	while (idx <= endIndex) do
-		if (actChannels[idx].channel ~= nil) then
-			result[#result + 1] = idx
-		end
-		idx = idx + 1
-	end
-
-	for i,val in pairs(result) do
-		print(val)
-	end
-	print("______________________________")
-	return result
-end
 
 local function moveScroll(event)
+	local function calcChannels(index) 
+		local beginIndex 
+		local endIndex = nil
+		local result = {}
+	
+		if (ptSumms[index - 1] == nil) then
+			beginIndex = 1
+		else
+			beginIndex = ptSumms[index - 1] + 1
+		end		
+	
+		endIndex = ptSumms[index]
+
+		local actChannels = pl.getActiveChannels()
+
+		local idx = beginIndex
+		while (idx <= endIndex) do
+			if (actChannels[idx].channel ~= nil) then
+		
+				if (rc.isRecStarted()) then
+					rc.addAction(system.getTimer() - layout.getLayoutAppearTime() - rc.getRecBeginTime(),
+								idx,2,getVolume(event.target),index,system.getTimer() - layout.getLayoutAppearTime())
+				end
+				result[#result + 1] = idx
+			end
+			idx = idx + 1
+		end
+
+		return result
+	end
+	
 	if (event.phase == "moved") then
 		if (bottomLimit <= event.y and event.y <= topLimit) then
 			event.target.y = event.y - 3*h/4
@@ -85,9 +89,29 @@ local function moveScroll(event)
 			end
 			if (index == 5) then	
 				voiceVolume = getVolume(scrolls[5])
+				for idx,val in pairs(pl.getActiveChannels()) do
+					if (val.channel ~= nil and val.channel > ptSumms[4]) then
+						if (rc.isRecStarted()) then
+							rc.addAction(system.getTimer() - layout.getLayoutAppearTime() - rc.getRecBeginTime(),
+								idx,2,getVolume(event.target),5,system.getTimer() - layout.getLayoutAppearTime())
+						end
+						
+						audio.setVolume(voiceVolume,{channel = val.channel})
+					end
+				end
 			end
 			if (index == 4) then
 				fxVolume = getVolume(scrolls[4])
+				for idx,val in pairs(pl.getActiveChannels()) do
+					if (val.channel ~= nil and val.channel > ptSumms[3]) then
+						if (rc.isRecStarted()) then
+							rc.addAction(system.getTimer() - layout.getLayoutAppearTime() - rc.getRecBeginTime(),
+								idx,2,getVolume(event.target),4,system.getTimer() - layout.getLayoutAppearTime())
+						end
+						
+						audio.setVolume(fxVolume,{channel = val.channel})
+					end
+				end
 			end
 		end
 	end
@@ -114,6 +138,7 @@ function showHidePanel(event)
 	if (event.phase == "ended") then
 		if (regulatorPanel == nil) then
 			createVolumeRegulatorPanel()
+			ptSumms = pl.getPartSumms()
 		end
 		if (volumePressCounter % 2 == 0) then
 			transition.to(regulatorPanel,{time = 500,y = 3*h/4})

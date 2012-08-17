@@ -1,7 +1,5 @@
 module (...,package.seeall)
 
-
-
 function new()
 	local gl = require("globals")
 	
@@ -163,7 +161,7 @@ function new()
 		print("channelActiveTime=",userActionList[index].channelActiveTime)
 
 		local track = userActionList[index].channel
-		local playStop = userActionList[index].actType
+		local actType = userActionList[index].actType
 		local actTime = userActionList[index].actionTime
 		local category = userActionList[index].category
 		
@@ -172,20 +170,25 @@ function new()
 			return true
 		end
 		
-		if (playStop == 1 and category > 3) then
+		if (actType == 1 and category > 3) then
 			audio.play(gl.currentKit[track][1],{channel = track})
 		end
 		
-		if (playStop == 0 and category > 3) then
+		if (actType == 0 and category > 3) then
 			audio.stop(track)
 		end
 		
-		if (playStop == 1 and category <=  3) then
+		if (actType == 1 and category <=  3) then
 			audio.setVolume(userActionList[index].volume,{channel = track})
 		end
 		
-		if (playStop == 0 and category <= 3) then
+		if (actType == 0 and category <= 3) then
 			audio.setVolume(0,{channel = track})
+		end
+		
+		if (actType == 2) then
+			print("newVolume is"..tostring(userActionList[index].volume))
+			audio.setVolume(userActionList[index].volume,{channel = track})
 		end
 		
 		return false
@@ -210,7 +213,6 @@ function new()
 				prevMeasure = currentMeasure
 			end
 			relPlayTime = relPlayTime + deltaT
-			print(relPlayTime)
 		end
 	end
 	
@@ -400,6 +402,9 @@ end
 	local function exitPressed(event)
 		if (event.phase == "ended") then
 			local vol = require("volumeRegulator")
+			local rc = require("recording")
+			rc.recPressCounter = 0
+			
 			vol.scrolls = {}
 			Runtime:removeEventListener("enterFrame",play)
 			stopPressed(nil)

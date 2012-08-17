@@ -20,6 +20,8 @@ function getActiveChannels()
 	return activeChannels
 end
 
+local isGlitchStarted = false
+
 function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 	gl.currentKit = sampleKit
 		
@@ -243,8 +245,7 @@ local function playDrums(group,index,trackCounters)
         activeChannels[index] = {-1}
     else
     	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-    
-       	audio.setVolume(1,{channel = index}) 
+     
        	if (volumePanel.scrolls[3] ~= nil) then	
         	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[3]),{channel = index})  	
     	else	
@@ -349,6 +350,64 @@ local function playVoice(group,kit,index)
    	end
     
     timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
+end
+
+function playGlitch(event)
+ 	local tiks = 0
+ 	local blinkCounter = 0 
+ 	
+ 	local function runtimeGlitchHandler(e)
+ 		if (isGlitchStarted == true) then
+ 			tiks = tiks + 1
+
+ 			if (tiks == 1) then
+ 				for idx,val in pairs(activeChannels) do
+					if (val.channel ~= nil and val.channel > partSumms[3]) then
+						audio.setVolume(val.channel,{channel = val.channel})
+						
+						if (recording.isRecStarted()) then
+							recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    								val.channel,2,val.volume,val.category,system.getTimer() - curLayout.getLayoutAppearTime())
+						end
+						
+						event.target.alpha = 1
+					end
+				end	
+ 			end 			 
+ 			
+ 			if (tiks == 10) then
+ 				for idx,val in pairs(activeChannels) do
+					if (val.channel ~= nil and val.channel > partSumms[3]) then
+						audio.setVolume(0,{channel = val.channel})
+						
+						if (recording.isRecStarted()) then
+							recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    								val.channel,2,0,val.category,system.getTimer() - curLayout.getLayoutAppearTime())
+						end
+						
+						event.target.alpha = 0.5
+					end
+				end
+				tiks = 0
+ 			end
+ 		end
+ 	end
+	
+	if (event.phase == "began") then
+		isGlitchStarted = true
+		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)
+	end
+	if (event.phase == "ended") then
+		
+		event.target.alpha = 0.5
+		isGlitchStarted = false
+		Runtime:removeEventListener("enterFrame",runtimeGlitchHandler)
+		for idx,val in pairs(activeChannels) do
+			if (val.channel ~= nil) then
+				audio.setVolume(val.volume,{channel = val.channel})
+			end
+		end
+	end
 end
 
 function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParams)

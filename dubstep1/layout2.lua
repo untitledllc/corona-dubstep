@@ -187,7 +187,7 @@ function new()
 					playSound21,playSound22,playSound23,
 					playSound24,playSound25}
 		local idx = 1
-		while(idx <= localGroup.numChildren) do
+		while(idx < localGroup.numChildren) do
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
 			idx = idx + 1
 		end
@@ -226,6 +226,7 @@ function new()
 	btn23 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn24 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn25 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn26 = display.newRoundedRect(1,1,w/2,h/20,4)	
 		
 	btn1.x,btn2.x,btn3.x,btn4.x,btn5.x,btn6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
 	btn7.x,btn8.x,btn9.x,btn10.x,btn11.x = w/6,w/3,w/2,2*w/3,5*w/6
@@ -238,6 +239,8 @@ function new()
 	btn12.y,btn13.y,btn14.y,btn15.y = 3*h/7,3*h/7,3*h/7,3*h/7
 	btn16.y,btn17.y,btn18.y,btn19.y,btn20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
 	btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
+		
+	btn26.x,btn26.y = w/2,6*h/7	
 		
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
@@ -264,6 +267,7 @@ function new()
 	btn23:setFillColor(0,255,0)
 	btn24:setFillColor(0,255,0)
 	btn25:setFillColor(0,255,0)
+	btn26:setFillColor(140,255,140)
 
 	btn1.alpha = 0.5
 	btn2.alpha = 0.5
@@ -290,6 +294,7 @@ function new()
 	btn23.alpha = 0.5
 	btn24.alpha = 0.5
 	btn25.alpha = 0.5
+	btn26.alpha = 0.5	
 		
 	localGroup:insert(btn1)
 	localGroup:insert(btn2)
@@ -316,9 +321,11 @@ function new()
 	localGroup:insert(btn23)
 	localGroup:insert(btn24)
 	localGroup:insert(btn25)
+	localGroup:insert(btn26)		
 			
 	bindEventListeners()	
-		
+	btn26:addEventListener("touch",playModule.playGlitch)
+	
 	backs[1] = display.newRect(0,0,w,h)
 	backs[2] = display.newRect(0,0,w,h)
 	backs[3] = display.newRect(0,0,w,h)

@@ -10,7 +10,7 @@ currentNumFX = nil
 currentNumVoices = nil
 mainGroup = nil
 localGroup = nil
-isRecordingTimeRestricted = true
+isRecordingTimeRestricted = false
 
 function changeBackGround(object) 
 	object.isVisible = true

@@ -1,7 +1,7 @@
 module (...,package.seeall)
 
 local userActionList = {}
-local recPressCounter = 0
+recPressCounter = 0
 
 local recPressTime = nil
 local endRecordingTime = nil
@@ -74,7 +74,7 @@ local function change5_1(event)
 	gl.currentBacks[5].isVisible = false
 	gl.changeBackGround(gl.currentBacks[1])
 	
-	timer6 = timer.performWithDelay(3000,change1_2)
+	timer6 = timer.performWithDelay(30000,change1_2)
 end
 
 local function change4_5(event)
@@ -88,7 +88,7 @@ local function change4_5(event)
     		12,0,audio.getVolume({channel = 12}),4,system.getTimer() - layout.getLayoutAppearTime())
 	
 	gl.changeBackGround(gl.currentBacks[5])
-	timer5 = timer.performWithDelay(3000,change5_1)
+	timer5 = timer.performWithDelay(30000,change5_1)
 end
 
 local function change3_4(event)
@@ -102,7 +102,7 @@ local function change3_4(event)
     		9,0,audio.getVolume({channel = 9}),3,system.getTimer() - layout.getLayoutAppearTime())
 	
 	gl.changeBackGround(gl.currentBacks[4])
-	timer4 = timer.performWithDelay(3000,change4_5)
+	timer4 = timer.performWithDelay(30000,change4_5)
 end
 
 local function change2_3(event)
@@ -116,7 +116,7 @@ local function change2_3(event)
     			3,0,audio.getVolume({channel = 3}),2,system.getTimer() - layout.getLayoutAppearTime())
 
 	gl.changeBackGround(gl.currentBacks[3])
-	timer3 = timer.performWithDelay(3000,change3_4)
+	timer3 = timer.performWithDelay(30000,change3_4)
 end
 
 local function change1_2(event)
@@ -125,48 +125,51 @@ local function change1_2(event)
 
 	gl.mainGroup[2][3].isVisible = true
 	
-	timer2 = timer.performWithDelay(3000,change2_3)
+	timer2 = timer.performWithDelay(30000,change2_3)
 end
 
-
-
 function startRecording(event)
-	local function stopRecording(e)
-			if (timer1 ~= nil) then
-				timer.cancel(timer1)
-			end
-			if (timer2 ~= nil) then
-				timer.cancel(timer2)
-			end
-			if (timer3 ~= nil) then
-				timer.cancel(timer3)
-			end
-			if (timer4 ~= nil) then
-				timer.cancel(timer4)
-			end
-			if (timer5 ~= nil) then
-				timer.cancel(timer5)
-			end
-			if (timer6 ~= nil) then
-				timer.cancel(timer6)
-			end
+	local function stopRecording(e)			
+		if (timer1 ~= nil) then
+			timer.cancel(timer1)
+		end
+		if (timer2 ~= nil) then
+			timer.cancel(timer2)
+		end
+		if (timer3 ~= nil) then
+			timer.cancel(timer3)
+		end
+		if (timer4 ~= nil) then
+			timer.cancel(timer4)
+		end
+		if (timer5 ~= nil) then
+			timer.cancel(timer5)
+		end
+		if (timer6 ~= nil) then
+			timer.cancel(timer6)
+		end
 		
-			gl.mainGroup[2][3].alpha = 0.5
-			gl.mainGroup[2][9].alpha = 0.5
-			gl.mainGroup[2][12].alpha = 0.5
+		gl.mainGroup[2][3].alpha = 0.5
+		gl.mainGroup[2][9].alpha = 0.5
+		gl.mainGroup[2][12].alpha = 0.5
 		
-			gl.mainGroup[2][3].isVisible = true
-			gl.mainGroup[2][9].isVisible = true
-			gl.mainGroup[2][12].isVisible = true
+		gl.mainGroup[2][3].isVisible = true
+		gl.mainGroup[2][9].isVisible = true
+		gl.mainGroup[2][12].isVisible = true
 		
-			endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
-			completeUserActList()
-			saveUserActList()
-			isRecSwitchedOn = false
-			event.target.alpha = 0.5
-			printUserActList()
-			userActionList = {}
-			recPressCounter = 0
+		endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
+		completeUserActList()
+		saveUserActList()
+		isRecSwitchedOn = false
+		event.target.alpha = 0.5
+		printUserActList()
+		userActionList = {}
+	end
+	local function stopRestrictRecording(e)
+		if (isRecSwitchedOn == true) then
+			stopRecording(nil)
+			recPressCounter = recPressCounter + 1
+		end
 	end
 	
 	if (event.phase == "ended") then
@@ -188,13 +191,14 @@ function startRecording(event)
 			audio.setVolume(0,{channel = 9})
 			audio.setVolume(0,{channel = 12})
 			
-			timer1 = timer.performWithDelay(3000,change1_2)
+			timer1 = timer.performWithDelay(30000,change1_2)
 			if (gl.isRecordingTimeRestricted == true) then
-				timer7 = timer.performWithDelay(15000,stopRecording)
+				timer7 = timer.performWithDelay(15000,stopRestrictRecording)
 			end
 		else
 			stopRecording(nil)
 		end
+		print(recPressCounter)
 		recPressCounter = recPressCounter + 1
 	end
 end
