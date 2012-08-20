@@ -226,7 +226,7 @@ function new()
 	btn23 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn24 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn25 = display.newRoundedRect(1,1,w/10,h/10,2)
-	btn26 = display.newRoundedRect(1,1,w/2,h/20,4)	
+	btn26 = display.newRoundedRect(1,1,w/20,h/2,4)	
 		
 	btn1.x,btn2.x,btn3.x,btn4.x,btn5.x,btn6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
 	btn7.x,btn8.x,btn9.x,btn10.x,btn11.x = w/6,w/3,w/2,2*w/3,5*w/6
@@ -240,7 +240,7 @@ function new()
 	btn16.y,btn17.y,btn18.y,btn19.y,btn20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
 	btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
 		
-	btn26.x,btn26.y = w/2,6*h/7	
+	btn26.x,btn26.y = w/20,h/2	
 		
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)

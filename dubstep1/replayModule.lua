@@ -34,16 +34,17 @@ function new()
 	local toSeekAtBeginTime = nil
 
 	local function printUserActList()
-		for idx,val in pairs(userActionList) do
-			print("actionTime = ",val["actionTime"])
-			print("Channel = ",val["channel"])
-			print("actionType = ",val["actType"])
-			print("Volume = ",val["volume"])
-			print("Category = ",val["category"])
-			print("channelActiveTime = ",val["channelActiveTime"])
-			print("\n")
-		end
-		print("-----------------------------------------------")
+	local a = 1
+		--for idx,val in pairs(userActionList) do
+			--print("actionTime = ",val["actionTime"])
+			--print("Channel = ",val["channel"])
+			--print("actionType = ",val["actType"])
+			--print("Volume = ",val["volume"])
+			--print("Category = ",val["category"])
+			--print("channelActiveTime = ",val["channelActiveTime"])
+			--print("\n")
+		--end
+		--print("-----------------------------------------------")
 	end
 
 	local function readAction(file)
@@ -190,6 +191,10 @@ function new()
 			audio.setVolume(userActionList[index].volume,{channel = track})
 		end
 		
+		--if (actType == 3) then
+			
+		--end
+		
 		return false
 	end
 	
@@ -218,7 +223,7 @@ function new()
 	
 	local function findStartActionForTrack(trackNumber,relativeTime)
 		local idx = #userActionList
-		--print(trackNumber)
+		----print(trackNumber)
 		while(true) do
 			if (userActionList[idx].actType == 1 
 				and 
@@ -262,21 +267,21 @@ function new()
 	local function seek(activeActs,relativeTime)
 		local idx = 1
 		
-		--[[print("---------------")
-		print("SEEK BEGIN")
-		print(relativeTime)
-		print("---------------")
-		for i,val in pairs(activeActs) do
-			print("seekTime=",toSeekAtBeginTime - userActionList[val].actionTime + relativeTime)
-			print("actionTime=",userActionList[val].actionTime)
-			print("channel=",userActionList[val].channel)
-			print("actType=",userActionList[val].actType)
-			print("volume=",userActionList[val].volume)
-			print("category=",userActionList[val].category)
-			print("channelActiveTime=",userActionList[val].channelActiveTime)
-			print("---------------")
-		end
-		print("SEEK END")--]]
+		--print("---------------")
+		--print("SEEK BEGIN")
+		--print(relativeTime)
+		--print("---------------")
+		--for i,val in pairs(activeActs) do
+			--print("seekTime=",toSeekAtBeginTime - userActionList[val].actionTime + relativeTime)
+			--print("actionTime=",userActionList[val].actionTime)
+			--print("channel=",userActionList[val].channel)
+			--print("actType=",userActionList[val].actType)
+			--print("volume=",userActionList[val].volume)
+			--print("category=",userActionList[val].category)
+			--print("channelActiveTime=",userActionList[val].channelActiveTime)
+			--print("---------------")
+		--end
+		--print("SEEK END")
 		
 		while(idx <= gl.currentNumSamples) do
 			gl.mySeek(toSeekAtBeginTime + relativeTime,gl.currentKit[idx][1],idx,-1)

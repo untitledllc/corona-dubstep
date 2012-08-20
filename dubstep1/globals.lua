@@ -11,6 +11,8 @@ currentNumVoices = nil
 mainGroup = nil
 localGroup = nil
 isRecordingTimeRestricted = false
+glitchShutUpTime = 50
+glitchPlayTime = 70
 
 function changeBackGround(object) 
 	object.isVisible = true
@@ -32,6 +34,20 @@ function mySeek(time,sound,chan,loop)
 
 	audio.play(sound,{channel = chan,loops = loop})
 	audio.seek(audio.getDuration(sound) - (time % audio.getDuration(sound)),{channel = chan}) 
+end
+
+function seekGlitch(time) 
+	local state = nil
+	local timeToChangeState = nil
+	noLoopsTime = time % (glitchShutUpTime+glitchPlayTime)
+	if (noLoopsTime > glitchShutUpTime) then
+		state = 1
+		timeToChangeState = (glitchShutUpTime+glitchPlayTime) - noLoopsTime
+	else
+		state = 0 
+		timeToChangeState = glitchShutUpTime - noLoopsTime
+	end
+	return state,timeToChangeState
 end
 
 function drawLayoutBtns()
