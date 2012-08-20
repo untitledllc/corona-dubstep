@@ -187,7 +187,6 @@ function new()
 		end
 		
 		if (actType == 2) then
-			print("newVolume is"..tostring(userActionList[index].volume))
 			audio.setVolume(userActionList[index].volume,{channel = track})
 		end
 		
@@ -213,6 +212,7 @@ function new()
 				prevMeasure = currentMeasure
 			end
 			relPlayTime = relPlayTime + deltaT
+			print(relPlayTime)
 		end
 	end
 	
@@ -332,7 +332,7 @@ function new()
 			
 			firstTimePlayPressed = system.getTimer()	
 			prevMeasure	= firstTimePlayPressed
-			relEndTrackTime = userActionList[#userActionList].actionTime + 100
+			relEndTrackTime = userActionList[#userActionList].actionTime + 200
 			relPlayTime = 0
 			makePreRecordActions()
 		end
@@ -365,7 +365,7 @@ end
 					prepareToReplay()
 					firstTimePlayPressed = system.getTimer()	
 					prevMeasure	= firstTimePlayPressed
-					relEndTrackTime = userActionList[#userActionList].actionTime + 100
+					relEndTrackTime = userActionList[#userActionList].actionTime + 200
 					relPlayTime = 0
 					makePreRecordActions()
 				else

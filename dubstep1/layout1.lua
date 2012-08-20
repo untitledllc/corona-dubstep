@@ -31,7 +31,7 @@ function new()
 	gl.currentNumVoices = numVoices
 	
 	local playModule = require("playing")
-	local kitAddress = ""
+	local kitAddress = "sounds1/"
 
 	layoutAppearTime = system.getTimer()
 
