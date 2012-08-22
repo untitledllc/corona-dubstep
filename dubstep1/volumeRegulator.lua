@@ -90,7 +90,7 @@ local function moveScroll(event)
 			if (index == 5) then	
 				voiceVolume = getVolume(scrolls[5])
 				for idx,val in pairs(pl.getActiveChannels()) do
-					if (val.channel ~= nil and val.channel > ptSumms[4]) then
+					if (val.channel ~= nil and val.channel > ptSumms[4] and val.channel <= ptSumms[5]) then
 						if (rc.isRecStarted()) then
 							rc.addAction(system.getTimer() - layout.getLayoutAppearTime() - rc.getRecBeginTime(),
 								idx,2,getVolume(event.target),5,system.getTimer() - layout.getLayoutAppearTime())
@@ -103,7 +103,7 @@ local function moveScroll(event)
 			if (index == 4) then
 				fxVolume = getVolume(scrolls[4])
 				for idx,val in pairs(pl.getActiveChannels()) do
-					if (val.channel ~= nil and val.channel > ptSumms[3]) then
+					if (val.channel ~= nil and val.channel > ptSumms[3] and val.channel <= ptSumms[5]) then
 						if (rc.isRecStarted()) then
 							rc.addAction(system.getTimer() - layout.getLayoutAppearTime() - rc.getRecBeginTime(),
 								idx,2,getVolume(event.target),4,system.getTimer() - layout.getLayoutAppearTime())

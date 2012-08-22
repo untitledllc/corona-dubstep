@@ -8,11 +8,9 @@ local volumePanel = require("volumeRegulator")
 local curLayout = require(gl.currentLayout)
 local numSampleTypes = 5
 
-local glitchChannel = 99
-
 local partSumms = {}
 
-local activeChannels = {}
+local activeChannels = {["glitchChannel"] = nil}
 
 local voiceTimer = nil
 local fxTimer = nil
@@ -375,8 +373,7 @@ function playGlitch(event)
 	
  	local function runtimeGlitchHandler(e)
  		if (isGlitchStarted == true) then
-
-			
+ 		
  			if (deltaSumm > gl.glitchShutUpTime) then
  				event.target.alpha = 1
  				for idx,val in pairs(activeChannels) do
@@ -415,18 +412,18 @@ function playGlitch(event)
 		curMeasure = 0
 		
 		local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-    	activeChannel.channel = glitchChannel
+    	activeChannel.channel = gl.glitchChannel
     	activeChannel.startTime = system.getTimer() - firstTimePlayPressed
     	activeChannel.category = 6
     	activeChannel.volume = 0
-   		activeChannels[glitchChannel] = activeChannel
+   		activeChannels.glitchChannel = activeChannel
    		
 		if (recording.isRecStarted()) then
 			glitchStartTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			recording.addAction(glitchStartTime,glitchChannel,1,0,6,0)
+			recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
 		else
 			glitchStartTime = 0
-			recording.addAction(glitchStartTime,glitchChannel,1,0,6,0)
+			--recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
 		end
 		
 		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)
@@ -438,10 +435,10 @@ function playGlitch(event)
 		
 		if (recording.isRecStarted()) then
 			glitchFinishTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			recording.addAction(glitchStartTime,glitchChannel,0,0,6,glitchFinishTime)
+			recording.addAction(glitchFinishTime,gl.glitchChannel,0,0,6,0)
 		end
 		
-		activeChannels[glitchChannel] = {-1}
+		activeChannels.glitchChannel = {-1}
 		
 		for idx,val in pairs(activeChannels) do
 			if (val.channel ~= nil and val.channel > partSumms[3]) then
@@ -456,7 +453,7 @@ function playGlitch(event)
    					
    				end
    				
-   				if (val.channel > partSumms[4]) then
+   				if (val.channel > partSumms[4] and val.channel <= partSumms[5]) then
    				
    					if (volumePanel.scrolls[5] ~= nil) then	
         				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = val.channel})  	
@@ -473,8 +470,6 @@ function playGlitch(event)
 				
 			end
 		end
-		
-		
 		
 		Runtime:removeEventListener("enterFrame",runtimeGlitchHandler)
 	end
@@ -501,7 +496,7 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 		playFX(group,kit,index)
 	end
 	
-	if (index > partSumms[4]) then
+	if (index > partSumms[4] and index <= partSumms[5]) then
 		shutUpVoices(group,playParams[5],numSamples,numFX,numVoices)
 		playVoice(group,kit,index)
 	end
@@ -533,6 +528,3 @@ function resetCounters(numSamples)
 	return trackCounters
 end
 
-function getActiveChannels()
-	return activeChannels
-end

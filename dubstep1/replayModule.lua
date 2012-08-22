@@ -31,7 +31,13 @@ function new()
 
 	local actionSize = 6
 
+	local pl = require("playing")
+
+	local ptSumms = pl.getPartSumms()
+	
 	local toSeekAtBeginTime = nil
+
+	local deltaTSumm = 0
 
 	local function printUserActList()
 	local a = 1
@@ -171,11 +177,11 @@ function new()
 			return true
 		end
 		
-		if (actType == 1 and category > 3) then
+		if (actType == 1 and category > 3 and category < 6) then
 			audio.play(gl.currentKit[track][1],{channel = track})
 		end
 		
-		if (actType == 0 and category > 3) then
+		if (actType == 0 and category > 3 and category < 6) then
 			audio.stop(track)
 		end
 		
@@ -191,9 +197,13 @@ function new()
 			audio.setVolume(userActionList[index].volume,{channel = track})
 		end
 		
-		--if (actType == 3) then
-			
-		--end
+		if (actType == 1 and category == 6) then
+			isGlitchStarted = true
+		end
+		
+		if (actType == 0 and category == 6) then
+			isGlitchStarted = false
+		end
 		
 		return false
 	end
@@ -215,9 +225,47 @@ function new()
 			if (currentMeasure > prevMeasure) then
 				deltaT = currentMeasure - prevMeasure
 				prevMeasure = currentMeasure
+				
+				
 			end
+			
+			if (isGlitchStarted == true) then
+				deltaTSumm = deltaTSumm + deltaT
+				if (deltaTSumm > gl.glitchShutUpTime) then
+					local idx = ptSumms[3] + 1
+					while (idx <= ptSumms[5]) do
+						if (audio.isChannelPlaying(idx)) then
+							audio.setVolume(0.5,{channel = idx})
+						end
+						idx = idx + 1
+					end
+				end
+				
+				if (deltaTSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
+					local idx = ptSumms[3] + 1
+					while (idx <= ptSumms[5]) do
+						if (audio.isChannelPlaying(idx)) then
+							audio.setVolume(0,{channel = idx})	
+						end
+						idx = idx + 1
+					end
+					deltaTSumm = 0
+				end
+			end
+			
 			relPlayTime = relPlayTime + deltaT
 			print(relPlayTime)
+		end
+		
+		if (isGlitchStarted == true) then
+			local idx = ptSumms[3] + 1
+			while (idx <= ptSumms[5] and audio.isChannelPlaying(idx)) do
+				if (state == 1) then
+					audio.setVolume(0.5,{channel = idx})
+				else
+					audio.setVolume(0,{channel = idx})
+				end
+			end
 		end
 	end
 	
@@ -294,7 +342,7 @@ function new()
 		
 		idx = 1
 		while (idx <= #activeActs) do
-			if (userActionList[activeActs[idx]].category > 3) then
+			if (userActionList[activeActs[idx]].category > 3 and userActionList[activeActs[idx]].category < 6) then
 				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
 					{channel = userActionList[activeActs[idx]].channel})
 					

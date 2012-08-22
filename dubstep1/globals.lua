@@ -11,6 +11,8 @@ currentNumVoices = nil
 mainGroup = nil
 localGroup = nil
 isRecordingTimeRestricted = false
+
+glitchChannel = 99
 glitchShutUpTime = 50
 glitchPlayTime = 70
 
@@ -47,6 +49,7 @@ function seekGlitch(time)
 		state = 0 
 		timeToChangeState = glitchShutUpTime - noLoopsTime
 	end
+	
 	return state,timeToChangeState
 end
 
