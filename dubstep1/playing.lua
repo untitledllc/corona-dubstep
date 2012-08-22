@@ -423,7 +423,6 @@ function playGlitch(event)
 			recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
 		else
 			glitchStartTime = 0
-			--recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
 		end
 		
 		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)

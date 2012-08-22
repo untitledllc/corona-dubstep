@@ -70,11 +70,20 @@ local function saveUserActList()
     f:close()
 end
 
+local function updateTimer(event)
+	if (isRecSwitchedOn == true) then
+		gl.timerTxt.text = tostring(math.round( gl.fullRecordLength - 
+									(system.getTimer() - 
+										layout.getLayoutAppearTime() - 
+											recPressTime) )/1000)
+	end
+end
+
 local function change5_1(event)
 	gl.currentBacks[5].isVisible = false
 	gl.changeBackGround(gl.currentBacks[1])
 	
-	timer6 = timer.performWithDelay(30000,change1_2)
+	timer6 = timer.performWithDelay(gl.changeLayoutTime,change1_2)
 end
 
 local function change4_5(event)
@@ -88,7 +97,7 @@ local function change4_5(event)
     		12,0,audio.getVolume({channel = 12}),4,system.getTimer() - layout.getLayoutAppearTime())
 	
 	gl.changeBackGround(gl.currentBacks[5])
-	timer5 = timer.performWithDelay(30000,change5_1)
+	timer5 = timer.performWithDelay(gl.changeLayoutTime,change5_1)
 end
 
 local function change3_4(event)
@@ -102,7 +111,7 @@ local function change3_4(event)
     		9,0,audio.getVolume({channel = 9}),3,system.getTimer() - layout.getLayoutAppearTime())
 	
 	gl.changeBackGround(gl.currentBacks[4])
-	timer4 = timer.performWithDelay(30000,change4_5)
+	timer4 = timer.performWithDelay(gl.changeLayoutTime,change4_5)
 end
 
 local function change2_3(event)
@@ -116,7 +125,7 @@ local function change2_3(event)
     			3,0,audio.getVolume({channel = 3}),2,system.getTimer() - layout.getLayoutAppearTime())
 
 	gl.changeBackGround(gl.currentBacks[3])
-	timer3 = timer.performWithDelay(30000,change3_4)
+	timer3 = timer.performWithDelay(gl.changeLayoutTime,change3_4)
 end
 
 local function change1_2(event)
@@ -125,7 +134,7 @@ local function change1_2(event)
 
 	gl.mainGroup[2][3].isVisible = true
 	
-	timer2 = timer.performWithDelay(30000,change2_3)
+	timer2 = timer.performWithDelay(gl.changeLayoutTime,change2_3)
 end
 
 function startRecording(event)
@@ -191,14 +200,19 @@ function startRecording(event)
 			audio.setVolume(0,{channel = 9})
 			audio.setVolume(0,{channel = 12})
 			
-			timer1 = timer.performWithDelay(30000,change1_2)
+			timer1 = timer.performWithDelay(gl.changeLayoutTime,change1_2)
 			if (gl.isRecordingTimeRestricted == true) then
-				timer7 = timer.performWithDelay(15000,stopRestrictRecording)
+				timer7 = timer.performWithDelay(gl.fullRecordLength,stopRestrictRecording)
 			end
+			
+			gl.timerTxt.isVisible = true
+			Runtime:addEventListener("enterFrame",updateTimer)
 		else
 			stopRecording(nil)
+			
+			gl.timerTxt.isVisible = false
+			Runtime:removeEventListener("enterFrame",updateTimer)
 		end
-		print(recPressCounter)
 		recPressCounter = recPressCounter + 1
 	end
 end

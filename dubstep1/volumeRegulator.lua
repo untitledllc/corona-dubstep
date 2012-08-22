@@ -46,7 +46,6 @@ local function calcScrollIndex(scroll)
 	return "Error"
 end
 
-
 local function moveScroll(event)
 	local function calcChannels(index) 
 		local beginIndex 

@@ -37,7 +37,7 @@ function new()
 	
 	local playModule = require("playing")
 	layoutAppearTime = system.getTimer()
-	local kitAddress = "sounds2/T"
+	local kitAddress = "T"
 
 	playModule.firstTimePlayPressed = nil
 	

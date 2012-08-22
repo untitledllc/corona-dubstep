@@ -32,12 +32,15 @@ function new()
 	local actionSize = 6
 
 	local pl = require("playing")
+	local volPanel = require("volumeRegulator")
 
 	local ptSumms = pl.getPartSumms()
 	
 	local toSeekAtBeginTime = nil
 
 	local deltaTSumm = 0
+	local toChangeGlitchState = gl.glitchShutUpTime
+	local glitchState = 1
 
 	local function printUserActList()
 	local a = 1
@@ -122,10 +125,15 @@ function new()
 								userActionList[idx].channel,-1)
 				audio.setVolume(userActionList[idx].volume,
 						{channel = userActionList[idx].channel})
-			else
+			end
+			if (userActionList[idx].category > 3 and userActionList[idx].category < 6) then
 				gl.mySeek(userActionList[idx].channelActiveTime,
 					gl.currentKit[userActionList[idx].channel][1],
 								userActionList[idx].channel,0)
+			end
+			if (userActionList[idx].category == 6) then
+				isGlitchStarted = true
+				glitchState,toChangeGlitchState = gl.seekGlitch(userActionList[idx].channelActiveTime)
 			end
 			idx = idx + 1
 		end
@@ -220,52 +228,73 @@ function new()
 					actCounter = actCounter + 1		
 				end
 			end
+			
 			local deltaT
+			
 			currentMeasure = system.getTimer()
 			if (currentMeasure > prevMeasure) then
 				deltaT = currentMeasure - prevMeasure
 				prevMeasure = currentMeasure
-				
-				
 			end
 			
 			if (isGlitchStarted == true) then
-				deltaTSumm = deltaTSumm + deltaT
-				if (deltaTSumm > gl.glitchShutUpTime) then
-					local idx = ptSumms[3] + 1
-					while (idx <= ptSumms[5]) do
-						if (audio.isChannelPlaying(idx)) then
-							audio.setVolume(0.5,{channel = idx})
-						end
-						idx = idx + 1
-					end
-				end
 				
-				if (deltaTSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
+				local function updateGlitchState(time,st) 
+					local resTime
+					local resSt
+					if (time == gl.glitchShutUpTime) then
+						resTime = gl.glitchPlayTime
+					else
+						resTime = gl.glitchShutUpTime
+					end
+					
+					if (st == 1) then
+						resSt = 0
+					else
+						resSt = 1
+					end
+					return resTime, resSt
+				end
+				if (deltaTSumm > toChangeGlitchState) then
 					local idx = ptSumms[3] + 1
-					while (idx <= ptSumms[5]) do
-						if (audio.isChannelPlaying(idx)) then
-							audio.setVolume(0,{channel = idx})	
+					if (glitchState == 1) then
+						while (idx <= ptSumms[5]) do
+							if (audio.isChannelPlaying(idx) and idx <= ptSumms[4]) then
+							
+								if (volPanel.scrolls[4] ~= nil) then	
+        							audio.setVolume(volPanel.getVolume(volPanel.scrolls[4]),{channel = idx})  	
+    							else	
+    								audio.setVolume(0.5,{channel = idx})  
+        						end  
+        						
+							end
+							if (audio.isChannelPlaying(idx) and idx > ptSumms[4] and idx <= ptSumms[5]) then
+								
+								if (volPanel.scrolls[5] ~= nil) then	
+        							audio.setVolume(volPanel.getVolume(volPanel.scrolls[5]),{channel = idx})  	
+    							else	
+    								audio.setVolume(0.5,{channel = idx})  
+        						end  
+        						
+							end
+							idx = idx + 1
 						end
-						idx = idx + 1
+					else
+						while (idx <= ptSumms[5]) do
+							if (audio.isChannelPlaying(idx)) then
+								audio.setVolume(0,{channel = idx})
+							end
+							idx = idx + 1
+						end
 					end
 					deltaTSumm = 0
+					toChangeGlitchState,glitchState = updateGlitchState(toChangeGlitchState,glitchState)
 				end
+				deltaTSumm = deltaTSumm + deltaT
 			end
 			
 			relPlayTime = relPlayTime + deltaT
-			print(relPlayTime)
-		end
-		
-		if (isGlitchStarted == true) then
-			local idx = ptSumms[3] + 1
-			while (idx <= ptSumms[5] and audio.isChannelPlaying(idx)) do
-				if (state == 1) then
-					audio.setVolume(0.5,{channel = idx})
-				else
-					audio.setVolume(0,{channel = idx})
-				end
-			end
+			print("relativePlayTime = ",relPlayTime)
 		end
 	end
 	
@@ -315,21 +344,21 @@ function new()
 	local function seek(activeActs,relativeTime)
 		local idx = 1
 		
-		--print("---------------")
-		--print("SEEK BEGIN")
-		--print(relativeTime)
-		--print("---------------")
-		--for i,val in pairs(activeActs) do
-			--print("seekTime=",toSeekAtBeginTime - userActionList[val].actionTime + relativeTime)
-			--print("actionTime=",userActionList[val].actionTime)
-			--print("channel=",userActionList[val].channel)
-			--print("actType=",userActionList[val].actType)
-			--print("volume=",userActionList[val].volume)
-			--print("category=",userActionList[val].category)
-			--print("channelActiveTime=",userActionList[val].channelActiveTime)
-			--print("---------------")
-		--end
-		--print("SEEK END")
+	--	print("---------------")
+	--	print("SEEK BEGIN")
+	--	print(relativeTime)
+	--	print("---------------")
+	--	for i,val in pairs(activeActs) do
+	--		print("seekTime=",toSeekAtBeginTime - userActionList[val].actionTime + relativeTime)
+	--		print("actionTime=",userActionList[val].actionTime)
+	--		print("channel=",userActionList[val].channel)
+	--		print("actType=",userActionList[val].actType)
+	--		print("volume=",userActionList[val].volume)
+	--		print("category=",userActionList[val].category)
+	--		print("channelActiveTime=",userActionList[val].channelActiveTime)
+	--		print("---------------")
+	--	end
+	--	print("SEEK END")
 		
 		while(idx <= gl.currentNumSamples) do
 			gl.mySeek(toSeekAtBeginTime + relativeTime,gl.currentKit[idx][1],idx,-1)
@@ -351,8 +380,16 @@ function new()
 					{channel = userActionList[activeActs[idx]].channel})
 					
 				audio.setVolume(userActionList[activeActs[idx]].volume,
-						{channel = userActionList[activeActs[idx]].channel})
+					{channel = userActionList[activeActs[idx]].channel})
 			end
+			
+			if (userActionList[activeActs[idx]].category == 6) then
+				isGlitchStarted = true
+				glitchState, toChangeGlitchState = gl.seekGlitch(relativeTime
+															 - userActionList[activeActs[idx]].actionTime
+															 + userActionList[activeActs[idx]].channelActiveTime)
+			end
+			
 			idx = idx + 1
 		end
 	end
@@ -364,6 +401,7 @@ function new()
 			audio.setVolume(0,{channel = idx})
 			idx = idx + 1
 		end
+		
 		idx = gl.currentNumSamples + 1
 		
 		while (idx <= gl.currentNumSamples + gl.currentNumFX + gl.currentNumVoices) do
@@ -373,12 +411,6 @@ function new()
 		
 		curPlayPos.x = event.x
 		txtPlay.text = "Pause"
-
-		if (isPaused == true) then
-			audio.resume()
-		end
-
-		isPaused = false
 
 		if (playPressCounter == 0) then 
 			openUserActList()		
@@ -393,7 +425,15 @@ function new()
 		playPressCounter = 1
 
 		relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
-
+		
+		if (isPaused == true) then
+			--audio.resume()
+			prevMeasure = system.getTimer()
+			isPaused = false
+		end
+		
+		isGlitchStarted = false
+		
 		activeActions,actCounter = findActiveActions(relPlayTime)
 
 		if (scrollTransition ~= nil) then
@@ -404,6 +444,14 @@ function new()
 		scrollTransition = transition.to(curPlayPos,
 					{time=relEndTrackTime - relPlayTime,x=(w-10)})
 
+	--	print("---------ACTIVE ACTS-----------")
+		--idx = 1
+		--while (idx <= #activeActions) do 
+		--	print("Channel = ",userActionList[activeActions[idx]].channel)
+		--	idx = idx + 1
+		--end
+		--print("------NO MORE ACTIVE ACTS------")
+		
 		seek(activeActions,relPlayTime)
 
 		play()

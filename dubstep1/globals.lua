@@ -10,7 +10,12 @@ currentNumFX = nil
 currentNumVoices = nil
 mainGroup = nil
 localGroup = nil
-isRecordingTimeRestricted = false
+isRecordingTimeRestricted = true
+
+timerTxt = nil
+
+changeLayoutTime = 30000
+fullRecordLength = 180000
 
 glitchChannel = 99
 glitchShutUpTime = 50
@@ -58,6 +63,7 @@ function drawLayoutBtns()
 	partSumms = {}
 	
 	recording = require("recording")
+	recording.recPressCounter = 0
 	replaying = require("replayModule")
 	volumePanel = require("volumeRegulator")
 	volumePanel.regulatorPanel = nil
@@ -73,6 +79,10 @@ function drawLayoutBtns()
 	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
 	loading.x,loading.y = w/2,h/2
 	loading.isVisible = false
+	
+	timerTxt = display.newText("",0,0,native.systemFont,32)
+	timerTxt.x,timerTxt.y = w/2,6*h/7
+	timerTxt.isVisible = false
 	
 	btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/4,15*h/16
 	btn1:setFillColor(140,255,0)
