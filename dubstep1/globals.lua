@@ -30,6 +30,8 @@ repBtn = nil
 btn1 = nil
 btn2 = nil
 volumeBtn = nil
+goodBtn = nil
+evilBtn = nil
 
 function changeBackGround(object) 
 	object.isVisible = true
@@ -83,6 +85,9 @@ function drawLayoutBtns()
 --	recBtn = display.newRoundedRect(1,1,w/8,h/8,10)
 	repBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
+	goodBtn = display.newRoundedRect(1,1,w/12,h/12,10)
+	evilBtn = display.newRoundedRect(1,1,w/12,h/12,10)
+	
 	volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
 	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
@@ -98,6 +103,13 @@ function drawLayoutBtns()
 	btn2:setFillColor(140,255,0)
 	btn1.alpha = 0.5
 	btn2.alpha = 0.5
+	
+	goodBtn.x,goodBtn.y = w/2,15*h/16
+	evilBtn.x,evilBtn.y = 5*w/8,15*h/16
+	goodBtn:setFillColor(0,100,255)
+	evilBtn:setFillColor(255,100,0)
+	goodBtn.isVisible = false
+	evilBtn.isVisible = false
 	
 --	recBtn.x,recBtn.y = 15*w/16,15*h/16
 --	recBtn:setFillColor(140,255,140)
@@ -118,9 +130,7 @@ function drawLayoutBtns()
 	repBtn.scene = "replayModule"
 	volumeBtn.scene = "volumeRegulator"
 	
-	print("here")
 	recording.cancelTimers(recording.getTimers())
-	recording.setRecState(false)
 	
 	function changeScene(event)
 		audio.stop()

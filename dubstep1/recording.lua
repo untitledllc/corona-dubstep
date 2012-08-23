@@ -147,6 +147,18 @@ function startRecording()
 							end )
 	end
 			
+	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime,
+								function ()
+									gl.goodBtn.isVisible = true
+									gl.evilBtn.isVisible = true
+								end )
+	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
+								function ()
+									gl.goodBtn.isVisible = false
+									gl.evilBtn.isVisible = false
+								end )								
+
+			
 	gl.timerTxt.isVisible = true
 	Runtime:addEventListener("enterFrame",updateTimer)
 end
