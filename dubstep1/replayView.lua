@@ -30,7 +30,6 @@ local sumPauseTime = 0
 local actCounter = 1
 local isPaused = false
 local playPressCounter = 0
-local state
 local currentMeasure = 0
 local prevMeasure = 0
 
@@ -42,14 +41,6 @@ local function printUserActList()
         print("\n")
     end
     print("---------------------------------")
-end
-
-local function print1DTable(table)
-	print("-----------------------")
-	for idx,val in pairs(table) do
-		print(val)
-	end
-	print("-----------------------")
 end
 
 local function readAction(file)
@@ -111,12 +102,12 @@ local function seekActiveTracks()
 	end
 end
 
-local function makeAction(index,delta) 
-	local track = getTrackNumber(index)
+local function makeAction(index) 
+	local channel = getTrackNumber(index)
 	local playStop = getActionActivity(index)
 	local actTime = getActionTime(index)
 
-	if (track == -1) then 
+	if (channel == -1) then 
 		audio.stop(0)
 		return true
 	end
@@ -125,11 +116,11 @@ local function makeAction(index,delta)
 		if (actTime == 0) then
 			seekActiveTracks()
 		else
-			audio.play(tracks[track][1],{channel = track,loops = -1})	
-			audio.seek(delta,{channel = track})
+			audio.play(tracks[channel][1],{channel = channel,loops = -1})	
+			audio.seek(delta,{channel = channel})
 		end
 	else
-		audio.stop(track)
+		audio.stop(channel)
 	end
 	return false
 end
@@ -159,9 +150,7 @@ end
 local function play(event)
 	if (relPlayTime <= relEndTrackTime and isPaused == false) then
 		if (relPlayTime > playUserActList[actCounter][1]) then
-			local delta = relPlayTime - playUserActList[actCounter][1]
-			state = makeAction(actCounter,delta)
-			if (state == true) then
+			if (makeAction(actCounter) == true) then
 				txtPlay.text = "Play"
 				onStop(nil)
 				return
@@ -169,13 +158,18 @@ local function play(event)
 				actCounter = actCounter + 1		
 			end
 		end
-		local deltaT
-		currentMeasure = system.getTimer()
-		if (currentMeasure > prevMeasure) then
-			deltaT = currentMeasure - prevMeasure
-			prevMeasure = currentMeasure
+		
+		local function calcDelta(currentMeasure,prevMeasure)
+			local deltaT
+			currentMeasure = system.getTimer()
+			if (currentMeasure > prevMeasure) then
+				deltaT = currentMeasure - prevMeasure
+				prevMeasure = currentMeasure
+			end
+			return deltaT
 		end
-		relPlayTime = relPlayTime + deltaT
+		
+		relPlayTime = relPlayTime + calcDelta(currentMeasure,prevMeasure)
 	end
 end
 
@@ -198,7 +192,6 @@ end
 
 local function findStartActionForTrack(trackNumber,relativeTime)
 	local idx = #playUserActList
-	--print(trackNumber)
 	while(true) do
 		if (playUserActList[idx][3] == 1 
 				and 
@@ -288,10 +281,12 @@ local function onPlay(event)
 		else
 			audio.pause()		
 			txtPlay.text = "Play"
+			
 			if (scrollTransition) then
 				transition.cancel(scrollTransition)
 				scrollTransition = nil
 			end
+			
 			isPaused = true
 		end
 		playPressCounter = playPressCounter + 1
@@ -323,7 +318,6 @@ local function onSeek(event)
 			transition.cancel(scrollTransition)
 			scrollTransition = nil
 		end
-
 		scrollTransition = transition.to(curPlayPos,
 					{time=relEndTrackTime - relPlayTime,x=(w-10)})
 
@@ -370,9 +364,4 @@ function showRepView()
 	bindListeners()
 
 	playPressCounter = 0
-	--[[openUserActList()
-	printUserActList()
-	local temp,I = findActiveActions(15000)
-	--print("I = ",I)
-	print1DTable(temp)--]]
 end

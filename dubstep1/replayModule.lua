@@ -20,7 +20,6 @@ function new()
 	local playPressCounter = 0
 	local relEndTrackTime = 1
 	local relPlayTime = 2
-	local firstTimePlayPressed = nil
 	local playerAppearTime = nil
 	
 	local actCounter = 1
@@ -415,8 +414,7 @@ function new()
 		if (playPressCounter == 0) then 
 			openUserActList()		
 			
-			firstTimePlayPressed = system.getTimer()	
-			prevMeasure	= firstTimePlayPressed
+			prevMeasure	= system.getTimer()
 			relEndTrackTime = userActionList[#userActionList].actionTime + 200
 			relPlayTime = 0
 			makePreRecordActions()
@@ -427,7 +425,7 @@ function new()
 		relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
 		
 		if (isPaused == true) then
-			--audio.resume()
+			audio.resume()
 			prevMeasure = system.getTimer()
 			isPaused = false
 		end
@@ -464,10 +462,11 @@ end
 				if (playPressCounter == 0) then	
 					openUserActList()		
 					prepareToReplay()
-					firstTimePlayPressed = system.getTimer()	
-					prevMeasure	= firstTimePlayPressed
+					prevMeasure = system.getTimer()
+					
 					relEndTrackTime = userActionList[#userActionList].actionTime + 200
 					relPlayTime = 0
+					
 					makePreRecordActions()
 				else
 					audio.resume()
@@ -549,10 +548,6 @@ end
 	bindListeners()	
 	
 	playerAppearTime = system.getTimer()
-	
-	--openUserActList()
-	
-	--prepareToReplay()
 	
 	return localGroup
 end

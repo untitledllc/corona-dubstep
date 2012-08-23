@@ -1,7 +1,5 @@
 module(...,package.seeall)
 
-firstTimePlayPressed = nil
-
 local gl = require("globals") 
 local recording = require("recording")
 local volumePanel = require("volumeRegulator")
@@ -15,6 +13,8 @@ local activeChannels = {["glitchChannel"] = nil}
 local voiceTimer = nil
 local fxTimer = nil
 
+local isGlitchStarted = false
+
 function getPartSumms()
 	return partSumms
 end
@@ -23,12 +23,8 @@ function getActiveChannels()
 	return activeChannels
 end
 
-local isGlitchStarted = false
-
 function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 	gl.currentKit = sampleKit
-		
-	firstTimePlayPressed = system.getTimer()
 		
 	partSumms = {}
 	local idx = 1
@@ -303,7 +299,7 @@ local function playFX(group,kit,index)
     
     local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
     activeChannel.channel = index
-    activeChannel.startTime = system.getTimer() - firstTimePlayPressed
+    activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
     activeChannel.category = 4
     activeChannel.volume = audio.getVolume({channel = index})
     activeChannels[index] = activeChannel
@@ -413,7 +409,7 @@ function playGlitch(event)
 		
 		local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
     	activeChannel.channel = gl.glitchChannel
-    	activeChannel.startTime = system.getTimer() - firstTimePlayPressed
+    	activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
     	activeChannel.category = 6
     	activeChannel.volume = 0
    		activeChannels.glitchChannel = activeChannel

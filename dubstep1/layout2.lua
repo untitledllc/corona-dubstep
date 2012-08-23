@@ -2,16 +2,6 @@ module(...,package.seeall)
 
 local layoutAppearTime = nil
 
-local gl = nil
-if (package.loaded.globals == nil) then
-	gl = require("globals")
-else
-	gl = package.loaded.globals
-end	
-
-local w = gl.w
-local h = gl.h
-
 local backs = {}
 
 function getLayoutBacks()
@@ -23,6 +13,11 @@ function getLayoutAppearTime()
 end
 
 function new()
+	local gl = require("globals")
+	
+	local w = gl.w
+	local h = gl.h
+
 	local mainGroup = display.newGroup()
 	local localGroup = display.newGroup()
 	
@@ -38,8 +33,6 @@ function new()
 	local playModule = require("playing")
 	layoutAppearTime = system.getTimer()
 	local kitAddress = "T"
-
-	playModule.firstTimePlayPressed = nil
 	
 	local playParams = {true,true,false,false,false,6,5,4,5,5}
 

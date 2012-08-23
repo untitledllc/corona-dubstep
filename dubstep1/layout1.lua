@@ -15,15 +15,12 @@ end
 function new()	
 	local mainGroup = display.newGroup()
 	local localGroup = display.newGroup()	
+	
 	local numSamples = 9
 	local numFX = 3
 	local numVoices = 3
-	local gl = nil
-	if (package.loaded.globals == nil) then
-		gl = require("globals")
-	else
-		gl = package.loaded.globals
-	end
+	
+	local gl = require("globals")
 	
 	gl.currentLayout = "layout1"
 	gl.currentNumSamples = numSamples
@@ -41,8 +38,6 @@ function new()
 	local h = gl.h
 
 	gl.btns = gl.drawLayoutBtns()
-	
-	playModule.firstTimePlayPressed = nil
 	
 	local trackCounters = {}
 	trackCounters = playModule.resetCounters(numSamples)
