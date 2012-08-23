@@ -1,30 +1,28 @@
 module (...,package.seeall)
 
 local userActionList = {}
-recPressCounter = 0
 
 local recPressTime = nil
 local endRecordingTime = nil
-prevRecStartTime = 0
 
 local pl = require("playing")
 local gl = require("globals")
 local layout = require(gl.currentLayout)
 
-local timer1 = nil
-local timer2 = nil
-local timer3 = nil
-local timer4 = nil
-local timer5 = nil
-local timer6 = nil
-local timer7 = nil
-
 local timers = {}
 
 local isRecSwitchedOn = false
 
-function cancelTimers()
-	for idx,val in pairs(timers) do
+function getTimers()
+	return timers
+end
+
+function setRecState(state) 
+	isRecSwitchedOn = state
+end
+
+function cancelTimers(tim)
+	for idx,val in pairs(tim) do
 		timer.cancel(val)
 	end
 end
@@ -87,49 +85,53 @@ local function updateTimer(event)
 	end
 end
 
-function startRecording()
-	local function stopRecording(e)			
+local function hideBtns()
+	for idx,val in pairs(gl.currentHiddenBtns) do
+		gl.mainGroup[2][val].alpha = 0.5
+		gl.mainGroup[2][val].isVisible = false
+		audio.setVolume(0,{channel = val})
+	end	
+end	
+
+function stopRecording(e)	
+	
+	cancelTimers(timers)
+	timers = {}
 		
-		cancelTimers()
-		timers = {}
-		for idx,val in pairs(gl.currentHiddenBtns) do
-			gl.mainGroup[2][val].alpha = 0.5
-			gl.mainGroup[2][val].isVisible = true
-			audio.setVolume(0,{channel = val})
-		end	
-		
-		endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
+	endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
+	
+	if (isRecSwitchedOn == true) then
 		completeUserActList()
 		saveUserActList()
-		isRecSwitchedOn = false
 		printUserActList()
-		userActionList = {}
-		
-		print("here")
-		gl.repBtn.isVisible = true
-		gl.timerTxt.isVisible = false
-		Runtime:removeEventListener("enterFrame",updateTimer)
 	end
 	
-	cancelTimers()
+	isRecSwitchedOn = false
+	
+	userActionList = {}
+		
+	gl.repBtn.isVisible = true
+	gl.timerTxt.isVisible = false
+	Runtime:removeEventListener("enterFrame",updateTimer)
+end
+
+function startRecording()
+	
+	cancelTimers(timers)
 	timers = {}
 	
 	recPressTime = system.getTimer() - layout.getLayoutAppearTime()
 	calcSeekTimeInActiveChannels(pl.getActiveChannels())
 	isRecSwitchedOn = true
 			
-	for idx,val in pairs(gl.currentHiddenBtns) do
-		gl.mainGroup[2][val].alpha = 0.5
-		gl.mainGroup[2][val].isVisible = false
-		audio.setVolume(0,{channel = val})
-	end			
+	hideBtns()		
 	
 	if (gl.isRecordingTimeRestricted == true) then
 		timers[1] = timer.performWithDelay(gl.fullRecordLength,stopRecording)
 	end
 
 	for idx,val in pairs(gl.currentBacks) do
-		timer[#timer + 1] = timer.performWithDelay(idx*gl.fullRecordLength/#gl.currentBacks,
+		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/#gl.currentBacks,
 							function ()
 								if (idx ~= 1) then
 									gl.currentBacks[idx - 1].isVisible = false
@@ -139,7 +141,7 @@ function startRecording()
 	end		
 	
 	for idx,val in pairs(gl.currentHiddenBtns) do
-		timer[#timer + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentHiddenBtns + 2),
+		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentHiddenBtns + 2),
 							function()
 								gl.mainGroup[2][val].isVisible = true
 							end )

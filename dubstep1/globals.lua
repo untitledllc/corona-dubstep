@@ -70,7 +70,7 @@ function drawLayoutBtns()
 	activeChannels = {}
 	partSumms = {}
 	
---	recording = require("recording")
+	recording = require("recording")
 --	recording.recPressCounter = 0
 	replaying = require("replayModule")
 	volumePanel = require("volumeRegulator")
@@ -117,6 +117,10 @@ function drawLayoutBtns()
 --	recBtn.scene = "recording"
 	repBtn.scene = "replayModule"
 	volumeBtn.scene = "volumeRegulator"
+	
+	print("here")
+	recording.cancelTimers(recording.getTimers())
+	recording.setRecState(false)
 	
 	function changeScene(event)
 		audio.stop()
