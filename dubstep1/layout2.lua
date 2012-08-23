@@ -14,7 +14,7 @@ end
 
 function new()
 	local gl = require("globals")
-	
+
 	local w = gl.w
 	local h = gl.h
 
@@ -344,6 +344,8 @@ function new()
 	gl.mainGroup = mainGroup
 	gl.localGroup = localGroup 
 	gl.currentBacks = backs
+	
+	require("recording").startRecording()
 	
 	return mainGroup
 end

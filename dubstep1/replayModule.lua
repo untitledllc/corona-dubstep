@@ -185,6 +185,7 @@ function new()
 		end
 		
 		if (actType == 1 and category > 3 and category < 6) then
+			audio.setVolume(userActionList[index].volume,{channel = track})
 			audio.play(gl.currentKit[track][1],{channel = track})
 		end
 		

@@ -241,9 +241,16 @@ function new()
 	mainGroup:insert(1,backs[1])
 	mainGroup:insert(2,localGroup)
 
+	local function initHiddenBacks() 
+		return {1,2,4,5,6,7,8,10,11,13,14}
+	end
+
 	gl.mainGroup = mainGroup
 	gl.localGroup  = localGroup 
 	gl.currentBacks = backs
+	gl.currentHiddenBtns = initHiddenBacks()
+	
+	require("recording").startRecording()
 	
 	return mainGroup
 end

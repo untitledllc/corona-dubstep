@@ -6,7 +6,7 @@ local mainGroup = display.newGroup()
 
 local function main()
 	mainGroup:insert(director.directorView)
-	director:changeScene("layout2")
+	director:changeScene("layout1")
 	return true
 end
 

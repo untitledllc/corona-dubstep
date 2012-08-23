@@ -19,7 +19,15 @@ local timer5 = nil
 local timer6 = nil
 local timer7 = nil
 
+local timers = {}
+
 local isRecSwitchedOn = false
+
+function cancelTimers()
+	for idx,val in pairs(timers) do
+		timer.cancel(val)
+	end
+end
 
 local function printUserActList()
 	print("Start rec =",recPressTime)
@@ -79,142 +87,66 @@ local function updateTimer(event)
 	end
 end
 
-local function change5_1(event)
-	gl.currentBacks[5].isVisible = false
-	gl.changeBackGround(gl.currentBacks[1])
-	
-	timer6 = timer.performWithDelay(gl.changeLayoutTime,change1_2)
-end
-
-local function change4_5(event)
-	gl.currentBacks[4].isVisible = false
-	
-	gl.mainGroup[2][12].isVisible = false
-
-	audio.setVolume(0,{channel = 12})
-	
-	addAction(system.getTimer() - layout.getLayoutAppearTime() - recPressTime,
-    		12,0,audio.getVolume({channel = 12}),4,system.getTimer() - layout.getLayoutAppearTime())
-	
-	gl.changeBackGround(gl.currentBacks[5])
-	timer5 = timer.performWithDelay(gl.changeLayoutTime,change5_1)
-end
-
-local function change3_4(event)
-	gl.currentBacks[3].isVisible = false
-	gl.mainGroup[2][9].isVisible = false
-	gl.mainGroup[2][12].isVisible = true
-
-	audio.setVolume(0,{channel = 9})
-	
-	addAction(system.getTimer() - layout.getLayoutAppearTime() - recPressTime,
-    		9,0,audio.getVolume({channel = 9}),3,system.getTimer() - layout.getLayoutAppearTime())
-	
-	gl.changeBackGround(gl.currentBacks[4])
-	timer4 = timer.performWithDelay(gl.changeLayoutTime,change4_5)
-end
-
-local function change2_3(event)
-	gl.currentBacks[2].isVisible = false
-	gl.mainGroup[2][3].isVisible = false
-	gl.mainGroup[2][9].isVisible = true
-	
-	audio.setVolume(0,{channel = 3})
-	
-	addAction(system.getTimer() - layout.getLayoutAppearTime() - recPressTime,
-    			3,0,audio.getVolume({channel = 3}),2,system.getTimer() - layout.getLayoutAppearTime())
-
-	gl.changeBackGround(gl.currentBacks[3])
-	timer3 = timer.performWithDelay(gl.changeLayoutTime,change3_4)
-end
-
-local function change1_2(event)
-	gl.currentBacks[1].isVisible = false
-	gl.changeBackGround(gl.currentBacks[2])
-
-	gl.mainGroup[2][3].isVisible = true
-	
-	timer2 = timer.performWithDelay(gl.changeLayoutTime,change2_3)
-end
-
-function startRecording(event)
+function startRecording()
 	local function stopRecording(e)			
-		if (timer1 ~= nil) then
-			timer.cancel(timer1)
-		end
-		if (timer2 ~= nil) then
-			timer.cancel(timer2)
-		end
-		if (timer3 ~= nil) then
-			timer.cancel(timer3)
-		end
-		if (timer4 ~= nil) then
-			timer.cancel(timer4)
-		end
-		if (timer5 ~= nil) then
-			timer.cancel(timer5)
-		end
-		if (timer6 ~= nil) then
-			timer.cancel(timer6)
-		end
 		
-		gl.mainGroup[2][3].alpha = 0.5
-		gl.mainGroup[2][9].alpha = 0.5
-		gl.mainGroup[2][12].alpha = 0.5
-		
-		gl.mainGroup[2][3].isVisible = true
-		gl.mainGroup[2][9].isVisible = true
-		gl.mainGroup[2][12].isVisible = true
+		cancelTimers()
+		timers = {}
+		for idx,val in pairs(gl.currentHiddenBtns) do
+			gl.mainGroup[2][val].alpha = 0.5
+			gl.mainGroup[2][val].isVisible = true
+			audio.setVolume(0,{channel = val})
+		end	
 		
 		endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
 		completeUserActList()
 		saveUserActList()
 		isRecSwitchedOn = false
-		event.target.alpha = 0.5
 		printUserActList()
 		userActionList = {}
-	end
-	local function stopRestrictRecording(e)
-		if (isRecSwitchedOn == true) then
-			stopRecording(nil)
-			recPressCounter = recPressCounter + 1
-		end
+		
+		print("here")
+		gl.repBtn.isVisible = true
+		gl.timerTxt.isVisible = false
+		Runtime:removeEventListener("enterFrame",updateTimer)
 	end
 	
-	if (event.phase == "ended") then
-		if (recPressCounter % 2 == 0) then
-			recPressTime = system.getTimer() - layout.getLayoutAppearTime()
-			calcSeekTimeInActiveChannels(pl.getActiveChannels())
-			event.target.alpha = 1
-			isRecSwitchedOn = true
+	cancelTimers()
+	timers = {}
+	
+	recPressTime = system.getTimer() - layout.getLayoutAppearTime()
+	calcSeekTimeInActiveChannels(pl.getActiveChannels())
+	isRecSwitchedOn = true
 			
-			gl.mainGroup[2][3].alpha = 0.5
-			gl.mainGroup[2][9].alpha = 0.5
-			gl.mainGroup[2][12].alpha = 0.5
-			
-			gl.mainGroup[2][3].isVisible = false
-			gl.mainGroup[2][9].isVisible = false
-			gl.mainGroup[2][12].isVisible = false
-			   
-			audio.setVolume(0,{channel = 3})
-			audio.setVolume(0,{channel = 9})
-			audio.setVolume(0,{channel = 12})
-			
-			timer1 = timer.performWithDelay(gl.changeLayoutTime,change1_2)
-			if (gl.isRecordingTimeRestricted == true) then
-				timer7 = timer.performWithDelay(gl.fullRecordLength,stopRestrictRecording)
-			end
-			
-			gl.timerTxt.isVisible = true
-			Runtime:addEventListener("enterFrame",updateTimer)
-		else
-			stopRecording(nil)
-			
-			gl.timerTxt.isVisible = false
-			Runtime:removeEventListener("enterFrame",updateTimer)
-		end
-		recPressCounter = recPressCounter + 1
+	for idx,val in pairs(gl.currentHiddenBtns) do
+		gl.mainGroup[2][val].alpha = 0.5
+		gl.mainGroup[2][val].isVisible = false
+		audio.setVolume(0,{channel = val})
+	end			
+	
+	if (gl.isRecordingTimeRestricted == true) then
+		timers[1] = timer.performWithDelay(gl.fullRecordLength,stopRecording)
 	end
+
+	for idx,val in pairs(gl.currentBacks) do
+		timer[#timer + 1] = timer.performWithDelay(idx*gl.fullRecordLength/#gl.currentBacks,
+							function ()
+								if (idx ~= 1) then
+									gl.currentBacks[idx - 1].isVisible = false
+								end
+									gl.changeBackGround(gl.currentBacks[idx])
+							end )
+	end		
+	
+	for idx,val in pairs(gl.currentHiddenBtns) do
+		timer[#timer + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentHiddenBtns + 2),
+							function()
+								gl.mainGroup[2][val].isVisible = true
+							end )
+	end
+			
+	gl.timerTxt.isVisible = true
+	Runtime:addEventListener("enterFrame",updateTimer)
 end
 
 function addAction(time,index,actType,vol,category,chActTime)
