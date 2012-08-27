@@ -112,6 +112,11 @@ function stopRecording(e)
 		
 	gl.repBtn.isVisible = true
 	gl.timerTxt.isVisible = false
+	
+	audio.stop(gl.currentBasicChannel)
+	audio.stop(gl.currentGoodChannel)
+	audio.stop(gl.currentEvilChannel)
+	
 	Runtime:removeEventListener("enterFrame",updateTimer)
 end
 
@@ -131,7 +136,7 @@ function startRecording()
 	end
 
 	for idx,val in pairs(gl.currentBacks) do
-		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/#gl.currentBacks,
+		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks + 2),
 							function ()
 								if (idx ~= 1) then
 									gl.currentBacks[idx - 1].isVisible = false
@@ -152,10 +157,27 @@ function startRecording()
 									gl.goodBtn.isVisible = true
 									gl.evilBtn.isVisible = true
 								end )
+								
+	local function playRandom()
+		math.randomseed(math.random())
+		if (math.random() > 0.5) then
+			pl.playGoodMelody()
+		else
+			pl.playEvilMelody()
+		end
+	end
+	
 	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
 								function ()
 									gl.goodBtn.isVisible = false
 									gl.evilBtn.isVisible = false
+									if (gl.currentBasicMelody ~= gl.currentGoodMelody
+											and
+										gl.currentBasicMelody ~= gl.currentEvilMelody) then
+										
+										playRandom()
+										
+									end
 								end )								
 
 			

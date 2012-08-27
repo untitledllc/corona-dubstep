@@ -497,6 +497,47 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 	end
 end
 
+function playGoodMelody(event)
+	recording.addAction(system.getTimer() - 
+				curLayout.getLayoutAppearTime(),
+						currentBasicChannel,
+							0,0,2,0)
+	
+	audio.setVolume(0,{channel = currentBasicChannel})																	
+	audio.setVolume(1, {channel = currentGoodChannel})
+											
+	recording.addAction(system.getTimer() - 
+				curLayout.getLayoutAppearTime(),
+						currentGoodChannel,
+							1,1,2,0)
+end
+
+function playEvilMelody(event)
+	recording.addAction(system.getTimer() - 
+				curLayout.getLayoutAppearTime(),
+						currentBasicChannel,
+							0,0,2,0)
+					
+	audio.setVolume(0,{channel = currentBasicChannel})		
+	audio.setVolume(1, {channel = currentEvilChannel})
+											
+	recording.addAction(system.getTimer() - 
+				curLayout.getLayoutAppearTime(),
+						currentEvilChannel,
+							1,1,2,0)
+end
+
+function playBasicMelody() 
+	
+	audio.setVolume(1,{channel = currentBasicChannel})
+	audio.setVolume(0,{channel = currentGoodChannel})
+	audio.setVolume(0,{channel = currentEvilChannel})
+	
+	recording.addAction(0,currentBasicChannel,1,1,2,0)
+	recording.addAction(0,currentGoodChannel,1,0,2,0)
+	recording.addAction(0,currentEvilChannel,1,0,2,0)
+end
+
 function initSounds(kitAddress,numSamples,numFX,numVoices)
 	local i = 1
 	local str
@@ -510,6 +551,32 @@ function initSounds(kitAddress,numSamples,numFX,numVoices)
 		track = {}
 		i = i + 1
 	end
+	
+	gl.currentBasicMelody = audio.loadSound(kitAddress.."Basic.mp3")
+	gl.currentEvilMelody = audio.loadSound(kitAddress.."Evil.mp3")
+	gl.currentGoodMelody = audio.loadSound(kitAddress.."Good.mp3")
+	
+	currentBasicChannel = i
+	currentGoodChannel = i + 1
+	currentEvilChannel = i + 2
+	
+	track[1] = gl.currentBasicMelody
+	track[2] = kitAddress.."Basic.mp3"
+	tracks[currentBasicChannel] = track
+	track = {}
+	
+	track[1] = gl.currentGoodMelody
+	track[2] = kitAddress.."Good.mp3"
+	tracks[currentGoodChannel] = track
+	track = {}
+	
+	track[1] =  gl.currentEvilMelody
+	track[2] = kitAddress.."Evil.mp3"
+	tracks[currentEvilChannel] = track
+	
+	audio.play(gl.currentBasicMelody,{channel = currentBasicChannel,loops = -1})
+	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
+	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
 	return tracks
 end
 

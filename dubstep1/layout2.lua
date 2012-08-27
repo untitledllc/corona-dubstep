@@ -32,7 +32,7 @@ function new()
 	
 	local playModule = require("playing")
 	layoutAppearTime = system.getTimer()
-	local kitAddress = "T"
+	local kitAddress = "sounds2/T"
 	
 	local playParams = {true,true,false,false,false,6,5,4,5,5}
 
@@ -319,23 +319,26 @@ function new()
 	bindEventListeners()	
 	btn26:addEventListener("touch",playModule.playGlitch)
 	
-	backs[1] = display.newRect(0,0,w,h)
-	backs[2] = display.newRect(0,0,w,h)
-	backs[3] = display.newRect(0,0,w,h)
-	backs[4] = display.newRect(0,0,w,h)
-	backs[5] = display.newRect(0,0,w,h)	
+	backs[1] = display.newImageRect("images/layout1/back1.png",gl.w,gl.h)
+	backs[2] = display.newImageRect("images/layout2/back2.png",gl.w,gl.h)
+	backs[3] = display.newImageRect("images/layout2/back3.png",gl.w,gl.h)
+	backs[4] = display.newImageRect("images/layout2/back4.png",gl.w,gl.h)
+	backs[5] = display.newImageRect("images/layout2/back5.png",gl.w,gl.h)
+	backs[6] = display.newImageRect("images/layout2/back6.png",gl.w,gl.h)
 	
-	backs[1]:setFillColor(10,150,100)
-	backs[2]:setFillColor(150,150,150)
-	backs[3]:setFillColor(50,50,50)
-	backs[4]:setFillColor(10,10,10)
-	backs[5]:setFillColor(100,100,100)
+	backs[1].x,backs[1].y = gl.w/2,gl.h/2
+	backs[2].x,backs[2].y = gl.w/2,gl.h/2
+	backs[3].x,backs[3].y = gl.w/2,gl.h/2
+	backs[4].x,backs[4].y = gl.w/2,gl.h/2
+	backs[5].x,backs[5].y = gl.w/2,gl.h/2
+	backs[6].x,backs[6].y = gl.w/2,gl.h/2
 	
 	backs[1].isVisible = false
 	backs[2].isVisible = false
 	backs[3].isVisible = false
 	backs[4].isVisible = false
 	backs[5].isVisible = false
+	backs[6].isVisible = false
 	
 	backs[1].isVisible = true
 	mainGroup:insert(1,backs[1])
@@ -351,6 +354,8 @@ function new()
 	gl.currentHiddenBtns = initHiddenBacks()
 	
 	require("recording").startRecording()
+	
+	playModule.playBasicMelody() 
 	
 	return mainGroup
 end

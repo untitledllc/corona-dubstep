@@ -3,6 +3,14 @@ module(...,package.seeall)
 w = display.contentWidth
 h = display.contentHeight
 
+currentBasicMelody = nil
+currentEvilMelody = nil
+currentGoodMelody = nil
+
+currentBasicChannel = nil
+currentEvilChannel = nil
+currentGoodChannel = nil
+
 currentKit = nil
 currentLayout = nil
 currentNumSamples = nil
@@ -14,7 +22,7 @@ isRecordingTimeRestricted = true
 
 timerTxt = nil
 
-changeLayoutTime = 3000
+changeLayoutTime = 30000
 fullRecordLength = 18000
 showChoiceTime = 6000
 choiceShownDurationTime = 2000
@@ -145,6 +153,8 @@ function drawLayoutBtns()
 	--recBtn:addEventListener("touch",recording.startRecording)
 	repBtn:addEventListener("touch",changeScene)
 	volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
+	goodBtn:addEventListener("touch",playing.playGoodMelody)
+	evilBtn:addEventListener("touch",playing.playEvilMelody)
 	
 	btns[1] = btn1
 	btns[2] = btn2

@@ -119,6 +119,7 @@ function new()
 		local toSeekSampleTime = findSeekSamplesTime()
 		while (userActionList[idx].actionTime == 0) do
 			if (userActionList[idx].category <= 3) then
+				print("channel is ",userActionList[idx].channel)
 				gl.mySeek(toSeekSampleTime,
 					gl.currentKit[userActionList[idx].channel][1],
 								userActionList[idx].channel,-1)
@@ -294,7 +295,7 @@ function new()
 			end
 			
 			relPlayTime = relPlayTime + deltaT
-			print("relativePlayTime = ",relPlayTime)
+			--print("relativePlayTime = ",relPlayTime)
 		end
 	end
 	
