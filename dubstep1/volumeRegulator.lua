@@ -32,7 +32,11 @@ function setVolume(volumeLevel,channels)
 end
 
 function getVolume(scrollTmp)
-	return (topLimit - scrollTmp.y - 3*h/4)/lineLen
+	if (scrollTmp.y ~= nil) then
+		return (topLimit - scrollTmp.y - 3*h/4)/lineLen
+	else
+		return 0.5
+	end
 end
 
 local function calcScrollIndex(scroll)

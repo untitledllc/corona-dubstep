@@ -176,7 +176,6 @@ function startRecording()
 										gl.currentBasicMelody ~= gl.currentEvilMelody) then
 										
 										playRandom()
-										
 									end
 								end )								
 

@@ -245,7 +245,7 @@ function new()
 	mainGroup:insert(2,localGroup)
 
 	local function initHiddenBacks() 
-		return {1,2,4,5,6,7,8,10,11,13,14}
+		return {2,4,5,6,7,8,10,11,13,14}
 	end
 
 	gl.mainGroup = mainGroup

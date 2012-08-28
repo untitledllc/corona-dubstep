@@ -498,6 +498,9 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 end
 
 function playGoodMelody(event)
+	gl.goodBtn.isVisible = false
+	gl.evilBtn.isVisible = false
+	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentBasicChannel,
@@ -513,6 +516,9 @@ function playGoodMelody(event)
 end
 
 function playEvilMelody(event)
+	gl.goodBtn.isVisible = false
+	gl.evilBtn.isVisible = false
+	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentBasicChannel,
