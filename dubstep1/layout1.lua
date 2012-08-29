@@ -245,7 +245,7 @@ function new()
 	mainGroup:insert(2,localGroup)
 
 	local function initHiddenBacks() 
-		return {2,4,5,6,7,8,10,11,13,14}
+		return {2,4,8,11,14,5,6,9,12,15}
 	end
 
 	gl.mainGroup = mainGroup
@@ -255,6 +255,9 @@ function new()
 	
 	require("recording").startRecording()
 	playModule.playBasicMelody()
+	
+	gl.loading.isVisible = false
+	--gl.stopRotation(gl.rotator)
 	
 	return mainGroup
 end

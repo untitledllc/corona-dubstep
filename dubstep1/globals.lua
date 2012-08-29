@@ -24,7 +24,7 @@ timerTxt = nil
 
 changeLayoutTime = 30000
 fullRecordLength = 192000
-showChoiceTime = 95000
+showChoiceTime = 92000
 choiceShownDurationTime = 4000
 
 glitchChannel = 99
@@ -40,6 +40,36 @@ btn2 = nil
 volumeBtn = nil
 goodBtn = nil
 evilBtn = nil
+
+loading = nil
+rotator = nil
+
+sceneNumber = nil
+
+local rotateFunc = nil
+
+function startRotation(object,angle)
+	if (object == nil) then
+		return
+	end
+	object.isVisible = true
+	--local delta = 0
+	local function rotateObject(event)
+		print(angle)
+		object:rotate(angle)
+		--delta = delta + angle
+	end
+	rotateFunc = rotateObject
+	Runtime:addEventListener("enterFrame",rotateObject)
+end
+
+function stopRotation(object)
+	if (object == nil) then
+		return
+	end
+	object.isVisible = false
+	Runtime:removeEventListener("enterFrame",rotateFunc)
+end
 
 function changeBackGround(object) 
 	object.isVisible = true
@@ -77,6 +107,7 @@ function seekGlitch(time)
 end
 
 function drawLayoutBtns()
+	print(loading)
 	activeChannels = {}
 	partSumms = {}
 	
@@ -97,13 +128,13 @@ function drawLayoutBtns()
 	
 	volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
-	loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
-	loading.x,loading.y = w/2,h/2
-	loading.isVisible = false
-	
 	timerTxt = display.newText("",0,0,native.systemFont,32)
 	timerTxt.x,timerTxt.y = w/2,6*h/7
 	timerTxt.isVisible = false
+	
+	sceneNumber = display.newText("1",0,0,native.systemFont,32)
+	sceneNumber.x,sceneNumber.y = 2*w/3,6*h/7
+	sceneNumber.isVisible = false
 	
 	btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/4,15*h/16
 	btn1:setFillColor(140,255,0)
@@ -127,8 +158,8 @@ function drawLayoutBtns()
 	volumeBtn:setFillColor(140,255,140)
 	volumeBtn.alpha = 0.5
 	
-	btn1.scene = "layout1"
-	btn2.scene = "layout2"
+	btn1.scene = "mainScreen"
+	btn2.scene = currentLayout
 	repBtn.scene = "replayModule"
 	volumeBtn.scene = "volumeRegulator"
 	

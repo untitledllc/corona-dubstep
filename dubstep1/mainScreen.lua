@@ -5,12 +5,21 @@ function new()
 	local mainGroup = display.newGroup()
 	local gl = require("globals")
 	
-	local backGround = display.newImageRect("images/mainScreenImage.png",gl.w,gl.h)
-	backGround.x,backGround.y = gl.w/2,gl.h/2
+	local delta = 3
 	
-	local level1Btn = display.newRoundedRect(1,1,gl.w/10,gl.h/10,2)
-	local level2Btn = display.newRoundedRect(1,1,gl.w/10,gl.h/10,2)
+	gl.loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
+	gl.loading.x,gl.loading.y = gl.w/2,gl.h/4
+	gl.loading.isVisible = false
 	
+--	gl.rotator = display.newImageRect("images/mainScreen/rotator.jpeg",gl.w/5,gl.h/5)
+--	gl.rotator.x,gl.rotator.y = gl.w/2,3*gl.h/4
+	
+--	local backGround = display.newImageRect("images/mainScreen/mainScreenImage.png",gl.w,gl.h)
+--	backGround.x,backGround.y = gl.w/2,gl.h/2
+	
+	local level1Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)
+	local level2Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)
+
 	level1Btn.x,level1Btn.y = gl.w/3,gl.h/2
 	level2Btn.x,level2Btn.y = 2*gl.w/3,gl.h/2
 	
@@ -18,13 +27,17 @@ function new()
 	level2Btn:setFillColor(0,255,255)
 	
 	local function toLevel1Handler(event)
+		gl.loading.isVisible = true
 		if (event.phase == "ended") then
 			director:changeScene("layout1")
+			--gl.startRotation(gl.rotator,3)
 		end
 	end
 	local function toLevel2Handler(event)
+		gl.loading.isVisible = true
 		if (event.phase == "ended") then
-			director:changeScene("layout2")
+			director:changeScene("layout2")	
+			--gl.startRotation(gl.rotator,3)
 		end
 	end
 	
@@ -40,11 +53,11 @@ function new()
 	
 	localGroup:insert(level1Btn)
 	localGroup:insert(level2Btn)
+	localGroup:insert(gl.loading)
 	
 	bindListeners()
 	
-	mainGroup:insert(backGround)
-	mainGroup:insert(localGroup)
-	
-	return mainGroup
+--	mainGroup:insert(backGround)
+--	mainGroup:insert(localGroup)
+	return localGroup
 end

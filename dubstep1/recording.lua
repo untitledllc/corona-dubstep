@@ -78,10 +78,10 @@ end
 
 local function updateTimer(event)
 	if (isRecSwitchedOn == true) then
-		gl.timerTxt.text = tostring(math.round( gl.fullRecordLength - 
+		gl.timerTxt.text = tostring(math.round( (gl.fullRecordLength - 
 									(system.getTimer() - 
 										layout.getLayoutAppearTime() - 
-											recPressTime) )/1000)
+											recPressTime))/1000 ))
 	end
 end
 
@@ -120,6 +120,23 @@ function stopRecording(e)
 	Runtime:removeEventListener("enterFrame",updateTimer)
 end
 
+local function findNext5HiddenBtns()
+	local result = {}
+	local idx = 1
+	while (idx <= 5) do
+		if (gl.currentHiddenBtns[1]~= nil) then
+			result[idx] = gl.currentHiddenBtns[1]
+			--print("to delete",gl.currentHiddenBtns[1])
+			table.remove(gl.currentHiddenBtns,1)	
+		else
+			table.remove(gl.currentHiddenBtns,1)
+			break
+		end
+		idx = idx + 1
+	end
+	return result
+end
+
 function startRecording()
 	
 	cancelTimers(timers)
@@ -128,6 +145,8 @@ function startRecording()
 	recPressTime = system.getTimer() - layout.getLayoutAppearTime()
 	calcSeekTimeInActiveChannels(pl.getActiveChannels())
 	isRecSwitchedOn = true
+	
+	gl.sceneNumber.isVisible = true		
 			
 	hideBtns()		
 	
@@ -142,15 +161,19 @@ function startRecording()
 									gl.currentBacks[idx - 1].isVisible = false
 								end
 									gl.changeBackGround(gl.currentBacks[idx])
+								for idx,val in pairs(findNext5HiddenBtns()) do
+									gl.mainGroup[2][val].isVisible = true
+								end
+								gl.sceneNumber.text = tostring(idx + 1)
 							end )
 	end		
 	
-	for idx,val in pairs(gl.currentHiddenBtns) do
+--[[	for idx,val in pairs(gl.currentHiddenBtns) do
 		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentHiddenBtns + 2),
 							function()
 								gl.mainGroup[2][val].isVisible = true
 							end )
-	end
+	end--]]
 			
 	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime,
 								function ()
