@@ -26,6 +26,15 @@ function new()
 	level1Btn:setFillColor(255,255,0)
 	level2Btn:setFillColor(0,255,255)
 	
+	local txtLevel1 = display.newText("Lvl1",0,0,native.systemFont,14)	
+	local txtLevel2 = display.newText("Lvl2",0,0,native.systemFont,14)	
+	
+	txtLevel1.x,txtLevel1.y = gl.w/3,gl.h/2
+	txtLevel2.x,txtLevel2.y = 2*gl.w/3,gl.h/2
+	
+	txtLevel1:setTextColor(0,0,0)
+	txtLevel2:setTextColor(0,0,0)
+	
 	local function toLevel1Handler(event)
 		gl.loading.isVisible = true
 		if (event.phase == "ended") then
@@ -54,6 +63,8 @@ function new()
 	localGroup:insert(level1Btn)
 	localGroup:insert(level2Btn)
 	localGroup:insert(gl.loading)
+	localGroup:insert(txtLevel1)
+	localGroup:insert(txtLevel2)
 	
 	bindListeners()
 	

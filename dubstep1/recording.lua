@@ -179,6 +179,8 @@ function startRecording()
 								function ()
 									gl.goodBtn.isVisible = true
 									gl.evilBtn.isVisible = true
+									gl.goodTxt.isVisible = true
+									gl.evilTxt.isVisible = true
 								end )
 								
 	local function playRandom()
@@ -194,6 +196,9 @@ function startRecording()
 								function ()
 									gl.goodBtn.isVisible = false
 									gl.evilBtn.isVisible = false
+									gl.goodTxt.isVisible = false
+									gl.evilTxt.isVisible = false
+									
 									if (gl.currentBasicMelody ~= gl.currentGoodMelody
 											and
 										gl.currentBasicMelody ~= gl.currentEvilMelody) then

@@ -24,7 +24,7 @@ timerTxt = nil
 
 changeLayoutTime = 30000
 fullRecordLength = 192000
-showChoiceTime = 92000
+showChoiceTime = 90000
 choiceShownDurationTime = 4000
 
 glitchChannel = 99
@@ -40,6 +40,11 @@ btn2 = nil
 volumeBtn = nil
 goodBtn = nil
 evilBtn = nil
+
+goodTxt = nil
+evilTxt = nil
+eqTxt = nil
+repTxt = nil
 
 loading = nil
 rotator = nil
@@ -123,8 +128,15 @@ function drawLayoutBtns()
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
 	repBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
-	goodBtn = display.newRoundedRect(1,1,w/12,h/12,10)
-	evilBtn = display.newRoundedRect(1,1,w/12,h/12,10)
+	goodTxt = display.newText("Good",0,0,native.systemFont,14)
+	evilTxt = display.newText("Evil",0,0,native.systemFont,14)
+	goodTxt.x,goodTxt.y = w/2,15*h/16
+	evilTxt.x,evilTxt.y = 5*w/8,15*h/16
+	goodTxt.isVisible = false
+	evilTxt.isVisible = false
+	
+	goodBtn = display.newRoundedRect(1,1,w/10,h/10,10)
+	evilBtn = display.newRoundedRect(1,1,w/10,h/10,10)
 	
 	volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	

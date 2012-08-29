@@ -180,7 +180,7 @@ function new()
 					playSound21,playSound22,playSound23,
 					playSound24,playSound25}
 		local idx = 1
-		while(idx < localGroup.numChildren) do
+		while(idx < #handlerTable) do
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
 			idx = idx + 1
 		end
@@ -221,6 +221,33 @@ function new()
 	btn25 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn26 = display.newRoundedRect(1,1,w/20,h/2,4)	
 		
+--[[	txt1 = display.newText("Sound1_1",0,0,native.systemFont,14)	
+	txt2 = display.newText("Sound2_1",0,0,native.systemFont,14)	
+	txt3 = display.newText("Sound3_1",0,0,native.systemFont,14)	
+	txt4 = display.newText("Sound4_1",0,0,native.systemFont,14)	
+	txt5 = display.newText("Sound5_1",0,0,native.systemFont,14)	
+	txt6 = display.newText("Sound6_1",0,0,native.systemFont,14)	
+	txt7 = display.newText("Sound1_2",0,0,native.systemFont,14)	
+	txt8 = display.newText("Sound2_2",0,0,native.systemFont,14)	
+	txt9 = display.newText("Sound3_2",0,0,native.systemFont,14)	
+	txt10 = display.newText("Sound4_2",0,0,native.systemFont,14)	
+	txt11 = display.newText("Sound5_2",0,0,native.systemFont,14)	
+	txt12 = display.newText("Sound1_3",0,0,native.systemFont,14)	
+	txt13 = display.newText("Sound2_3",0,0,native.systemFont,14)	
+	txt14 = display.newText("Sound3_3",0,0,native.systemFont,14)	
+	txt15 = display.newText("Sound4_3",0,0,native.systemFont,14)	
+	txt16 = display.newText("Sound1_4",0,0,native.systemFont,14)	
+	txt17 = display.newText("Sound2_4",0,0,native.systemFont,14)	
+	txt18 = display.newText("Sound3_4",0,0,native.systemFont,14)	
+	txt19 = display.newText("Sound4_4",0,0,native.systemFont,14)	
+	txt20 = display.newText("Sound5_4",0,0,native.systemFont,14)	
+	txt21 = display.newText("Sound1_5",0,0,native.systemFont,14)	
+	txt22 = display.newText("Sound2_5",0,0,native.systemFont,14)	
+	txt23 = display.newText("Sound3_5",0,0,native.systemFont,14)	
+	txt24 = display.newText("Sound4_5",0,0,native.systemFont,14)	
+	txt25 = display.newText("Sound5_5",0,0,native.systemFont,14)	
+	txt26 = display.newText("Glitch",0,0,native.systemFont,14)	--]]
+		
 	btn1.x,btn2.x,btn3.x,btn4.x,btn5.x,btn6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
 	btn7.x,btn8.x,btn9.x,btn10.x,btn11.x = w/6,w/3,w/2,2*w/3,5*w/6
 	btn12.x,btn13.x,btn14.x,btn15.x= w/5,2*w/5,3*w/5,4*w/5
@@ -234,6 +261,20 @@ function new()
 	btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
 		
 	btn26.x,btn26.y = w/20,h/2	
+	
+--[[	txt1.x,txt2.x,txt3.x,txt4.x,txt5.x,txt6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
+	txt7.x,txt8.x,txt9.x,txt10.x,txt11.x = w/6,w/3,w/2,2*w/3,5*w/6
+	txt12.x,txt13.x,txt14.x,txt15.x= w/5,2*w/5,3*w/5,4*w/5
+	txt16.x,txt17.x,txt18.x,txt19.x,txt20.x = w/6,w/3,w/2,2*w/3,5*w/6
+	txt21.x,txt22.x,txt23.x,txt24.x,txt25.x = w/6,w/3,w/2,2*w/3,5*w/6
+		
+	txt1.y,txt2.y,txt3.y,txt4.y,txt5.y,txt6.y = h/7,h/7,h/7,h/7,h/7,h/7
+	txt7.y,txt8.y,txt9.y,txt10.y,txt11.y = 2*h/7,2*h/7,2*h/7,2*h/7,2*h/7
+	txt12.y,txt13.y,txt14.y,txt15.y = 3*h/7,3*h/7,3*h/7,3*h/7
+	txt16.y,txt17.y,txt18.y,txt19.y,txt20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
+	txt21.y,txt22.y,txt23.y,txt24.y,txt25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
+		
+	txt26.x,txt26.y = w/20,h/2	--]]
 		
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
@@ -315,6 +356,33 @@ function new()
 	localGroup:insert(btn24)
 	localGroup:insert(btn25)
 	localGroup:insert(btn26)		
+	
+--[[	localGroup:insert(txt1)
+	localGroup:insert(txt2)
+	localGroup:insert(txt3)
+	localGroup:insert(txt4)
+	localGroup:insert(txt5)
+	localGroup:insert(txt6)
+	localGroup:insert(txt7)
+	localGroup:insert(txt8)
+	localGroup:insert(txt9)
+	localGroup:insert(txt10)
+	localGroup:insert(txt11)	
+	localGroup:insert(txt12)
+	localGroup:insert(txt13)
+	localGroup:insert(txt14)
+	localGroup:insert(txt15)
+	localGroup:insert(txt16)
+	localGroup:insert(txt17)
+	localGroup:insert(txt18)
+	localGroup:insert(txt19)
+	localGroup:insert(txt20)
+	localGroup:insert(txt21)
+	localGroup:insert(txt22)
+	localGroup:insert(txt23)
+	localGroup:insert(txt24)
+	localGroup:insert(txt25)
+	localGroup:insert(txt26)	--]]	
 			
 	bindEventListeners()	
 	btn26:addEventListener("touch",playModule.playGlitch)

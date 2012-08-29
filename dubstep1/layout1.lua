@@ -129,7 +129,7 @@ function new()
 				playSound10,playSound11,playSound12,
 				playSound13,playSound14,playSound15}
 		local idx = 1
-		while(idx <= localGroup.numChildren) do
+		while(idx <= #handlerTable) do
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
 			idx = idx + 1
 		end
@@ -156,6 +156,22 @@ function new()
 	btn13 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn15 = display.newRoundedRect(1,1,w/10,h/10,2)
+
+	txt1 = display.newText("Sound1_1",0,0,native.systemFont,14)	
+	txt2 = display.newText("Sound2_1",0,0,native.systemFont,14)	
+	txt3 = display.newText("Sound1_2",0,0,native.systemFont,14)	
+	txt4 = display.newText("Sound2_2",0,0,native.systemFont,14)	
+	txt5 = display.newText("Sound3_2",0,0,native.systemFont,14)	
+	txt6 = display.newText("Sound4_2",0,0,native.systemFont,14)	
+	txt7 = display.newText("Sound1_3",0,0,native.systemFont,14)	
+	txt8 = display.newText("Sound2_3",0,0,native.systemFont,14)	
+	txt9 = display.newText("Sound3_3",0,0,native.systemFont,14)	
+	txt10 = display.newText("Sound1_4",0,0,native.systemFont,14)	
+	txt11 = display.newText("Sound2_4",0,0,native.systemFont,14)	
+	txt12 = display.newText("Sound3_4",0,0,native.systemFont,14)	
+	txt13 = display.newText("Sound1_5",0,0,native.systemFont,14)	
+	txt14 = display.newText("Sound2_5",0,0,native.systemFont,14)	
+	txt15 = display.newText("Sound3_5",0,0,native.systemFont,14)	
 
 	btn1.x,btn2.x = w/3,2*w/3
 	btn1.y,btn2.y = h/8,h/8
@@ -216,6 +232,22 @@ function new()
 	localGroup:insert(btn13)
 	localGroup:insert(btn14)
 	localGroup:insert(btn15)
+
+	localGroup:insert(txt1)
+	localGroup:insert(txt2)
+	localGroup:insert(txt3)
+	localGroup:insert(txt4)
+	localGroup:insert(txt5)
+	localGroup:insert(txt6)
+	localGroup:insert(txt7)
+	localGroup:insert(txt8)
+	localGroup:insert(txt9)
+	localGroup:insert(txt10)
+	localGroup:insert(txt11)	
+	localGroup:insert(txt12)
+	localGroup:insert(txt13)
+	localGroup:insert(txt14)
+	localGroup:insert(txt15)
 
 	bindEventListeners()
 

@@ -500,6 +500,8 @@ end
 function playGoodMelody(event)
 	gl.goodBtn.isVisible = false
 	gl.evilBtn.isVisible = false
+	gl.goodTxt.isVisible = false
+	gl.evilTxt.isVisible = false
 	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
@@ -518,6 +520,8 @@ end
 function playEvilMelody(event)
 	gl.goodBtn.isVisible = false
 	gl.evilBtn.isVisible = false
+	gl.goodTxt.isVisible = false
+	gl.evilTxt.isVisible = false
 	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
