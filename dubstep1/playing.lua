@@ -55,6 +55,7 @@ local function shutUpVoices(group,isShut,numSamples,numFX,numVoices)
 		local idx = numSamples + numFX + 1
 		while (idx <= numSamples + numVoices) do
 			group[idx].alpha = 0.5
+			
 			audio.stop(idx)
 			
 			if (recording.isRecStarted() == true) then
@@ -74,6 +75,7 @@ local function shutUpDrums(group,isShut,partSumms,trackCounters)
 		local idx = partSumms[2] + 1
 		while (idx <= partSumms[3]) do		
 			group[idx].alpha = 0.5
+			
 			local channelVolume = audio.getVolume( { channel=idx } )
 			if (channelVolume ~= 0) then
 				trackCounters[idx] = 1
@@ -98,6 +100,7 @@ local function shutUpMelodies(group,isShut,partSumms,trackCounters)
 		local idx = partSumms[1] + 1
 		while (idx <= partSumms[2]) do		
 			group[idx].alpha = 0.5
+			
 			local channelVolume = audio.getVolume( { channel=idx } )
 			if (channelVolume ~= 0) then
 				trackCounters[idx] = 1
@@ -122,6 +125,7 @@ local function shutUpIntros(group,isShut,partSumms,trackCounters)
 		local idx = 1
 		while (idx <= partSumms[1]) do		
 			group[idx].alpha = 0.5
+
 			local channelVolume = audio.getVolume( { channel=idx } )
 			if (channelVolume ~= 0) then
 				trackCounters[idx] = 1
@@ -212,7 +216,6 @@ local function playMelody(group,index,trackCounters)
     	else	
     		audio.setVolume(0.5,{channel = index})  
         end 
-        
            
         group[index].alpha = 1
         
@@ -500,8 +503,8 @@ end
 function playGoodMelody(event)
 	gl.goodBtn.isVisible = false
 	gl.evilBtn.isVisible = false
-	gl.goodTxt.isVisible = false
-	gl.evilTxt.isVisible = false
+	gl.goodBtn.txt.isVisible = false
+	gl.evilBtn.txt.isVisible = false
 	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
@@ -520,8 +523,8 @@ end
 function playEvilMelody(event)
 	gl.goodBtn.isVisible = false
 	gl.evilBtn.isVisible = false
-	gl.goodTxt.isVisible = false
-	gl.evilTxt.isVisible = false
+	gl.goodBtn.txt.isVisible = false
+	gl.evilBtn.txt.isVisible = false
 	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),

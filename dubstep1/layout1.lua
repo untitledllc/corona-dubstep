@@ -139,7 +139,21 @@ function new()
 		gl.btns[idx].alpha = 0.5
 	end
 	
-	gl.btns[1].alpha = 1	
+	txt1 = display.newText("S1_1",0,0,native.systemFont,14)	
+	txt2 = display.newText("S2_1",0,0,native.systemFont,14)	
+	txt3 = display.newText("S1_2",0,0,native.systemFont,14)	
+	txt4 = display.newText("S2_2",0,0,native.systemFont,14)	
+	txt5 = display.newText("S3_1",0,0,native.systemFont,14)	
+	txt6 = display.newText("S3_2",0,0,native.systemFont,14)	
+	txt7 = display.newText("S1_3",0,0,native.systemFont,14)	
+	txt8 = display.newText("S2_3",0,0,native.systemFont,14)	
+	txt9 = display.newText("S3_3",0,0,native.systemFont,14)	
+	txt10 = display.newText("S1_4",0,0,native.systemFont,14)	
+	txt11 = display.newText("S2_4",0,0,native.systemFont,14)	
+	txt12 = display.newText("S3_4",0,0,native.systemFont,14)	
+	txt13 = display.newText("S1_5",0,0,native.systemFont,14)	
+	txt14 = display.newText("S2_5",0,0,native.systemFont,14)	
+	txt15 = display.newText("S3_5",0,0,native.systemFont,14)	
 	 
 	btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
@@ -157,22 +171,6 @@ function new()
 	btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn15 = display.newRoundedRect(1,1,w/10,h/10,2)
 
-	txt1 = display.newText("Sound1_1",0,0,native.systemFont,14)	
-	txt2 = display.newText("Sound2_1",0,0,native.systemFont,14)	
-	txt3 = display.newText("Sound1_2",0,0,native.systemFont,14)	
-	txt4 = display.newText("Sound2_2",0,0,native.systemFont,14)	
-	txt5 = display.newText("Sound3_2",0,0,native.systemFont,14)	
-	txt6 = display.newText("Sound4_2",0,0,native.systemFont,14)	
-	txt7 = display.newText("Sound1_3",0,0,native.systemFont,14)	
-	txt8 = display.newText("Sound2_3",0,0,native.systemFont,14)	
-	txt9 = display.newText("Sound3_3",0,0,native.systemFont,14)	
-	txt10 = display.newText("Sound1_4",0,0,native.systemFont,14)	
-	txt11 = display.newText("Sound2_4",0,0,native.systemFont,14)	
-	txt12 = display.newText("Sound3_4",0,0,native.systemFont,14)	
-	txt13 = display.newText("Sound1_5",0,0,native.systemFont,14)	
-	txt14 = display.newText("Sound2_5",0,0,native.systemFont,14)	
-	txt15 = display.newText("Sound3_5",0,0,native.systemFont,14)	
-
 	btn1.x,btn2.x = w/3,2*w/3
 	btn1.y,btn2.y = h/8,h/8
 	btn3.x,btn4.x,btn5.x,btn6.x = w/5,2*w/5,3*w/5,4*w/5
@@ -184,6 +182,18 @@ function new()
 	btn12.x,btn12.y = 3*w/4,h/2
 	btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
 	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
+	
+	txt1.x,txt2.x = w/3,2*w/3
+	txt1.y,txt2.y = h/8,h/8
+	txt3.x,txt4.x,txt5.x,txt6.x = w/5,2*w/5,3*w/5,4*w/5
+	txt3.y,txt4.y,txt5.y,txt6.y = h/4,h/4,h/4,h/4
+	txt7.x,txt8.x,txt9.x = w/4,w/2,3*w/4
+	txt7.y,txt8.y,txt9.y = 3*h/8,3*h/8,3*h/8
+	txt10.x,txt10.y = w/4,h/2
+	txt11.x,txt11.y = w/2,h/2
+	txt12.x,txt12.y = 3*w/4,h/2
+	txt13.x,txt14.x,txt15.x = w/4,w/2,3*w/4
+	txt13.y,txt14.y,txt15.y = 5*h/8,5*h/8,5*h/8
 	
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
@@ -201,6 +211,17 @@ function new()
 	btn14:setFillColor(0,255,255)
 	btn15:setFillColor(0,255,255)
 	
+	txt2.isVisible = false
+	txt4.isVisible = false
+	txt5.isVisible = false
+	txt6.isVisible = false	
+	txt8.isVisible = false
+	txt9.isVisible = false	
+	txt11.isVisible = false	
+	txt12.isVisible = false		
+	txt14.isVisible = false
+	txt15.isVisible = false
+	
 	btn1.alpha = 0.5
 	btn2.alpha = 0.5
 	btn3.alpha = 0.5
@@ -217,6 +238,22 @@ function new()
 	btn14.alpha = 0.5
 	btn15.alpha = 0.5
 	
+	btn1.txt = txt1
+	btn2.txt = txt2
+	btn3.txt = txt3
+	btn4.txt = txt4
+	btn5.txt = txt5
+	btn6.txt = txt6
+	btn7.txt = txt7
+	btn8.txt = txt8
+	btn9.txt = txt9
+	btn10.txt = txt10
+	btn11.txt = txt11
+	btn12.txt = txt12
+	btn13.txt = txt13
+	btn14.txt = txt14
+	btn15.txt = txt15
+	
 	localGroup:insert(btn1)
 	localGroup:insert(btn2)
 	localGroup:insert(btn3)
@@ -232,22 +269,6 @@ function new()
 	localGroup:insert(btn13)
 	localGroup:insert(btn14)
 	localGroup:insert(btn15)
-
-	localGroup:insert(txt1)
-	localGroup:insert(txt2)
-	localGroup:insert(txt3)
-	localGroup:insert(txt4)
-	localGroup:insert(txt5)
-	localGroup:insert(txt6)
-	localGroup:insert(txt7)
-	localGroup:insert(txt8)
-	localGroup:insert(txt9)
-	localGroup:insert(txt10)
-	localGroup:insert(txt11)	
-	localGroup:insert(txt12)
-	localGroup:insert(txt13)
-	localGroup:insert(txt14)
-	localGroup:insert(txt15)
 
 	bindEventListeners()
 
@@ -272,7 +293,7 @@ function new()
 	backs[5].isVisible = false
 	backs[6].isVisible = false
 	
-	backs[1].isVisible = true
+	--backs[1].isVisible = true
 	mainGroup:insert(1,backs[1])
 	mainGroup:insert(2,localGroup)
 
@@ -289,7 +310,6 @@ function new()
 	playModule.playBasicMelody()
 	
 	gl.loading.isVisible = false
-	--gl.stopRotation(gl.rotator)
 	
 	return mainGroup
 end

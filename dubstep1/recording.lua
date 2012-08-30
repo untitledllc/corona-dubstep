@@ -76,15 +76,6 @@ local function saveUserActList()
     f:close()
 end
 
-local function updateTimer(event)
-	if (isRecSwitchedOn == true) then
-		gl.timerTxt.text = tostring(math.round( (gl.fullRecordLength - 
-									(system.getTimer() - 
-										layout.getLayoutAppearTime() - 
-											recPressTime))/1000 ))
-	end
-end
-
 local function hideBtns()
 	for idx,val in pairs(gl.currentHiddenBtns) do
 		gl.mainGroup[2][val].alpha = 0.5
@@ -100,6 +91,9 @@ function stopRecording(e)
 		
 	endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
 	
+	gl.shareBtn.isVisible = true
+	gl.shareBtn.txt.isVisible = true
+
 	if (isRecSwitchedOn == true) then
 		completeUserActList()
 		saveUserActList()
@@ -111,36 +105,51 @@ function stopRecording(e)
 	userActionList = {}
 		
 	gl.repBtn.isVisible = true
+	gl.repBtn.txt.isVisible = true
+	
 	gl.timerTxt.isVisible = false
+	gl.sceneNumber.isVisible = false
+	gl.nextSceneTimerTxt.isVisible = false
 	
 	audio.stop(gl.currentBasicChannel)
 	audio.stop(gl.currentGoodChannel)
 	audio.stop(gl.currentEvilChannel)
 	
-	Runtime:removeEventListener("enterFrame",updateTimer)
-end
-
-local function findNext5HiddenBtns()
-	local result = {}
-	local idx = 1
-	while (idx <= 5) do
-		if (gl.currentHiddenBtns[1]~= nil) then
-			result[idx] = gl.currentHiddenBtns[1]
-			--print("to delete",gl.currentHiddenBtns[1])
-			table.remove(gl.currentHiddenBtns,1)	
-		else
-			table.remove(gl.currentHiddenBtns,1)
-			break
-		end
-		idx = idx + 1
-	end
-	return result
+	Runtime:removeEventListener("enterFrame",function ()
+												if (isRecSwitchedOn == true) then
+													gl.timerTxt.text = "Time left: "..tostring(
+														math.round((gl.fullRecordLength - 
+															system.getTimer() + 
+																layout.getLayoutAppearTime() + 
+																	recPressTime)/1000 )
+																		)
+												end
+											 end )
 end
 
 function startRecording()
+
+	local function findNext5HiddenBtns()
+		local result = {}
+		local idx = 1
+		while (idx <= 5) do
+			if (gl.currentHiddenBtns[1]~= nil) then
+				result[idx] = gl.currentHiddenBtns[1]
+				table.remove(gl.currentHiddenBtns,1)	
+			else
+				table.remove(gl.currentHiddenBtns,1)
+				break
+			end
+			idx = idx + 1
+		end
+		return result
+	end
 	
 	cancelTimers(timers)
 	timers = {}
+	
+	currentSceneAppearTime = layout.getLayoutAppearTime()
+	gl.nextSceneAppearTime = 0
 	
 	recPressTime = system.getTimer() - layout.getLayoutAppearTime()
 	calcSeekTimeInActiveChannels(pl.getActiveChannels())
@@ -148,6 +157,10 @@ function startRecording()
 	
 	gl.sceneNumber.isVisible = true		
 			
+	gl.nextSceneAppearTime = gl.fullRecordLength/(#gl.currentBacks)
+	
+	gl.currentSceneAppearTime = system.getTimer()
+	
 	hideBtns()		
 	
 	if (gl.isRecordingTimeRestricted == true) then
@@ -155,61 +168,89 @@ function startRecording()
 	end
 
 	for idx,val in pairs(gl.currentBacks) do
-		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks + 2),
+		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks),
 							function ()
 								if (idx ~= 1) then
 									gl.currentBacks[idx - 1].isVisible = false
 								end
-									gl.changeBackGround(gl.currentBacks[idx])
+								
+								gl.changeBackGround(gl.currentBacks[idx])
+								
 								for idx,val in pairs(findNext5HiddenBtns()) do
 									gl.mainGroup[2][val].isVisible = true
+									gl.mainGroup[2][val].txt.isVisible = true
 								end
-								gl.sceneNumber.text = tostring(idx + 1)
+								gl.sceneNumber.text = "Next scene: "..tostring(idx + 2)
+								gl.currentSceneAppearTime = system.getTimer()
 							end )
 	end		
 	
---[[	for idx,val in pairs(gl.currentHiddenBtns) do
-		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentHiddenBtns + 2),
-							function()
-								gl.mainGroup[2][val].isVisible = true
+	local idx = 1
+	while (idx <= #gl.currentBacks + 1) do
+		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks),
+							function ()
+								gl.currentSceneAppearTime = system.getTimer()
 							end )
-	end--]]
-			
+		idx = idx + 1
+	end
+
 	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime,
 								function ()
 									gl.goodBtn.isVisible = true
 									gl.evilBtn.isVisible = true
-									gl.goodTxt.isVisible = true
-									gl.evilTxt.isVisible = true
+									gl.goodBtn.txt.isVisible = true
+									gl.evilBtn.txt.isVisible = true
 								end )
 								
-	local function playRandom()
-		math.randomseed(math.random())
-		if (math.random() > 0.5) then
-			pl.playGoodMelody()
-		else
-			pl.playEvilMelody()
-		end
-	end
-	
 	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
 								function ()
 									gl.goodBtn.isVisible = false
 									gl.evilBtn.isVisible = false
-									gl.goodTxt.isVisible = false
-									gl.evilTxt.isVisible = false
+									gl.goodBtn.txt.isVisible = false
+									gl.evilBtn.txt.isVisible = false
 									
 									if (gl.currentBasicMelody ~= gl.currentGoodMelody
 											and
 										gl.currentBasicMelody ~= gl.currentEvilMelody) then
 										
+											local function playRandom()
+												math.randomseed(math.random())
+												if (math.random() > 0.5) then
+													pl.playGoodMelody()
+												else
+													pl.playEvilMelody()
+												end
+											end
+											
 										playRandom()
 									end
 								end )								
 
 			
 	gl.timerTxt.isVisible = true
-	Runtime:addEventListener("enterFrame",updateTimer)
+	gl.nextSceneTimerTxt.isVisible = true
+	
+	Runtime:addEventListener("enterFrame",function ()
+												if (isRecSwitchedOn == true) then
+													gl.timerTxt.text = "Time left: "..tostring(
+														math.round((gl.fullRecordLength - 
+															system.getTimer() + 
+																layout.getLayoutAppearTime() + 
+																	recPressTime)/1000 )
+																		)
+												end
+											 end )
+											 
+	Runtime:addEventListener("enterFrame",function ()
+										      if (isRecSwitchedOn == true) then
+										      		gl.currentSceneLocalTime = system.getTimer() - 
+																gl.currentSceneAppearTime
+										      	    gl.nextSceneTimerTxt.text = "Scene will change in: "
+										      			..tostring(math.round((gl.nextSceneAppearTime - 
+										      				gl.currentSceneLocalTime)/1000))
+											  end
+										   end )
+											
 end
 
 function addAction(time,index,actType,vol,category,chActTime)

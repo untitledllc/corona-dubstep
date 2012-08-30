@@ -191,8 +191,6 @@ function new()
 	for idx,val in pairs(gl.btns) do
 		gl.btns[idx].alpha = 0.5
 	end
-	
-	gl.btns[2].alpha = 1
 		
 	btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
@@ -221,32 +219,32 @@ function new()
 	btn25 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn26 = display.newRoundedRect(1,1,w/20,h/2,4)	
 		
---[[	txt1 = display.newText("Sound1_1",0,0,native.systemFont,14)	
-	txt2 = display.newText("Sound2_1",0,0,native.systemFont,14)	
-	txt3 = display.newText("Sound3_1",0,0,native.systemFont,14)	
-	txt4 = display.newText("Sound4_1",0,0,native.systemFont,14)	
-	txt5 = display.newText("Sound5_1",0,0,native.systemFont,14)	
-	txt6 = display.newText("Sound6_1",0,0,native.systemFont,14)	
-	txt7 = display.newText("Sound1_2",0,0,native.systemFont,14)	
-	txt8 = display.newText("Sound2_2",0,0,native.systemFont,14)	
-	txt9 = display.newText("Sound3_2",0,0,native.systemFont,14)	
-	txt10 = display.newText("Sound4_2",0,0,native.systemFont,14)	
-	txt11 = display.newText("Sound5_2",0,0,native.systemFont,14)	
-	txt12 = display.newText("Sound1_3",0,0,native.systemFont,14)	
-	txt13 = display.newText("Sound2_3",0,0,native.systemFont,14)	
-	txt14 = display.newText("Sound3_3",0,0,native.systemFont,14)	
-	txt15 = display.newText("Sound4_3",0,0,native.systemFont,14)	
-	txt16 = display.newText("Sound1_4",0,0,native.systemFont,14)	
-	txt17 = display.newText("Sound2_4",0,0,native.systemFont,14)	
-	txt18 = display.newText("Sound3_4",0,0,native.systemFont,14)	
-	txt19 = display.newText("Sound4_4",0,0,native.systemFont,14)	
-	txt20 = display.newText("Sound5_4",0,0,native.systemFont,14)	
-	txt21 = display.newText("Sound1_5",0,0,native.systemFont,14)	
-	txt22 = display.newText("Sound2_5",0,0,native.systemFont,14)	
-	txt23 = display.newText("Sound3_5",0,0,native.systemFont,14)	
-	txt24 = display.newText("Sound4_5",0,0,native.systemFont,14)	
-	txt25 = display.newText("Sound5_5",0,0,native.systemFont,14)	
-	txt26 = display.newText("Glitch",0,0,native.systemFont,14)	--]]
+	btn1.txt = display.newText("S1_1",0,0,native.systemFont,14)	
+	btn2.txt = display.newText("S2_1",0,0,native.systemFont,14)	
+	btn3.txt = display.newText("S3_1",0,0,native.systemFont,14)	
+	btn4.txt = display.newText("S4_1",0,0,native.systemFont,14)	
+	btn5.txt = display.newText("S5_1",0,0,native.systemFont,14)	
+	btn6.txt = display.newText("S6_1",0,0,native.systemFont,14)	
+	btn7.txt = display.newText("S1_2",0,0,native.systemFont,14)	
+	btn8.txt = display.newText("S2_2",0,0,native.systemFont,14)	
+	btn9.txt = display.newText("S3_2",0,0,native.systemFont,14)	
+	btn10.txt = display.newText("S4_2",0,0,native.systemFont,14)	
+	btn11.txt = display.newText("S5_2",0,0,native.systemFont,14)	
+	btn12.txt = display.newText("S1_3",0,0,native.systemFont,14)	
+	btn13.txt = display.newText("S2_3",0,0,native.systemFont,14)	
+	btn14.txt = display.newText("S3_3",0,0,native.systemFont,14)	
+	btn15.txt = display.newText("S4_3",0,0,native.systemFont,14)	
+	btn16.txt = display.newText("S1_4",0,0,native.systemFont,14)	
+	btn17.txt = display.newText("S2_4",0,0,native.systemFont,14)	
+	btn18.txt = display.newText("S3_4",0,0,native.systemFont,14)	
+	btn19.txt = display.newText("S4_4",0,0,native.systemFont,14)	
+	btn20.txt = display.newText("S5_4",0,0,native.systemFont,14)	
+	btn21.txt = display.newText("S1_5",0,0,native.systemFont,14)	
+	btn22.txt = display.newText("S2_5",0,0,native.systemFont,14)	
+	btn23.txt = display.newText("S3_5",0,0,native.systemFont,14)	
+	btn24.txt = display.newText("S4_5",0,0,native.systemFont,14)	
+	btn25.txt = display.newText("S5_5",0,0,native.systemFont,14)	
+	btn26.txt = display.newText("Gl",0,0,native.systemFont,14)
 		
 	btn1.x,btn2.x,btn3.x,btn4.x,btn5.x,btn6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
 	btn7.x,btn8.x,btn9.x,btn10.x,btn11.x = w/6,w/3,w/2,2*w/3,5*w/6
@@ -262,19 +260,19 @@ function new()
 		
 	btn26.x,btn26.y = w/20,h/2	
 	
---[[	txt1.x,txt2.x,txt3.x,txt4.x,txt5.x,txt6.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
-	txt7.x,txt8.x,txt9.x,txt10.x,txt11.x = w/6,w/3,w/2,2*w/3,5*w/6
-	txt12.x,txt13.x,txt14.x,txt15.x= w/5,2*w/5,3*w/5,4*w/5
-	txt16.x,txt17.x,txt18.x,txt19.x,txt20.x = w/6,w/3,w/2,2*w/3,5*w/6
-	txt21.x,txt22.x,txt23.x,txt24.x,txt25.x = w/6,w/3,w/2,2*w/3,5*w/6
+	btn1.txt.x,btn2.txt.x,btn3.txt.x,btn4.txt.x,btn5.txt.x,btn6.txt.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
+	btn7.txt.x,btn8.txt.x,btn9.txt.x,btn10.txt.x,btn11.txt.x = w/6,w/3,w/2,2*w/3,5*w/6
+	btn12.txt.x,btn13.txt.x,btn14.txt.x,btn15.txt.x= w/5,2*w/5,3*w/5,4*w/5
+	btn16.txt.x,btn17.txt.x,btn18.txt.x,btn19.txt.x,btn20.txt.x = w/6,w/3,w/2,2*w/3,5*w/6
+	btn21.txt.x,btn22.txt.x,btn23.txt.x,btn24.txt.x,btn25.txt.x = w/6,w/3,w/2,2*w/3,5*w/6
 		
-	txt1.y,txt2.y,txt3.y,txt4.y,txt5.y,txt6.y = h/7,h/7,h/7,h/7,h/7,h/7
-	txt7.y,txt8.y,txt9.y,txt10.y,txt11.y = 2*h/7,2*h/7,2*h/7,2*h/7,2*h/7
-	txt12.y,txt13.y,txt14.y,txt15.y = 3*h/7,3*h/7,3*h/7,3*h/7
-	txt16.y,txt17.y,txt18.y,txt19.y,txt20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
-	txt21.y,txt22.y,txt23.y,txt24.y,txt25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
+	btn1.txt.y,btn2.txt.y,btn3.txt.y,btn4.txt.y,btn5.txt.y,btn6.txt.y = h/7,h/7,h/7,h/7,h/7,h/7
+	btn7.txt.y,btn8.txt.y,btn9.txt.y,btn10.txt.y,btn11.txt.y = 2*h/7,2*h/7,2*h/7,2*h/7,2*h/7
+	btn12.txt.y,btn13.txt.y,btn14.txt.y,btn15.txt.y = 3*h/7,3*h/7,3*h/7,3*h/7
+	btn16.txt.y,btn17.txt.y,btn18.txt.y,btn19.txt.y,btn20.txt.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
+	btn21.txt.y,btn22.txt.y,btn23.txt.y,btn24.txt.y,btn25.txt.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7
 		
-	txt26.x,txt26.y = w/20,h/2	--]]
+	btn26.txt.x,btn26.txt.y = w/20,h/2
 		
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
@@ -329,6 +327,27 @@ function new()
 	btn24.alpha = 0.5
 	btn25.alpha = 0.5
 	btn26.alpha = 0.5	
+			
+	btn2.txt.isVisible = false 	
+	btn3.txt.isVisible  = false 	
+	btn4.txt.isVisible  = false 	
+	btn5.txt.isVisible  = false 	
+	btn6.txt.isVisible  = false 
+	btn8.txt.isVisible  = false 
+	btn9.txt.isVisible  = false 
+	btn10.txt.isVisible  = false 
+	btn11.txt.isVisible  = false
+	btn13.txt.isVisible  = false
+	btn14.txt.isVisible  = false
+	btn15.txt.isVisible  = false	
+	btn17.txt.isVisible  = false
+	btn18.txt.isVisible  = false
+	btn19.txt.isVisible  = false
+	btn20.txt.isVisible  = false
+	btn22.txt.isVisible  = false
+	btn23.txt.isVisible  = false
+	btn24.txt.isVisible  = false
+	btn25.txt.isVisible  = false
 		
 	localGroup:insert(btn1)
 	localGroup:insert(btn2)
@@ -355,34 +374,7 @@ function new()
 	localGroup:insert(btn23)
 	localGroup:insert(btn24)
 	localGroup:insert(btn25)
-	localGroup:insert(btn26)		
-	
---[[	localGroup:insert(txt1)
-	localGroup:insert(txt2)
-	localGroup:insert(txt3)
-	localGroup:insert(txt4)
-	localGroup:insert(txt5)
-	localGroup:insert(txt6)
-	localGroup:insert(txt7)
-	localGroup:insert(txt8)
-	localGroup:insert(txt9)
-	localGroup:insert(txt10)
-	localGroup:insert(txt11)	
-	localGroup:insert(txt12)
-	localGroup:insert(txt13)
-	localGroup:insert(txt14)
-	localGroup:insert(txt15)
-	localGroup:insert(txt16)
-	localGroup:insert(txt17)
-	localGroup:insert(txt18)
-	localGroup:insert(txt19)
-	localGroup:insert(txt20)
-	localGroup:insert(txt21)
-	localGroup:insert(txt22)
-	localGroup:insert(txt23)
-	localGroup:insert(txt24)
-	localGroup:insert(txt25)
-	localGroup:insert(txt26)	--]]	
+	localGroup:insert(btn26)			
 			
 	bindEventListeners()	
 	btn26:addEventListener("touch",playModule.playGlitch)
@@ -408,7 +400,7 @@ function new()
 	backs[5].isVisible = false
 	backs[6].isVisible = false
 	
-	backs[1].isVisible = true
+--	backs[1].isVisible = true
 	mainGroup:insert(1,backs[1])
 	mainGroup:insert(2,localGroup)
 
@@ -425,7 +417,6 @@ function new()
 	
 	playModule.playBasicMelody() 
 	gl.loading.isVisible = false
-	gl.stopRotation(gl.rotator)
 	
 	return mainGroup
 end

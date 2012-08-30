@@ -24,8 +24,11 @@ timerTxt = nil
 
 changeLayoutTime = 30000
 fullRecordLength = 192000
-showChoiceTime = 90000
-choiceShownDurationTime = 4000
+showChoiceTime = 40000
+choiceShownDurationTime = 8000
+currentSceneLocalTime = nil
+currentSceneAppearTime = nil
+nextSceneAppearTime = 0
 
 glitchChannel = 99
 glitchShutUpTime = 50
@@ -47,34 +50,10 @@ eqTxt = nil
 repTxt = nil
 
 loading = nil
-rotator = nil
 
 sceneNumber = nil
 
-local rotateFunc = nil
-
-function startRotation(object,angle)
-	if (object == nil) then
-		return
-	end
-	object.isVisible = true
-	--local delta = 0
-	local function rotateObject(event)
-		print(angle)
-		object:rotate(angle)
-		--delta = delta + angle
-	end
-	rotateFunc = rotateObject
-	Runtime:addEventListener("enterFrame",rotateObject)
-end
-
-function stopRotation(object)
-	if (object == nil) then
-		return
-	end
-	object.isVisible = false
-	Runtime:removeEventListener("enterFrame",rotateFunc)
-end
+shareBtn = nil
 
 function changeBackGround(object) 
 	object.isVisible = true
@@ -140,13 +119,29 @@ function drawLayoutBtns()
 	
 	volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
-	timerTxt = display.newText("",0,0,native.systemFont,32)
+	timerTxt = display.newText("",0,0,native.systemFont,14)
 	timerTxt.x,timerTxt.y = w/2,6*h/7
 	timerTxt.isVisible = false
 	
-	sceneNumber = display.newText("1",0,0,native.systemFont,32)
-	sceneNumber.x,sceneNumber.y = 2*w/3,6*h/7
+	nextSceneTimerTxt = display.newText("",0,0,native.systemFont,14)
+	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 2*w/3,8*h/9
+	nextSceneTimerTxt.isVisible = false
+	
+	sceneNumber = display.newText("Next scene: 2",0,0,native.systemFont,14)
+	sceneNumber.x,sceneNumber.y = 3*w/4,6*h/7
 	sceneNumber.isVisible = false
+		
+	shareTxt = display.newText("Share!!!",0,0,native.systemFont,32)
+	shareBtn = display.newRoundedRect(0,0,w/2,h/2,12)
+
+	shareBtn.x,shareTxt.x = w/2,w/2
+	shareBtn.y,shareTxt.y = h/2,h/2
+	
+	shareBtn.isVisible = false
+	shareTxt.isVisible = false
+	
+	shareTxt:setTextColor(255,0,0)
+	shareBtn.txt = shareTxt
 	
 	btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/4,15*h/16
 	btn1:setFillColor(140,255,0)
@@ -161,14 +156,30 @@ function drawLayoutBtns()
 	goodBtn.isVisible = false
 	evilBtn.isVisible = false
 	
+	goodBtn.txt = goodTxt
+	evilBtn.txt = evilTxt
+	
+	btn1.txt = display.newText("Back",0,0,native.systemFont,14)
+	btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
+	btn1.txt.x,btn1.txt.y = w/16,15*h/16
+	btn2.txt.x,btn2.txt.y = w/4,15*h/16
+	
 	repBtn.x,repBtn.y = 15*w/16,h/16
 	repBtn:setFillColor(255,140,140)
 	repBtn.alpha = 0.5
-	repBtn.isVisible = false
+	repBtn.isVisible = false	
+	
+	repBtn.txt = display.newText("Play",0,0,native.systemFont,14)
+	repBtn.txt.x,repBtn.txt.y = 15*w/16,h/16
+	repBtn.txt.isVisible = false
+	repBtn.txt:setTextColor(0,255,0)
 	
 	volumeBtn.x,volumeBtn.y = w/16,h/16
 	volumeBtn:setFillColor(140,255,140)
 	volumeBtn.alpha = 0.5
+	
+	volumeBtn.txt = display.newText("EQ",0,0,native.systemFont,14)
+	volumeBtn.txt.x,volumeBtn.txt.y = w/16,h/16
 	
 	btn1.scene = "mainScreen"
 	btn2.scene = currentLayout
@@ -191,6 +202,10 @@ function drawLayoutBtns()
 	volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
 	goodBtn:addEventListener("touch",playing.playGoodMelody)
 	evilBtn:addEventListener("touch",playing.playEvilMelody)
+	shareBtn:addEventListener("touch",function()
+										shareBtn.isVisible = false
+										shareTxt.isVisible = false
+									  end )
 	
 	btns[1] = btn1
 	btns[2] = btn2

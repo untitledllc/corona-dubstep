@@ -39,14 +39,12 @@ function new()
 		gl.loading.isVisible = true
 		if (event.phase == "ended") then
 			director:changeScene("layout1")
-			--gl.startRotation(gl.rotator,3)
 		end
 	end
 	local function toLevel2Handler(event)
 		gl.loading.isVisible = true
 		if (event.phase == "ended") then
 			director:changeScene("layout2")	
-			--gl.startRotation(gl.rotator,3)
 		end
 	end
 	
@@ -63,8 +61,6 @@ function new()
 	localGroup:insert(level1Btn)
 	localGroup:insert(level2Btn)
 	localGroup:insert(gl.loading)
-	localGroup:insert(txtLevel1)
-	localGroup:insert(txtLevel2)
 	
 	bindListeners()
 	
