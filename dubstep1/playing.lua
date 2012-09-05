@@ -501,10 +501,10 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 end
 
 function playGoodMelody(event)
-	gl.goodBtn.isVisible = false
-	gl.evilBtn.isVisible = false
-	gl.goodBtn.txt.isVisible = false
-	gl.evilBtn.txt.isVisible = false
+--	gl.goodBtn.isVisible = false
+--	gl.evilBtn.isVisible = false
+--	gl.goodBtn.txt.isVisible = false
+--	gl.evilBtn.txt.isVisible = false
 	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
@@ -521,10 +521,10 @@ function playGoodMelody(event)
 end
 
 function playEvilMelody(event)
-	gl.goodBtn.isVisible = false
-	gl.evilBtn.isVisible = false
-	gl.goodBtn.txt.isVisible = false
-	gl.evilBtn.txt.isVisible = false
+--	gl.goodBtn.isVisible = false
+--	gl.evilBtn.isVisible = false
+--	gl.goodBtn.txt.isVisible = false
+--	gl.evilBtn.txt.isVisible = false
 	
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
@@ -532,7 +532,7 @@ function playEvilMelody(event)
 							0,0,2,0)
 					
 	audio.setVolume(0,{channel = currentBasicChannel})		
-	audio.setVolume(1, {channel = currentEvilChannel})
+	audio.setVolume(1, {channel = currentGoodChannel})
 											
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),

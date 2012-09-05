@@ -32,7 +32,7 @@ function new()
 
 	layoutAppearTime = system.getTimer()
 
-	local playParams = {false,true,false,true,true,2,4,3,3,3}
+	local playParams = {false,false,false,false,false,3,3,3,3,3}
 
 	local w = gl.w
 	local h = gl.h
@@ -183,10 +183,22 @@ function new()
 	btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
 	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
 	
-	txt1.x,txt2.x = w/3,2*w/3
-	txt1.y,txt2.y = h/8,h/8
-	txt3.x,txt4.x,txt5.x,txt6.x = w/5,2*w/5,3*w/5,4*w/5
-	txt3.y,txt4.y,txt5.y,txt6.y = h/4,h/4,h/4,h/4
+	btn1.x,btn2.x,btn3.x = w/4,w/2,3*w/4
+	btn1.y,btn2.y,btn3.y = h/8,h/8,h/8
+	btn4.x,btn5.x,btn6.x = w/4,w/2,3*w/4
+	btn4.y,btn5.y,btn6.y = h/4,h/4,h/4
+	btn7.x,btn8.x,btn9.x = w/4,w/2,3*w/4
+	btn7.y,btn8.y,btn9.y = 3*h/8,3*h/8,3*h/8
+	btn10.x,btn10.y = w/4,h/2
+	btn11.x,btn11.y = w/2,h/2
+	btn12.x,btn12.y = 3*w/4,h/2
+	btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
+	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
+	
+	txt1.x,txt2.x,txt3.x = w/4,w/2,3*w/4
+	txt1.y,txt2.y,txt3.y = h/8,h/8,h/8
+	txt4.x,txt5.x,txt6.x = w/4,w/2,3*w/4
+	txt4.y,txt5.y,txt6.y = h/4,h/4,h/4,h/4
 	txt7.x,txt8.x,txt9.x = w/4,w/2,3*w/4
 	txt7.y,txt8.y,txt9.y = 3*h/8,3*h/8,3*h/8
 	txt10.x,txt10.y = w/4,h/2
@@ -197,7 +209,7 @@ function new()
 	
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
-	btn3:setFillColor(0,255,0)
+	btn3:setFillColor(255,0,0)
 	btn4:setFillColor(0,255,0)
 	btn5:setFillColor(0,255,0)
 	btn6:setFillColor(0,255,0)
@@ -212,7 +224,7 @@ function new()
 	btn15:setFillColor(0,255,255)
 	
 	txt2.isVisible = false
-	txt4.isVisible = false
+	txt3.isVisible = false
 	txt5.isVisible = false
 	txt6.isVisible = false	
 	txt8.isVisible = false
@@ -298,7 +310,7 @@ function new()
 	mainGroup:insert(2,localGroup)
 
 	local function initHiddenBacks() 
-		return {2,4,8,11,14,5,6,9,12,15}
+		return {2,5,8,11,14,3,6,9,12,15}
 	end
 
 	gl.mainGroup = mainGroup

@@ -204,10 +204,10 @@ function startRecording()
 								
 	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
 								function ()
-									gl.goodBtn.isVisible = false
-									gl.evilBtn.isVisible = false
-									gl.goodBtn.txt.isVisible = false
-									gl.evilBtn.txt.isVisible = false
+									--gl.goodBtn.isVisible = false
+									--gl.evilBtn.isVisible = false
+									--gl.goodBtn.txt.isVisible = false
+									--gl.evilBtn.txt.isVisible = false
 									
 									if (gl.currentBasicMelody ~= gl.currentGoodMelody
 											and
@@ -222,7 +222,8 @@ function startRecording()
 												end
 											end
 											
-										playRandom()
+										--playRandom()
+										pl.playGoodMelody()
 									end
 								end )								
 
