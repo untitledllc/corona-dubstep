@@ -425,9 +425,11 @@ function playGlitch(event)
 		end
 		
 		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)
+		display.getCurrentStage():setFocus(event.target, event.id)
 	end
 	
-	if (event.phase == "ended") then
+	if (event.phase == "ended" or (event.phase == "moved"  and 
+		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
 		event.target.alpha = 0.5
 		isGlitchStarted = false
 		
@@ -470,6 +472,7 @@ function playGlitch(event)
 		end
 		
 		Runtime:removeEventListener("enterFrame",runtimeGlitchHandler)
+		display.getCurrentStage():setFocus(nil)
 	end
 end
 
