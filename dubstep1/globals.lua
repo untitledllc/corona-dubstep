@@ -23,7 +23,7 @@ isRecordingTimeRestricted = true
 timerTxt = nil
 
 changeLayoutTime = 30000
-fullRecordLength = 192000
+fullRecordLength = 192000 - 32000
 showChoiceTime = 40000
 choiceShownDurationTime = 8000
 currentSceneLocalTime = nil

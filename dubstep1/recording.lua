@@ -89,6 +89,10 @@ function stopRecording(e)
 	cancelTimers(timers)
 	timers = {}
 		
+	gl.currentBacks[#gl.currentBacks - 1].isVisible = false
+	gl.changeBackGround(gl.currentBacks[#gl.currentBacks])								
+	gl.currentSceneAppearTime = system.getTimer()
+
 	endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
 	
 	gl.shareBtn.isVisible = true
@@ -157,7 +161,7 @@ function startRecording()
 	
 	gl.sceneNumber.isVisible = true		
 			
-	gl.nextSceneAppearTime = gl.fullRecordLength/(#gl.currentBacks)
+	gl.nextSceneAppearTime = gl.fullRecordLength/(#gl.currentBacks - 1)
 	
 	gl.currentSceneAppearTime = system.getTimer()
 	
@@ -167,27 +171,31 @@ function startRecording()
 		timers[1] = timer.performWithDelay(gl.fullRecordLength,stopRecording)
 	end
 
+	idxs = {}
 	for idx,val in pairs(gl.currentBacks) do
-		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks),
-							function ()
-								if (idx ~= 1) then
-									gl.currentBacks[idx - 1].isVisible = false
-								end
-								
-								gl.changeBackGround(gl.currentBacks[idx])
-								
-								for idx,val in pairs(findNext5HiddenBtns()) do
-									gl.mainGroup[2][val].isVisible = true
-									gl.mainGroup[2][val].txt.isVisible = true
-								end
-								gl.sceneNumber.text = "Next scene: "..tostring(idx + 2)
-								gl.currentSceneAppearTime = system.getTimer()
-							end )
+		
+			idxs[#idxs + 1] = idx + 1
+			timers[#timers + 1] = timer.performWithDelay((idx)*gl.fullRecordLength/(#gl.currentBacks - 1),
+								function ()
+									gl.currentBacks[idxs[1] - 1].isVisible = false
+									print(idxs[1])
+									gl.changeBackGround(gl.currentBacks[idxs[1]])
+									
+									for idx,val in pairs(findNext5HiddenBtns()) do
+										gl.mainGroup[2][val].isVisible = true
+										gl.mainGroup[2][val].txt.isVisible = true
+									end
+									gl.sceneNumber.text = "Next scene: "..tostring(idxs[1] + 1)
+									gl.currentSceneAppearTime = system.getTimer()
+									table.remove(idxs, 1)
+								end )
+			idx = idx - 1
+		
 	end		
 	
 	local idx = 1
-	while (idx <= #gl.currentBacks + 1) do
-		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks),
+	while (idx <= #gl.currentBacks + 1 - 1) do
+		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks - 1),
 							function ()
 								gl.currentSceneAppearTime = system.getTimer()
 							end )

@@ -298,7 +298,7 @@ function new()
 	backs[5].x,backs[5].y = gl.w/2,gl.h/2
 	backs[6].x,backs[6].y = gl.w/2,gl.h/2
 	
-	backs[1].isVisible = false
+	backs[1].isVisible = true
 	backs[2].isVisible = false
 	backs[3].isVisible = false
 	backs[4].isVisible = false
