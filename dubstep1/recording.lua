@@ -9,7 +9,7 @@ local pl = require("playing")
 local gl = require("globals")
 local layout = require(gl.currentLayout)
 
-local timers = {}
+timers = {}
 
 local isRecSwitchedOn = false
 
