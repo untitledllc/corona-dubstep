@@ -16,7 +16,7 @@ function new()
 	local mainGroup = display.newGroup()
 	local localGroup = display.newGroup()	
 	
-	local numSamples = 9
+	local numSamples = 17
 	local numFX = 3
 	local numVoices = 0
 	
@@ -39,86 +39,113 @@ function new()
 
 	gl.btns = gl.drawLayoutBtns()
 	
-	local trackCounters = {}
+	trackCounters = {}
 	trackCounters = playModule.resetCounters(numSamples)
 
-	local sampleKit = playModule.initSounds(kitAddress,numSamples,numFX,numVoices)
-	
+	local sampleKit = playModule.initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
+	trackCounters[1] = trackCounters[1] + 1
 	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
 	local function playSound1 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,1,numSamples,numFX,numVoices,playParams)
+    		playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,1,trackCounters)
     	end
 	end
 	local function playSound2 (event)
  	   if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,2,numSamples,numFX,numVoices,playParams)
+ 	   		playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,2)
    	   end
 	end
 	local function playSound3 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,3,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,3,trackCounters)
     	end
 	end
 	local function playSound4 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,4,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,4,trackCounters)
    	 	end
 	end
 	local function playSound5 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,5,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,5)
     	end
 	end
 	local function playSound6 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,6,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,6,trackCounters)
     	end
 	end
 	local function playSound7 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,7,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,7,trackCounters)
     	end
 	end
 	local function playSound8 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,8,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,8)
     	end
 	end
 	local function playSound9 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,9,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,9)
     	end
 	end
 	local function playSound10 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,10,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,10)
    		end
 	end
 	local function playSound11 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,11,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,11,trackCounters)
    		end
 	end
 	local function playSound12 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,12,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,12,trackCounters)
     	end
 	end
 	local function playSound13 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,13,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,13)
     	end
 	end
 	local function playSound14 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,14,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,14,trackCounters)
     	end
 	end
 	local function playSound15 (event)
     	if (event.phase == "ended") then
-			playModule.play(localGroup,sampleKit,trackCounters,15,numSamples,numFX,numVoices,playParams)
+			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			playModule.playMelody(localGroup,15,trackCounters)
+    	end
+	end
+	local function playSound16 (event)
+    	if (event.phase == "ended") then
+			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,16)
+    	end
+	end
+	local function playSound17 (event)
+    	if (event.phase == "ended") then
+			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.playFX(localGroup,sampleKit,17)
     	end
 	end
 
@@ -126,8 +153,9 @@ function new()
 		local handlerTable = {playSound1,playSound2,playSound3,
 				playSound4,playSound5,playSound6,
 				playSound7,playSound8,playSound9,
-				playSound10,playSound11,playSound12}
-				--playSound13,playSound14,playSound15}
+				playSound10,playSound11,playSound12,
+				playSound13,playSound14,playSound15,
+				playSound16,playSound17}
 		local idx = 1
 		while(idx <= #handlerTable) do
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
@@ -139,21 +167,23 @@ function new()
 		gl.btns[idx].alpha = 0.5
 	end
 	
-	txt1 = display.newText("Track1.mp3",0,0,native.systemFont,14)	
-	txt2 = display.newText("Track2.mp3",0,0,native.systemFont,14)	
-	txt3 = display.newText("Track3.mp3",0,0,native.systemFont,14)	
-	txt4 = display.newText("Track4.mp3",0,0,native.systemFont,14)	
-	txt5 = display.newText("Track5.mp3",0,0,native.systemFont,14)	
-	txt6 = display.newText("Track6.mp3",0,0,native.systemFont,14)	
-	txt7 = display.newText("Track7.mp3",0,0,native.systemFont,14)	
-	txt8 = display.newText("Track8.mp3",0,0,native.systemFont,14)	
-	txt9 = display.newText("Track9.mp3",0,0,native.systemFont,14)	
-	txt10 = display.newText("Track10.mp3",0,0,native.systemFont,14)	
-	txt11 = display.newText("Track11.mp3",0,0,native.systemFont,14)	
-	txt12 = display.newText("Track12.mp3",0,0,native.systemFont,14)	
---	txt13 = display.newText("Track13.mp3",0,0,native.systemFont,14)	
---	txt14 = display.newText("Track14.mp3",0,0,native.systemFont,14)	
---	txt15 = display.newText("Track15.mp3",0,0,native.systemFont,14)	
+	txt1 = display.newText("ritm-1",0,0,native.systemFont,14)	
+	txt2 = display.newText("sintezator-1",0,0,native.systemFont,14)	
+	txt3 = display.newText("ritm-2",0,0,native.systemFont,14)	
+	txt4 = display.newText("sintezator-1",0,0,native.systemFont,14)	
+	txt5 = display.newText("bass-2",0,0,native.systemFont,14)	
+	txt6 = display.newText("ritm-2",0,0,native.systemFont,14)	
+	txt7 = display.newText("sintezator-1",0,0,native.systemFont,14)	
+	txt8 = display.newText("bass-2",0,0,native.systemFont,14)	
+	txt9 = display.newText("tom-tom",0,0,native.systemFont,14)	
+	txt10 = display.newText("space-fx",0,0,native.systemFont,14)	
+	txt11 = display.newText("ritm-3",0,0,native.systemFont,14)	
+	txt12 = display.newText("tom-tom",0,0,native.systemFont,14)	
+	txt13 = display.newText("gun-fx",0,0,native.systemFont,14)	
+	txt14 = display.newText("ritm-3",0,0,native.systemFont,14)	
+	txt15 = display.newText("tom-tom",0,0,native.systemFont,14)
+	txt16 = display.newText("bass-3",0,0,native.systemFont,14)	
+	txt17 = display.newText("bass-fx",0,0,native.systemFont,14)	
 	 
 	btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
@@ -167,9 +197,11 @@ function new()
 	btn10 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn11 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn12 = display.newRoundedRect(1,1,w/10,h/10,2)
---	btn13 = display.newRoundedRect(1,1,w/10,h/10,2)
---	btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
---	btn15 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn13 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn14 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn15 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn16 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn17 = display.newRoundedRect(1,1,w/10,h/10,2)
 
 	btn1.x,btn2.x = w/3,2*w/3
 	btn1.y,btn2.y = h/8,h/8
@@ -180,8 +212,10 @@ function new()
 	btn10.x,btn10.y = w/4,h/2
 	btn11.x,btn11.y = w/2,h/2
 	btn12.x,btn12.y = 3*w/4,h/2
---	btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
---	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
+	btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
+	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
+	btn16.x,btn17.x = w/4,w/2
+	btn16.y,btn17.y = 6*h/8,6*h/8
 	
 	btn1.x,btn2.x,btn3.x = w/4,w/2,3*w/4
 	btn1.y,btn2.y,btn3.y = h/8,h/8,h/8
@@ -192,8 +226,10 @@ function new()
 	btn10.x,btn10.y = w/4,h/2
 	btn11.x,btn11.y = w/2,h/2
 	btn12.x,btn12.y = 3*w/4,h/2
---	btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
---	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
+	btn13.x,btn14.x,btn15.x = w/4,w/2,3*w/4
+	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
+	btn16.x,btn17.x = w/4,w/2
+	btn16.y,btn17.y = 6*h/8,6*h/8
 	
 	txt1.x,txt2.x,txt3.x = w/4,w/2,3*w/4
 	txt1.y,txt2.y,txt3.y = h/8,h/8,h/8
@@ -204,8 +240,10 @@ function new()
 	txt10.x,txt10.y = w/4,h/2
 	txt11.x,txt11.y = w/2,h/2
 	txt12.x,txt12.y = 3*w/4,h/2
---	txt13.x,txt14.x,txt15.x = w/4,w/2,3*w/4
---	txt13.y,txt14.y,txt15.y = 5*h/8,5*h/8,5*h/8
+	txt13.x,txt14.x,txt15.x = w/4,w/2,3*w/4
+	txt13.y,txt14.y,txt15.y = 5*h/8,5*h/8,5*h/8
+	txt16.x,txt17.x = w/4,w/2
+	txt16.y,txt17.y = 6*h/8,6*h/8
 	
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
@@ -219,9 +257,11 @@ function new()
 	btn10:setFillColor(255,0,255)
 	btn11:setFillColor(255,0,255)
 	btn12:setFillColor(255,0,255)
---	btn13:setFillColor(0,255,255)
---	btn14:setFillColor(0,255,255)
---	btn15:setFillColor(0,255,255)
+	btn13:setFillColor(0,255,255)
+	btn14:setFillColor(0,255,255)
+	btn15:setFillColor(0,255,255)
+	btn16:setFillColor(0,255,255)
+	btn17:setFillColor(0,255,255)
 	
 --	txt2.isVisible = false
 --	txt3.isVisible = false
@@ -234,7 +274,7 @@ function new()
 --	txt14.isVisible = false
 --	txt15.isVisible = false
 	
-	btn1.alpha = 0.5
+	btn1.alpha = 1
 	btn2.alpha = 0.5
 	btn3.alpha = 0.5
 	btn4.alpha = 0.5
@@ -246,9 +286,11 @@ function new()
 	btn10.alpha = 0.5
 	btn11.alpha = 0.5
 	btn12.alpha = 0.5
---	btn13.alpha = 0.5
---	btn14.alpha = 0.5
---	btn15.alpha = 0.5
+	btn13.alpha = 0.5
+	btn14.alpha = 0.5
+	btn15.alpha = 0.5
+	btn16.alpha = 0.5
+	btn17.alpha = 0.5
 	
 	btn1.txt = txt1
 	btn2.txt = txt2
@@ -262,9 +304,11 @@ function new()
 	btn10.txt = txt10
 	btn11.txt = txt11
 	btn12.txt = txt12
---	btn13.txt = txt13
---	btn14.txt = txt14
---	btn15.txt = txt15
+	btn13.txt = txt13
+	btn14.txt = txt14
+	btn15.txt = txt15
+	btn16.txt = txt16
+	btn17.txt = txt17
 	
 	localGroup:insert(btn1)
 	localGroup:insert(btn2)
@@ -278,9 +322,23 @@ function new()
 	localGroup:insert(btn10)
 	localGroup:insert(btn11)
 	localGroup:insert(btn12)
---	localGroup:insert(btn13)
---	localGroup:insert(btn14)
---	localGroup:insert(btn15)
+	localGroup:insert(btn13)
+	localGroup:insert(btn14)
+	localGroup:insert(btn15)
+	localGroup:insert(btn16)
+	localGroup:insert(btn17)
+
+	local idxOfBtn3
+	for i = 1, localGroup.numChildren do
+		if localGroup[i] == btn3 then
+			idxOfBtn3 = i
+		end
+	end
+
+	for i = idxOfBtn3, localGroup.numChildren do
+		localGroup[i].isVisible = false
+		localGroup[i].txt.isVisible = false
+	end
 
 	bindEventListeners()
 
@@ -318,6 +376,7 @@ function new()
 	gl.localGroup  = localGroup 
 	gl.currentBacks = backs
 	gl.currentHiddenBtns = initHiddenBacks()
+	gl.sampleKit = sampleKit
 	
 	require("recording").startRecording()
 	playModule.playBasicMelody()

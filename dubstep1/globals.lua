@@ -23,8 +23,8 @@ isRecordingTimeRestricted = true
 timerTxt = nil
 
 changeLayoutTime = 30000
-fullRecordLength = 192000 - 32000
-showChoiceTime = 40000
+fullRecordLength = (182000 - 32000) / 1
+showChoiceTime = 30000 / 1
 choiceShownDurationTime = 8000
 currentSceneLocalTime = nil
 currentSceneAppearTime = nil
@@ -111,8 +111,8 @@ function drawLayoutBtns()
 	evilTxt = display.newText("Evil",0,0,native.systemFont,14)
 	goodTxt.x,goodTxt.y = w/2,15*h/16
 	evilTxt.x,evilTxt.y = 5*w/8,15*h/16
-	--goodTxt.isVisible = false
-	--evilTxt.isVisible = false
+	goodTxt.isVisible = false
+	evilTxt.isVisible = false
 	
 	goodBtn = display.newRoundedRect(1,1,w/10,h/10,10)
 	evilBtn = display.newRoundedRect(1,1,w/10,h/10,10)
@@ -153,8 +153,8 @@ function drawLayoutBtns()
 	evilBtn.x,evilBtn.y = 5*w/8,15*h/16
 	goodBtn:setFillColor(0,100,255)
 	evilBtn:setFillColor(255,100,0)
-	--goodBtn.isVisible = false
---	evilBtn.isVisible = false
+	goodBtn.isVisible = false
+	evilBtn.isVisible = false
 	
 	goodBtn.txt = goodTxt
 	evilBtn.txt = evilTxt

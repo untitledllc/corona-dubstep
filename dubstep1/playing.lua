@@ -61,7 +61,7 @@ local function shutUpVoices(group,isShut,numSamples,numFX,numVoices)
 			if (recording.isRecStarted() == true) then
       			if (recording.isRecStarted() == true) then
     				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							idx,0,audio.getVolume({channel = index}),5,-1)
+    							idx,0,audio.getVolume({channel = idx}),5,-1)
    				end
    			end
 			
@@ -87,7 +87,7 @@ local function shutUpDrums(group,isShut,partSumms,trackCounters)
 			
 			if (recording.isRecStarted() == true) then
 				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-										idx,0,audio.getVolume({channel = index}),3,-1)
+										idx,0,audio.getVolume({channel = idx}),3,-1)
    			end
 			
 			idx = idx + 1
@@ -95,10 +95,10 @@ local function shutUpDrums(group,isShut,partSumms,trackCounters)
 	end
 end
 
-local function shutUpMelodies(group,isShut,partSumms,trackCounters)
+function shutUpMelodies(group,isShut,partSumms,trackCounters)
 	if (isShut == true) then
-		local idx = partSumms[1] + 1
-		while (idx <= partSumms[2]) do		
+		local MelodiesIdxs = {1, 3, 4, 6, 7, 11, 12, 14, 15}
+		for i, idx in pairs(MelodiesIdxs) do
 			group[idx].alpha = 0.5
 			
 			local channelVolume = audio.getVolume( { channel=idx } )
@@ -112,10 +112,8 @@ local function shutUpMelodies(group,isShut,partSumms,trackCounters)
 			
 			if (recording.isRecStarted() == true) then
 				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-										idx,0,audio.getVolume({channel = index}),2,-1)
+										idx,0,audio.getVolume({channel = idx}),2,-1)
    			end
-			
-			idx = idx + 1
 		end
 	end
 end
@@ -137,7 +135,7 @@ local function shutUpIntros(group,isShut,partSumms,trackCounters)
 			
 			if (recording.isRecStarted() == true) then
 				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-										idx,0,audio.getVolume({channel = index}),1,-1)
+										idx,0,audio.getVolume({channel = idx}),1,-1)
    			end
    			
 			idx = idx + 1
@@ -145,21 +143,19 @@ local function shutUpIntros(group,isShut,partSumms,trackCounters)
 	end
 end
 
-local function shutUpFX(group,isShut,numSamples,numFX,numVoices)
+function shutUpFX(group,isShut,numSamples,numFX,numVoices)
 	if (isShut == true) then
-		local idx = numSamples + 1
-		while (idx <= numSamples + numVoices) do
+		local FXIndxs = {2, 5, 8, 9, 10, 13, 16, 17}
+		for i,idx in pairs(FXIndxs) do
 			group[idx].alpha = 0.5
 			audio.stop(idx)
 			
 			if (recording.isRecStarted() == true) then
     			if (recording.isRecStarted() == true) then
     				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							idx,0,audio.getVolume({channel = index}),4,-1)
+    							idx,0,audio.getVolume({channel = idx}),4,-1)
    				end
    			end
-			
-			idx = idx + 1
 		end
 	end
 end
@@ -199,7 +195,7 @@ local function playIntro(group,index,trackCounters)
     trackCounters[index] = trackCounters[index] + 1
 end
 
-local function playMelody(group,index,trackCounters)
+function playMelody(group,index,trackCounters)
 	local startStop = nil
 	if (trackCounters[index] % 2 ~= 0) then
         audio.setVolume(0,{channel = index})
@@ -271,7 +267,7 @@ local function playDrums(group,index,trackCounters)
     trackCounters[index] = trackCounters[index] + 1
 end
 
-local function playFX(group,kit,index)   
+function playFX(group,kit,index)   
 	local function closeActiveChannel(event)
     	activeChannels[index] = {-1}
     	
@@ -315,7 +311,7 @@ local function playFX(group,kit,index)
     fxTimer = timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
 end
 
-local function playVoice(group,kit,index)
+function playVoice(group,kit,index)
 	local function closeActiveChannel(event)
     	activeChannels[index] = {-1}
     	
@@ -504,52 +500,56 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 end
 
 function playGoodMelody(event)
---	gl.goodBtn.isVisible = false
---	gl.evilBtn.isVisible = false
---	gl.goodBtn.txt.isVisible = false
---	gl.evilBtn.txt.isVisible = false
+	gl.goodBtn.isVisible = false
+	gl.evilBtn.isVisible = false
+	gl.goodBtn.txt.isVisible = false
+	gl.evilBtn.txt.isVisible = false
+
+	playFX(gl.localGroup,gl.currentKit,13)
 	
-	recording.addAction(system.getTimer() - 
+	--[[recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentBasicChannel,
 							0,0,2,0)
 	
-	audio.setVolume(0,{channel = currentBasicChannel})																	
-	audio.setVolume(1, {channel = currentGoodChannel})
+	audio.setVolume(0,{channel = currentBasicChannel})	]]--																
+	audio.setVolume(0.3, {channel = currentGoodChannel})
 											
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentGoodChannel,
-							1,1,2,0)
+							1,0.3,2,0)
+
 end
 
 function playEvilMelody(event)
---	gl.goodBtn.isVisible = false
---	gl.evilBtn.isVisible = false
---	gl.goodBtn.txt.isVisible = false
---	gl.evilBtn.txt.isVisible = false
+	gl.goodBtn.isVisible = false
+	gl.evilBtn.isVisible = false
+	gl.goodBtn.txt.isVisible = false
+	gl.evilBtn.txt.isVisible = false
 	
-	recording.addAction(system.getTimer() - 
+	playFX(gl.localGroup,gl.currentKit,13)
+	--[[recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentBasicChannel,
 							0,0,2,0)
 					
-	audio.setVolume(0,{channel = currentBasicChannel})		
-	audio.setVolume(1, {channel = currentGoodChannel})
+	audio.setVolume(0,{channel = currentBasicChannel})	]]--	
+	audio.setVolume(0.3, {channel = currentGoodChannel})
 											
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentEvilChannel,
-							1,1,2,0)
+							1,0.3,2,0)
 end
 
 function playBasicMelody() 
 	
-	audio.setVolume(1,{channel = currentBasicChannel})
+	audio.setVolume(0.5,{channel = 1})
 	audio.setVolume(0,{channel = currentGoodChannel})
 	audio.setVolume(0,{channel = currentEvilChannel})
 	
-	recording.addAction(0,currentBasicChannel,1,1,2,0)
+	recording.addAction(0,1,1,0.5,2,0)
 	recording.addAction(0,currentGoodChannel,1,0,2,0)
 	recording.addAction(0,currentEvilChannel,1,0,2,0)
 end
@@ -575,6 +575,10 @@ function initSounds(kitAddress,numSamples,numFX,numVoices)
 	currentBasicChannel = i
 	currentGoodChannel = i + 1
 	currentEvilChannel = i + 2
+
+	gl.currentBasicChannel = currentBasicChannel
+	gl.currentGoodChannel = currentGoodChannel
+	gl.currentEvilChannel = currentEvilChannel
 	
 	track[1] = gl.currentBasicMelody
 	track[2] = kitAddress.."Basic.mp3"
@@ -591,6 +595,152 @@ function initSounds(kitAddress,numSamples,numFX,numVoices)
 	tracks[currentEvilChannel] = track
 	
 	audio.play(gl.currentBasicMelody,{channel = currentBasicChannel,loops = -1})
+	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
+	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
+	return tracks
+end
+
+function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
+	local i = 1
+	local str
+	local track = {sound = nil,name = nil,startTime = nil}
+	local tracks = {}
+
+	-- 1st scene
+	str = kitAddress.."ritm-1.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."sintezator-1.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	-- 2nd scene
+	str = kitAddress.."ritm-2.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."sintezator-1.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."bass-2.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	-- 3rd scene
+	str = kitAddress.."ritm-2.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."sintezator-1.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."bass-2.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."tom-tom.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."space-fx.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	-- 4th scene
+	str = kitAddress.."ritm-3.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+	
+	str = kitAddress.."tom-tom.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."gun-fx.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	-- 5th scene
+	str = kitAddress.."ritm-3.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+	
+	str = kitAddress.."tom-tom.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."bass-3.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+	str = kitAddress.."bass-fx.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
+
+		
+	gl.currentBasicMelody = audio.loadSound(kitAddress.."Basic.mp3")
+	gl.currentEvilMelody = audio.loadSound(kitAddress.."Evil.mp3")
+	gl.currentGoodMelody = audio.loadSound(kitAddress.."Good.mp3")
+	
+	currentBasicChannel = #tracks + 1
+	currentGoodChannel = #tracks + 2
+	currentEvilChannel = #tracks + 3
+
+	gl.currentBasicChannel = currentBasicChannel
+	gl.currentGoodChannel = currentGoodChannel
+	gl.currentEvilChannel = currentEvilChannel
+	
+	track[1] = gl.currentBasicMelody
+	track[2] = kitAddress.."Basic.mp3"
+	tracks[currentBasicChannel] = track
+	track = {}
+	
+	track[1] = gl.currentGoodMelody
+	track[2] = kitAddress.."Good.mp3"
+	tracks[currentGoodChannel] = track
+	track = {}
+	
+	track[1] =  gl.currentEvilMelody
+	track[2] = kitAddress.."Evil.mp3"
+	tracks[currentEvilChannel] = track
+	
+	audio.play(tracks[track[1]],{channel = 1,loops = -1})
 	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
 	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
 	return tracks

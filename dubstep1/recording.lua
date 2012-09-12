@@ -13,6 +13,8 @@ local timers = {}
 
 local isRecSwitchedOn = false
 
+local playParams = {false,false,false,false,false,3,3,3,3,0}
+
 function getTimers()
 	return timers
 end
@@ -85,6 +87,19 @@ local function hideBtns()
 end	
 
 function stopRecording(e)	
+
+	gl.localGroup[14].isVisible = false
+	gl.localGroup[15].isVisible = false
+	gl.localGroup[16].isVisible = false
+	gl.localGroup[17].isVisible = false
+
+	gl.localGroup[14].txt.isVisible = false
+	gl.localGroup[15].txt.isVisible = false
+	gl.localGroup[16].txt.isVisible = false
+	gl.localGroup[17].txt.isVisible = false
+
+	pl.shutUpFX(gl.localGroup,true,numSamples,numFX,numVoices)
+	pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
 	
 	cancelTimers(timers)
 	timers = {}
@@ -94,6 +109,15 @@ function stopRecording(e)
 	gl.currentSceneAppearTime = system.getTimer()
 
 	endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
+
+	recording.addAction(endRecordingTime - recPressTime,
+    							1,0,0,4,-1)
+
+	recording.addAction(endRecordingTime - recPressTime,
+    							gl.currentGoodChannel,0,0,4,-1)
+
+	recording.addAction(endRecordingTime - recPressTime,
+    							gl.currentEvilChannel,0,0,4,-1)
 	
 	gl.shareBtn.isVisible = true
 	gl.shareBtn.txt.isVisible = true
@@ -114,8 +138,8 @@ function stopRecording(e)
 	gl.timerTxt.isVisible = false
 	gl.sceneNumber.isVisible = false
 	gl.nextSceneTimerTxt.isVisible = false
-	
-	audio.stop(gl.currentBasicChannel)
+
+	audio.stop(1)
 	audio.stop(gl.currentGoodChannel)
 	audio.stop(gl.currentEvilChannel)
 	
@@ -178,7 +202,6 @@ function startRecording()
 			timers[#timers + 1] = timer.performWithDelay((idx)*gl.fullRecordLength/(#gl.currentBacks - 1),
 								function ()
 									gl.currentBacks[idxs[1] - 1].isVisible = false
-									print(idxs[1])
 									gl.changeBackGround(gl.currentBacks[idxs[1]])
 									
 									for idx,val in pairs(findNext5HiddenBtns()) do
@@ -187,6 +210,114 @@ function startRecording()
 									end
 									gl.sceneNumber.text = "Next scene: "..tostring(idxs[1] + 1)
 									gl.currentSceneAppearTime = system.getTimer()
+
+									if idxs[1] == 2 then
+										-- Прячем кнопки предыдущей сцены
+										gl.localGroup[1].isVisible = false
+										gl.localGroup[2].isVisible = false
+
+										gl.localGroup[1].txt.isVisible = false
+										gl.localGroup[2].txt.isVisible = false
+										
+										-- Выключаем треки предыдущей сцены и включаем постоянный трек текущей
+										pl.shutUpFX(gl.localGroup,true,numSamples,numFX,numVoices)
+										pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
+										pl.playMelody(gl.localGroup,3,layout.trackCounters)
+
+										-- Показываем кнопки новой сцены
+										gl.localGroup[3].isVisible = true
+										gl.localGroup[4].isVisible = true
+										gl.localGroup[5].isVisible = true
+
+										gl.localGroup[3].txt.isVisible = true
+										gl.localGroup[4].txt.isVisible = true
+										gl.localGroup[5].txt.isVisible = true
+
+									elseif idxs[1] == 3 then
+										-- Прячем кнопки предыдущей сцены
+										gl.localGroup[3].isVisible = false
+										gl.localGroup[4].isVisible = false
+										gl.localGroup[5].isVisible = false
+
+										gl.localGroup[3].txt.isVisible = false
+										gl.localGroup[4].txt.isVisible = false
+										gl.localGroup[5].txt.isVisible = false
+
+										-- Выключаем треки предыдущей сцены и включаем постоянный трек текущей
+										pl.shutUpFX(gl.localGroup,true,numSamples,numFX,numVoices)
+										pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
+										pl.playMelody(gl.localGroup,6,layout.trackCounters)
+										
+										-- Показываем кнопки новой сцены
+										gl.localGroup[6].isVisible = true
+										gl.localGroup[7].isVisible = true
+										gl.localGroup[8].isVisible = true
+										gl.localGroup[9].isVisible = true
+										gl.localGroup[10].isVisible = true
+
+										gl.localGroup[6].txt.isVisible = true
+										gl.localGroup[7].txt.isVisible = true
+										gl.localGroup[8].txt.isVisible = true
+										gl.localGroup[9].txt.isVisible = true
+										gl.localGroup[10].txt.isVisible = true
+
+									elseif idxs[1] == 4 then
+										-- Прячем кнопки предыдущей сцены
+										gl.localGroup[6].isVisible = false
+										gl.localGroup[7].isVisible = false
+										gl.localGroup[8].isVisible = false
+										gl.localGroup[9].isVisible = false
+										gl.localGroup[10].isVisible = false
+
+										gl.localGroup[6].txt.isVisible = false
+										gl.localGroup[7].txt.isVisible = false
+										gl.localGroup[8].txt.isVisible = false
+										gl.localGroup[9].txt.isVisible = false
+										gl.localGroup[10].txt.isVisible = false
+
+										-- Выключаем треки предыдущей сцены и включаем постоянный трек текущей
+										pl.shutUpFX(gl.localGroup,true,numSamples,numFX,numVoices)
+										pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
+										pl.playMelody(gl.localGroup,11,layout.trackCounters)
+										
+										-- Показываем кнопки новой сцены
+										gl.localGroup[11].isVisible = true
+										gl.localGroup[12].isVisible = true
+										gl.localGroup[13].isVisible = true
+
+										gl.localGroup[11].txt.isVisible = true
+										gl.localGroup[12].txt.isVisible = true
+										gl.localGroup[13].txt.isVisible = true
+
+									elseif idxs[1] == 5 then 
+										-- Прячем кнопки предыдущей сцены
+										gl.localGroup[11].isVisible = false
+										gl.localGroup[12].isVisible = false
+										gl.localGroup[13].isVisible = false
+
+										gl.localGroup[11].txt.isVisible = false
+										gl.localGroup[12].txt.isVisible = false
+										gl.localGroup[13].txt.isVisible = false
+
+										-- Выключаем треки предыдущей сцены и включаем постоянный трек текущей
+										pl.shutUpFX(gl.localGroup,true,numSamples,numFX,numVoices)
+										pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
+										pl.playMelody(gl.localGroup,14,layout.trackCounters)
+										
+										-- Показываем кнопки новой сцены
+										gl.localGroup[14].isVisible = true
+										gl.localGroup[15].isVisible = true
+										gl.localGroup[16].isVisible = true
+										gl.localGroup[17].isVisible = true
+
+										gl.localGroup[14].txt.isVisible = true
+										gl.localGroup[15].txt.isVisible = true
+										gl.localGroup[16].txt.isVisible = true
+										gl.localGroup[17].txt.isVisible = true	
+									end
+
+
+
 									table.remove(idxs, 1)
 								end )
 			idx = idx - 1
