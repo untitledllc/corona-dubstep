@@ -513,12 +513,12 @@ function playGoodMelody(event)
 							0,0,2,0)
 	
 	audio.setVolume(0,{channel = currentBasicChannel})	]]--																
-	audio.setVolume(0.3, {channel = currentGoodChannel})
+	audio.setVolume(0, {channel = currentGoodChannel})
 											
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentGoodChannel,
-							1,0.3,2,0)
+							1,0,2,0)
 
 end
 
@@ -535,12 +535,12 @@ function playEvilMelody(event)
 							0,0,2,0)
 					
 	audio.setVolume(0,{channel = currentBasicChannel})	]]--	
-	audio.setVolume(0.3, {channel = currentGoodChannel})
+	audio.setVolume(0, {channel = currentGoodChannel})
 											
 	recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentEvilChannel,
-							1,0.3,2,0)
+							1,0,2,0)
 end
 
 function playBasicMelody() 
