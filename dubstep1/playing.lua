@@ -519,7 +519,7 @@ function playGoodMelody(event)
 				curLayout.getLayoutAppearTime(),
 						currentGoodChannel,
 							1,0,2,0)
-
+	gl.currentBasicMelody = gl.currentGoodMelody
 end
 
 function playEvilMelody(event)
@@ -541,6 +541,7 @@ function playEvilMelody(event)
 				curLayout.getLayoutAppearTime(),
 						currentEvilChannel,
 							1,0,2,0)
+	gl.currentBasicMelody = gl.currentEvilMelody
 end
 
 function playBasicMelody() 

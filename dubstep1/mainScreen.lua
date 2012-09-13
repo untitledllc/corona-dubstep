@@ -34,17 +34,24 @@ function new()
 	
 	txtLevel1:setTextColor(0,0,0)
 	txtLevel2:setTextColor(0,0,0)
+
+	local toLevel1Handler
+	local toLevel2Handler
 	
-	local function toLevel1Handler(event)
-		gl.loading.isVisible = true
-		if (event.phase == "ended") then
-			director:changeScene("layout1")
+	toLevel1Handler = function (event)
+		if event.phase == "ended" then
+			gl.loading.isVisible = true
+			localGroup[1]:removeEventListener("touch", toLevel1Handler)
+			localGroup[2]:removeEventListener("touch", toLevel2Handler)
+			timer.performWithDelay(20, function () director:changeScene("layout1") end)
 		end
 	end
-	local function toLevel2Handler(event)
-		gl.loading.isVisible = true
-		if (event.phase == "ended") then
-			director:changeScene("layout2")	
+	toLevel2Handler = function (event)
+		if event.phase == "ended" then
+			gl.loading.isVisible = true
+			localGroup[1]:removeEventListener("touch", toLevel1Handler)
+			localGroup[2]:removeEventListener("touch", toLevel2Handler)
+			timer.performWithDelay(20, function () director:changeScene("layout2") end)
 		end
 	end
 	
