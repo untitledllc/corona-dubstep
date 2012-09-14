@@ -193,6 +193,7 @@ function drawLayoutBtns()
 			audio.stop()
 			loading.isVisible = true
 			recording.cancelTimers(recording.timers)
+			recording.cancelTimers(recording.goodEvilButtonTimers)
 			director:changeScene(event.target.scene)
 		end
 	end

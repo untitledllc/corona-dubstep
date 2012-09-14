@@ -11,6 +11,8 @@ local layout = require(gl.currentLayout)
 
 timers = {}
 
+goodEvilButtonTimers = {}
+
 currentScene = 1
 
 local isRecSwitchedOn = false
@@ -80,8 +82,7 @@ function setScenesDirection()
 				if currentScene ~= 5 then
 					timers[#timers + 1] = timer.performWithDelay(gl.fullRecordLength/(#gl.currentBacks - 1),
 						function ()
-							local f = goToScene[currentScene + 1]
-							f({phase = "ended"})
+							gl.localGroup[19]:dispatchEvent({name = "touch", phase = "ended"})
 						end
 					)
 				end
@@ -95,8 +96,19 @@ function setScenesDirection()
 					gl.localGroup[i].isVisible = false
 					gl.localGroup[i].txt.isVisible = false
 				end
-				pl.shutUpFX(gl.localGroup,true,numSamples,numFX,numVoices)
-				pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
+				
+				local j = 1
+				while (j <= gl.currentNumSamples) do
+					audio.stop(j)
+					j = j + 1
+				end
+
+				for i, v in pairs(musics) do
+					print("here")
+					audio.play(gl.sampleKit[v][1],{channel = v,loops = -1})
+					audio.setVolume(0,{channel = v})
+				end
+				print(musics[1])
 				pl.playMelody(gl.localGroup,musics[1],layout.trackCounters)
 
 				for i, v in pairs(FXs) do
@@ -224,10 +236,12 @@ function stopRecording(e)
 	gl.localGroup[16].txt.isVisible = false
 	gl.localGroup[17].txt.isVisible = false
 
-	pl.shutUpFX(gl.localGroup,true,numSamples,numFX,numVoices)
+	pl.shutUpFX(gl.localGroup,true,gl.currentNumSamples,numFX,numVoices)
 	pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
 	
 	cancelTimers(timers)
+	cancelTimers(goodEvilButtonTimers)
+	goodEvilButtonTimers = {}
 	timers = {}
 		
 	gl.currentBacks[#gl.currentBacks - 1].isVisible = false
@@ -345,7 +359,7 @@ function startRecording()
 		idx = idx + 1
 	end
 
-	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime,
+	goodEvilButtonTimers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime,
 								function ()
 									gl.goodBtn.isVisible = true
 									gl.evilBtn.isVisible = true
@@ -353,13 +367,13 @@ function startRecording()
 									gl.evilBtn.txt.isVisible = true
 								end )
 								
-	timers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
+	goodEvilButtonTimers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
 								function ()
-									--gl.goodBtn.isVisible = false
-									--gl.evilBtn.isVisible = false
-									--gl.goodBtn.txt.isVisible = false
-									--gl.evilBtn.txt.isVisible = false
-									
+									gl.goodBtn.isVisible = false
+									gl.evilBtn.isVisible = false
+									gl.goodBtn.txt.isVisible = false
+									gl.evilBtn.txt.isVisible = false
+									print("here")
 									if (gl.currentBasicMelody ~= gl.currentGoodMelody
 											and
 										gl.currentBasicMelody ~= gl.currentEvilMelody) then

@@ -37,11 +37,11 @@ function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 	end 	
 		
 	idx = 1
-	while (idx <= numSamples) do
-		audio.play(sampleKit[idx][1],{channel = idx,loops = -1})
-		audio.setVolume(0,{channel = idx})
-		idx = idx + 1
-	end
+	--while (idx <= numSamples) do
+	--	audio.play(sampleKit[idx][1],{channel = idx,loops = -1})
+	--	audio.setVolume(0,{channel = idx})
+	--	idx = idx + 1
+	--end
 		
 	idx = 1
 	while (idx <= numSamples + numFX + numVoices) do
@@ -293,8 +293,10 @@ function playFX(group,kit,index)
     		audio.setVolume(0.5,{channel = index})  
     end 
     
-    group[index].alpha = 1
-    transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
+    if group.numChildren ~= nil and index <= group.numChildren then
+    	group[index].alpha = 1
+    	transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
+    end
     
     local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
     activeChannel.channel = index
@@ -505,7 +507,7 @@ function playGoodMelody(event)
 	gl.goodBtn.txt.isVisible = false
 	gl.evilBtn.txt.isVisible = false
 
-	playFX(gl.localGroup,gl.currentKit,13)
+	playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)
 	
 	--[[recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
@@ -528,7 +530,7 @@ function playEvilMelody(event)
 	gl.goodBtn.txt.isVisible = false
 	gl.evilBtn.txt.isVisible = false
 	
-	playFX(gl.localGroup,gl.currentKit,13)
+	playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)
 	--[[recording.addAction(system.getTimer() - 
 				curLayout.getLayoutAppearTime(),
 						currentBasicChannel,
@@ -545,7 +547,7 @@ function playEvilMelody(event)
 end
 
 function playBasicMelody() 
-	
+
 	audio.setVolume(0.5,{channel = 1})
 	audio.setVolume(0,{channel = currentGoodChannel})
 	audio.setVolume(0,{channel = currentEvilChannel})
@@ -740,8 +742,15 @@ function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
 	track[1] =  gl.currentEvilMelody
 	track[2] = kitAddress.."Evil.mp3"
 	tracks[currentEvilChannel] = track
+
+	toGoodEvilFXChannel = #tracks + 1
+	str = kitAddress.."gun-fx.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[toGoodEvilFXChannel] = track
+	track = {}
 	
-	audio.play(tracks[track[1]],{channel = 1,loops = -1})
+	audio.play(tracks[1][1],{channel = 1,loops = -1})
 	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
 	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
 	return tracks
