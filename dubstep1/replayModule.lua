@@ -485,6 +485,7 @@ function new()
 					transition.cancel(scrollTransition)
 					scrollTransition = nil
 				end
+				print("here2")
 				scrollTransition = transition.to(curPlayPos,
 				{time=relEndTrackTime - relPlayTime,x=(w-10)})
 				
@@ -494,6 +495,7 @@ function new()
 				
 				play()
 			else
+				print("here")
 				audio.pause()
 				isPaused = true
 				txtPlay.text = "Play"

@@ -183,4 +183,4 @@ function createVolumeRegulatorPanel()
 	local scroll,line = createVolumeRegulator(5*w/6,h/8)
 	regulatorPanel:insert(line)	
 	regulatorPanel:insert(scroll)
-end 
+end

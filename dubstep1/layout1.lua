@@ -12,7 +12,7 @@ function getLayoutAppearTime()
 	return layoutAppearTime
 end
 
-function new()	
+function new()
 	local mainGroup = display.newGroup()
 	local localGroup = display.newGroup()	
 	
@@ -21,12 +21,14 @@ function new()
 	local numVoices = 0
 	
 	local gl = require("globals")
-	
+
 	gl.currentLayout = "layout1"
 	gl.currentNumSamples = numSamples
 	gl.currentNumFX = numFX
 	gl.currentNumVoices = numVoices
-	
+
+	local rec = require("recording")
+
 	local playModule = require("playing")
 	local kitAddress = "sounds1/"
 
@@ -161,6 +163,8 @@ function new()
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
 			idx = idx + 1
 		end
+
+		localGroup[idx + 1]:addEventListener("touch", rec.goToScene[2])
 	end
 	
 	for idx,val in pairs(gl.btns) do
@@ -184,6 +188,8 @@ function new()
 	txt15 = display.newText("tom-tom",0,0,native.systemFont,14)
 	txt16 = display.newText("bass-3",0,0,native.systemFont,14)	
 	txt17 = display.newText("bass-fx",0,0,native.systemFont,14)	
+	txt18 = display.newText("prev",0,0,native.systemFont,14)	
+	txt19 = display.newText("next",0,0,native.systemFont,14)	
 	 
 	btn1 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn2 = display.newRoundedRect(1,1,w/10,h/10,2)
@@ -203,6 +209,9 @@ function new()
 	btn16 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn17 = display.newRoundedRect(1,1,w/10,h/10,2)
 
+	btn18 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn19 = display.newRoundedRect(1,1,w/10,h/10,2)
+
 	btn1.x,btn2.x = w/3,2*w/3
 	btn1.y,btn2.y = h/8,h/8
 	btn3.x,btn4.x,btn5.x,btn6.x = w/5,2*w/5,3*w/5,4*w/5
@@ -216,6 +225,9 @@ function new()
 	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
 	btn16.x,btn17.x = w/4,w/2
 	btn16.y,btn17.y = 6*h/8,6*h/8
+
+	btn18.x,btn19.x = w/10,w/10
+	btn18.y,btn19.y = 3*h/8,h/2
 	
 	btn1.x,btn2.x,btn3.x = w/4,w/2,3*w/4
 	btn1.y,btn2.y,btn3.y = h/8,h/8,h/8
@@ -230,6 +242,9 @@ function new()
 	btn13.y,btn14.y,btn15.y = 5*h/8,5*h/8,5*h/8
 	btn16.x,btn17.x = w/4,w/2
 	btn16.y,btn17.y = 6*h/8,6*h/8
+
+	btn18.x,btn19.x = w/10,w/10
+	btn18.y,btn19.y = 3*h/8,h/2
 	
 	txt1.x,txt2.x,txt3.x = w/4,w/2,3*w/4
 	txt1.y,txt2.y,txt3.y = h/8,h/8,h/8
@@ -244,6 +259,9 @@ function new()
 	txt13.y,txt14.y,txt15.y = 5*h/8,5*h/8,5*h/8
 	txt16.x,txt17.x = w/4,w/2
 	txt16.y,txt17.y = 6*h/8,6*h/8
+
+	txt18.x,txt19.x = w/10,w/10
+	txt18.y,txt19.y = 3*h/8,h/2
 	
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
@@ -262,6 +280,10 @@ function new()
 	btn15:setFillColor(0,255,255)
 	btn16:setFillColor(0,255,255)
 	btn17:setFillColor(0,255,255)
+
+	btn18:setFillColor(128,128,128)
+	btn19:setFillColor(128,128,128)
+
 	
 --	txt2.isVisible = false
 --	txt3.isVisible = false
@@ -291,6 +313,9 @@ function new()
 	btn15.alpha = 0.5
 	btn16.alpha = 0.5
 	btn17.alpha = 0.5
+
+	btn18.alpha = 0.5
+	btn19.alpha = 0.5
 	
 	btn1.txt = txt1
 	btn2.txt = txt2
@@ -309,6 +334,9 @@ function new()
 	btn15.txt = txt15
 	btn16.txt = txt16
 	btn17.txt = txt17
+
+	btn18.txt = txt18
+	btn19.txt = txt19
 	
 	localGroup:insert(btn1)
 	localGroup:insert(btn2)
@@ -327,6 +355,8 @@ function new()
 	localGroup:insert(btn15)
 	localGroup:insert(btn16)
 	localGroup:insert(btn17)
+	localGroup:insert(btn18)
+	localGroup:insert(btn19)
 
 	local idxOfBtn3
 	for i = 1, localGroup.numChildren do
@@ -335,12 +365,12 @@ function new()
 		end
 	end
 
-	for i = idxOfBtn3, localGroup.numChildren do
+	for i = idxOfBtn3, localGroup.numChildren - 2 do
 		localGroup[i].isVisible = false
 		localGroup[i].txt.isVisible = false
 	end
 
-	bindEventListeners()
+	
 
 	backs[1] = display.newImageRect("images/layout1/back1.png",gl.w,gl.h)
 	backs[2] = display.newImageRect("images/layout1/back2.png",gl.w,gl.h)
@@ -377,8 +407,11 @@ function new()
 	gl.currentBacks = backs
 	gl.currentHiddenBtns = initHiddenBacks()
 	gl.sampleKit = sampleKit
+
+	rec.setScenesDirection()
+	bindEventListeners()
 	
-	require("recording").startRecording()
+	rec.startRecording()
 	playModule.playBasicMelody()
 	
 	gl.loading.isVisible = false
