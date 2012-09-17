@@ -2,7 +2,8 @@ module (...,package.seeall)
 
 function new()
 	local gl = require("globals")
-	
+	audio.stop()
+	audio.rewind()
 	local w = gl.w
 	local h = gl.h
 	

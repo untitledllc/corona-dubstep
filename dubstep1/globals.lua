@@ -215,3 +215,45 @@ function drawLayoutBtns()
 	btns[4] = volumeBtn
 	return btns
 end
+
+function bin_search(ar, direct, required)
+	if not answer then
+		answer = 0
+	end
+	local center = math.ceil(#ar/2)
+	if direct == "left" then
+		answer = answer - (#ar - center)
+	else
+		answer = answer + center
+	end
+
+	if required == ar[center] then
+		
+		return answer
+	end
+
+	if #ar == 1 and ar[1] ~= required then
+		
+		return -1
+	end
+
+	if ar[center] > required then
+		local tmpArr = {}
+		for i = 1, center, 1 do
+			tmpArr[#tmpArr+1] = ar[i]
+		end
+		if #tmpArr == 0 then
+			return -1
+		end
+		return bin_search(tmpArr, "left", required)
+	elseif ar[center] < required then
+		local tmpArr = {}
+		for i = center+1, #ar, 1 do
+			tmpArr[#tmpArr+1] = ar[i]
+		end
+		if #tmpArr == 0 then
+			return -1
+		end
+		return bin_search(tmpArr, "right" ,required)
+	end 
+end

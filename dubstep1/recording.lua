@@ -42,21 +42,27 @@ function setScenesDirection()
 		end
 		local FXs
 		local musics
+		local toPlay
 		if idx == 1 then
 			musics = {1}
 			FXs = {2}
+			toPlay = {2}
 		elseif idx == 2 then
 			musics = {3, 4}
 			FXs = {5}
+			toPlay = {3, 4, 5}
 		elseif idx == 3 then
 			musics = {6, 7}
 			FXs = {8, 9, 10}
+			toPlay = {6, 7, 8, 9}
 		elseif idx == 4 then
 			musics = {11, 12}
 			FXs = {13}
+			toPlay = {11, 12}
 		elseif idx == 5 then
 			musics = {14, 15}
 			FXs = {16, 17}
+			toPlay = {14, 15, 16}
 		end
 		goToScene[idx] = function(event)
 			if event.phase == "ended" then
@@ -100,16 +106,33 @@ function setScenesDirection()
 				local j = 1
 				while (j <= gl.currentNumSamples) do
 					audio.stop(j)
+					audio.rewind({channel = j})
+
+					layout.trackCounters[j] = 0
+        			audio.setVolume(0,{channel = j})
+        			gl.localGroup[j].alpha = 0.5
+
 					j = j + 1
 				end
 
 				for i, v in pairs(musics) do
-					print("here")
 					audio.play(gl.sampleKit[v][1],{channel = v,loops = -1})
 					audio.setVolume(0,{channel = v})
 				end
-				print(musics[1])
-				pl.playMelody(gl.localGroup,musics[1],layout.trackCounters)
+				
+				--if idx == 1 then
+				for i, v in pairs(toPlay) do
+					if gl.bin_search(musics, "right", v) ~= -1 then
+						pl.playMelody(gl.localGroup,v,layout.trackCounters)
+					else
+						pl.playFX(gl.localGroup,gl.sampleKit,v)
+					end
+
+				end
+				--else
+
+				--end
+
 
 				for i, v in pairs(FXs) do
 					gl.localGroup[v].isVisible = true
@@ -283,6 +306,9 @@ function stopRecording(e)
 	audio.stop(gl.currentGoodChannel)
 	audio.stop(gl.currentEvilChannel)
 	
+	audio.play(gl.sampleKit[2][1],{channel = 2,loops = -1})
+	audio.setVolume(0.5,{channel = 2})
+
 	Runtime:removeEventListener("enterFrame",function ()
 												if (isRecSwitchedOn == true) then
 													gl.timerTxt.text = "Time left: "..tostring(

@@ -45,7 +45,7 @@ function new()
 	trackCounters = playModule.resetCounters(numSamples)
 
 	local sampleKit = playModule.initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
-	trackCounters[1] = trackCounters[1] + 1
+	trackCounters[2] = trackCounters[2] + 1
 	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
 	local function playSound1 (event)
@@ -296,8 +296,8 @@ function new()
 --	txt14.isVisible = false
 --	txt15.isVisible = false
 	
-	btn1.alpha = 1
-	btn2.alpha = 0.5
+	btn1.alpha = 0.5
+	btn2.alpha = 1
 	btn3.alpha = 0.5
 	btn4.alpha = 0.5
 	btn5.alpha = 0.5
