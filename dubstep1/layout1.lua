@@ -163,8 +163,26 @@ function new()
 			localGroup[idx]:addEventListener("touch",handlerTable[idx])
 			idx = idx + 1
 		end
+	end
 
-		localGroup[idx + 1]:addEventListener("touch", rec.goToScene[2])
+	local function unbindEventListeners()
+		local handlerTable = {playSound1,playSound2,playSound3,
+				playSound4,playSound5,playSound6,
+				playSound7,playSound8,playSound9,
+				playSound10,playSound11,playSound12,
+				playSound13,playSound14,playSound15,
+				playSound16,playSound17}
+		local idx = 1
+		while(idx <= #handlerTable) do
+			localGroup[idx]:removeEventListener("touch",handlerTable[idx])
+			idx = idx + 1
+		end
+		for i = 1, 6 do
+			localGroup[idx + 1]:removeEventListener("touch", rec.goToScene[i])
+		end
+		for i = 1, 6 do
+			localGroup[idx]:removeEventListener("touch", rec.goToScene[i])
+		end
 	end
 	
 	for idx,val in pairs(gl.btns) do
@@ -407,9 +425,13 @@ function new()
 	gl.currentBacks = backs
 	gl.currentHiddenBtns = initHiddenBacks()
 	gl.sampleKit = sampleKit
+	gl.bindButtonsListeners = bindEventListeners
+	gl.unbindButtonsListeners = unbindEventListeners
 
 	rec.setScenesDirection()
 	bindEventListeners()
+	
+	localGroup[localGroup.numChildren]:addEventListener("touch", rec.goToScene[2])
 	
 	rec.startRecording()
 	playModule.playBasicMelody()

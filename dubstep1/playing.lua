@@ -606,6 +606,9 @@ function playGoodMelody(event)
 	gl.goodBtn.txt.isVisible = false
 	gl.evilBtn.txt.isVisible = false
 	gl.currentBasicMelody = gl.currentGoodMelody
+
+	gl.unbindButtonsListeners()
+
 	local volumes = {}
 	for i = 1, 17 do
 		print("zdes")
@@ -635,7 +638,20 @@ function playGoodMelody(event)
 		for i, v in pairs(recording.timers) do
 			timer.resume(v)
 		end
+		gl.bindButtonsListeners()
+		if recording.currentScene - 1 > 0 then
+			gl.localGroup[gl.localGroup.numChildren - 1]:addEventListener("touch", recording.goToScene[recording.currentScene - 1])
+		end
+		if recording.currentScene + 1 < 7 then
+			gl.localGroup[gl.localGroup.numChildren]:addEventListener("touch", recording.goToScene[recording.currentScene + 1])
+		end
 
+		audio.setVolume(0, {channel = currentGoodChannel})
+											
+		recording.addAction(system.getTimer() - 
+				curLayout.getLayoutAppearTime(),
+						currentGoodChannel,
+							1,0,2,0)
 	end)
 	
 
@@ -645,13 +661,9 @@ function playGoodMelody(event)
 							0,0,2,0)
 	
 	audio.setVolume(0,{channel = currentBasicChannel})	]]--																
-	audio.setVolume(0, {channel = currentGoodChannel})
-											
-	recording.addAction(system.getTimer() - 
-				curLayout.getLayoutAppearTime(),
-						currentGoodChannel,
-							1,0,2,0)
 	
+
+
 end
 
 function playEvilMelody(event)
