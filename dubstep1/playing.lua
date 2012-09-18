@@ -536,10 +536,10 @@ function playGoodMelody(event)
 		timer.pause(v)
 	end
 
-	timer.performWithDelay(800, function() playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel) end)
+	playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)
 	
 	
-	timer.performWithDelay(2700, function()
+	timer.performWithDelay(1600, function()
 		for i = 1, 17 do
 			audio.setVolume(volumes[i], {channel = i})						
 			recording.addAction(system.getTimer() - 
@@ -792,19 +792,21 @@ function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
 	track[2] = str
 	tracks[#tracks + 1] = track
 	track = {}
-
 		
 	gl.currentBasicMelody = audio.loadSound(kitAddress.."Basic.mp3")
 	gl.currentEvilMelody = audio.loadSound(kitAddress.."Evil.mp3")
 	gl.currentGoodMelody = audio.loadSound(kitAddress.."Good.mp3")
+	gl.sharingMelody = audio.loadSound(kitAddress.."forSharing.mp3")
 	
 	currentBasicChannel = #tracks + 1
 	currentGoodChannel = #tracks + 2
 	currentEvilChannel = #tracks + 3
+	sharingChannel = #tracks + 4
 
 	gl.currentBasicChannel = currentBasicChannel
 	gl.currentGoodChannel = currentGoodChannel
 	gl.currentEvilChannel = currentEvilChannel
+	gl.sharingChannel = sharingChannel
 	
 	track[1] = gl.currentBasicMelody
 	track[2] = kitAddress.."Basic.mp3"
@@ -819,6 +821,12 @@ function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
 	track[1] =  gl.currentEvilMelody
 	track[2] = kitAddress.."Evil.mp3"
 	tracks[currentEvilChannel] = track
+	track = {}
+
+	track[1] =  gl.sharingMelody
+	track[2] = kitAddress.."forSharing.mp3"
+	tracks[sharingChannel] = track
+	track = {}
 
 	toGoodEvilFXChannel = #tracks + 1
 	str = kitAddress.."gun-fx.mp3"

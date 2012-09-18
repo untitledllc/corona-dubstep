@@ -306,8 +306,8 @@ function stopRecording(e)
 	audio.stop(gl.currentGoodChannel)
 	audio.stop(gl.currentEvilChannel)
 	
-	audio.play(gl.sampleKit[2][1],{channel = 2,loops = -1})
-	audio.setVolume(0.5,{channel = 2})
+	audio.play(gl.sharingMelody,{channel = gl.sharingChannel,loops = -1})
+	audio.setVolume(0.5,{channel = gl.sharingChannel})
 
 	Runtime:removeEventListener("enterFrame",function ()
 												if (isRecSwitchedOn == true) then
