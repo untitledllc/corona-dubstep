@@ -45,108 +45,108 @@ function new()
 	trackCounters = playModule.resetCounters(numSamples)
 
 	local sampleKit = playModule.initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
-	trackCounters[2] = trackCounters[2] + 1
+	--trackCounters[2] = trackCounters[2] + 1
 	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
 	local function playSound1 (event)
     	if (event.phase == "ended") then
-    		playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+    		--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,1,trackCounters)
     	end
 	end
 	local function playSound2 (event)
  	   if (event.phase == "ended") then
- 	   		playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+ 	   		--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
 			playModule.playFX(localGroup,sampleKit,2)
    	   end
 	end
 	local function playSound3 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,3,trackCounters)
     	end
 	end
 	local function playSound4 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,4,trackCounters)
    	 	end
 	end
 	local function playSound5 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
 			playModule.playFX(localGroup,sampleKit,5)
     	end
 	end
 	local function playSound6 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,6,trackCounters)
     	end
 	end
 	local function playSound7 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,7,trackCounters)
     	end
 	end
 	local function playSound8 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
 			playModule.playFX(localGroup,sampleKit,8)
     	end
 	end
 	local function playSound9 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
 			playModule.playFX(localGroup,sampleKit,9)
     	end
 	end
 	local function playSound10 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
 			playModule.playFX(localGroup,sampleKit,10)
    		end
 	end
 	local function playSound11 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,11,trackCounters)
    		end
 	end
 	local function playSound12 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,12,trackCounters)
     	end
 	end
 	local function playSound13 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
-			playModule.playFX(localGroup,sampleKit,13)
+			--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			playModule.oldPlayFx(localGroup,sampleKit,13)
     	end
 	end
 	local function playSound14 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,14,trackCounters)
     	end
 	end
 	local function playSound15 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
+			--playModule.shutUpMelodies(localGroup,playParams[2],playModule.getPartSumms(),trackCounters)
 			playModule.playMelody(localGroup,15,trackCounters)
     	end
 	end
 	local function playSound16 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
 			playModule.playFX(localGroup,sampleKit,16)
     	end
 	end
 	local function playSound17 (event)
     	if (event.phase == "ended") then
-			playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
+			--playModule.shutUpFX(localGroup,playParams[4],numSamples,numFX,numVoices)
 			playModule.playFX(localGroup,sampleKit,17)
     	end
 	end
@@ -297,7 +297,7 @@ function new()
 --	txt15.isVisible = false
 	
 	btn1.alpha = 0.5
-	btn2.alpha = 1
+	btn2.alpha = 0.5
 	btn3.alpha = 0.5
 	btn4.alpha = 0.5
 	btn5.alpha = 0.5

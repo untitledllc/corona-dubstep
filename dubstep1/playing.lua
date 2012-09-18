@@ -37,7 +37,7 @@ function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 	end 	
 		
 	idx = 1
-	while (idx <= 2) do
+	while (idx <= 1) do
 		audio.play(sampleKit[idx][1],{channel = idx,loops = -1})
 		audio.setVolume(0,{channel = idx})
 		idx = idx + 1
@@ -267,7 +267,92 @@ local function playDrums(group,index,trackCounters)
     trackCounters[index] = trackCounters[index] + 1
 end
 
-function playFX(group,kit,index)   
+function playFX(group,kit,index)
+	local function closeActiveChannel(event)
+    	activeChannels[index] = {-1}
+    	
+    	if (recording.isRecStarted() == true) then
+    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    							index,0,audio.getVolume({channel = index}),4,0)
+   		end
+   		if curLayout.trackCounters[index] then
+			curLayout.trackCounters[index] = 0
+		end
+    end
+    
+    if group.numChildren ~= nil and index <= group.numChildren then
+		if group[index].tween then
+			--transition.cancel(group[index].tween )
+		end
+	end
+	if (curLayout.trackCounters[index] and curLayout.trackCounters[index] % 2 ~= 0) then
+		if (audio.isChannelPlaying(index)) then
+			if (fxTimer) then
+				--timer.cancel(fxTimer)
+			end
+			--closeActiveChannel(nil)
+		end
+		audio.setVolume(0, {channel = index})
+		--if group.numChildren ~= nil and index <= group.numChildren then
+		--	group[index].alpha = 0.5
+		--end
+		if (recording.isRecStarted() == true) then
+    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
+   		end
+	elseif curLayout.trackCounters[index] then
+		if (curLayout.trackCounters[index] and curLayout.trackCounters[index] == 0) then
+    		audio.play(kit[index][1],{channel = index, loop = 0})
+    		audio.setVolume(0.5, {channel = index})
+    		if (recording.isRecStarted() == true) then
+	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+	    								index,1,audio.getVolume({channel = index}),4,0)
+	   		end
+	   		if group.numChildren ~= nil and index <= group.numChildren then
+	    		group[index].alpha = 1
+	    		group[index].tween = transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
+	    	end
+	    	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
+		    activeChannel.channel = index
+		    activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
+		    activeChannel.category = 4
+		    activeChannel.volume = audio.getVolume({channel = index})
+		    activeChannels[index] = activeChannel
+		     
+		    
+		   	
+		    fxTimer = timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
+    	elseif (curLayout.trackCounters[index] and curLayout.trackCounters[index] ~= 0) then
+    		if (volumePanel.scrolls[4] ~= nil) then	
+        			audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = index})  	
+    			else	
+    				audio.setVolume(0.5,{channel = index})  
+   			end 
+   			if (recording.isRecStarted() == true) then
+    			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    								index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
+   			end
+   		end
+	else
+		audio.play(kit[index][1],{channel = index, loop = 0})
+    	if (recording.isRecStarted() == true) then
+	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+	    							index,1,audio.getVolume({channel = index}),4,0)
+	   	end
+	    local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
+		activeChannel.channel = index
+	    activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
+	    activeChannel.category = 4
+	    activeChannel.volume = audio.getVolume({channel = index})
+	    activeChannels[index] = activeChannel
+		fxTimer = timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
+	end
+	if curLayout.trackCounters[index] then
+		curLayout.trackCounters[index] = curLayout.trackCounters[index] + 1
+	end
+end
+
+function oldPlayFx(group,kit,index)
 	local function closeActiveChannel(event)
     	activeChannels[index] = {-1}
     	
@@ -590,10 +675,9 @@ function playEvilMelody(event)
 		timer.pause(v)
 	end
 
-	timer.performWithDelay(800, function() playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel) end)
+	playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)	
 	
-	
-	timer.performWithDelay(2700, function()
+	timer.performWithDelay(1600, function()
 		for i = 1, 17 do
 			audio.setVolume(volumes[i], {channel = i})						
 			recording.addAction(system.getTimer() - 
@@ -625,11 +709,12 @@ end
 
 function playBasicMelody() 
 
-	audio.setVolume(0.5,{channel = 2})
+	--audio.setVolume(0.5,{channel = 2})
+	playFX(gl.localGroup, gl.sampleKit, 2)
 	audio.setVolume(0,{channel = currentGoodChannel})
 	audio.setVolume(0,{channel = currentEvilChannel})
 	
-	recording.addAction(0,2,1,0.5,2,0)
+	--recording.addAction(0,2,1,0.5,2,0)
 	recording.addAction(0,currentGoodChannel,1,0,2,0)
 	recording.addAction(0,currentEvilChannel,1,0,2,0)
 end
@@ -835,7 +920,7 @@ function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
 	tracks[toGoodEvilFXChannel] = track
 	track = {}
 	
-	audio.play(tracks[2][1],{channel = 2,loops = 0})
+	--audio.play(tracks[2][1],{channel = 2,loops = 0})
 	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
 	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
 	return tracks
