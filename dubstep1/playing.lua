@@ -723,12 +723,7 @@ function playBasicMelody()
 
 	--audio.setVolume(0.5,{channel = 2})
 	playFX(gl.localGroup, gl.sampleKit, 2)
-	audio.setVolume(0,{channel = currentGoodChannel})
-	audio.setVolume(0,{channel = currentEvilChannel})
 	
-	--recording.addAction(0,2,1,0.5,2,0)
-	recording.addAction(0,currentGoodChannel,1,0,2,0)
-	recording.addAction(0,currentEvilChannel,1,0,2,0)
 end
 
 function initSounds(kitAddress,numSamples,numFX,numVoices)
@@ -935,6 +930,12 @@ function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
 	--audio.play(tracks[2][1],{channel = 2,loops = 0})
 	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
 	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
+	audio.setVolume(0,{channel = currentGoodChannel})
+	audio.setVolume(0,{channel = currentEvilChannel})
+	
+	--recording.addAction(0,2,1,0.5,2,0)
+	recording.addAction(0,currentGoodChannel,1,0,2,0)
+	recording.addAction(0,currentEvilChannel,1,0,2,0)
 	return tracks
 end
 
