@@ -20,8 +20,8 @@ local isRecSwitchedOn = false
 local playParams = {false,false,false,false,false,3,3,3,3,0}
 
 goToScene = {}
-function setScenesDirection()
-	local function findNext5HiddenBtns()
+function setScenesDirection1()
+	--[[local function findNext5HiddenBtns()
 		local result = {}
 		local idx = 1
 		while (idx <= 5) do
@@ -35,7 +35,7 @@ function setScenesDirection()
 			idx = idx + 1
 		end
 		return result
-	end
+	end]]--
 	for idx, val in pairs(gl.currentBacks) do
 		if idx > 6 then
 			break
@@ -93,10 +93,10 @@ function setScenesDirection()
 					)
 				end
 
-				for i,v in pairs(findNext5HiddenBtns()) do
+				--[[for i,v in pairs(findNext5HiddenBtns()) do
 					gl.mainGroup[2][v].isVisible = true
 					gl.mainGroup[2][v].txt.isVisible = true
-				end
+				end]]--
 
 				for i = 1, 17 do
 					gl.localGroup[i].isVisible = false
@@ -163,6 +163,133 @@ function setScenesDirection()
 				if currentScene ~= 1 then
 					timer.performWithDelay(200, function () gl.localGroup[18]:addEventListener("touch", goToScene[currentScene - 1]) end)
 					
+				end
+			end
+		end
+	end
+end
+
+
+function setScenesDirection2()
+	for idx, val in pairs(gl.currentBacks) do
+		if idx > 6 then
+			break
+		end
+		--[[local FXs
+		local musics
+		local toPlay
+		if idx == 1 then
+			musics = {1}
+			FXs = {2}
+			toPlay = {2}
+		elseif idx == 2 then
+			musics = {3, 4}
+			FXs = {5}
+			toPlay = {3, 4, 5}
+		elseif idx == 3 then
+			musics = {6, 7}
+			FXs = {8, 9, 10}
+			toPlay = {6, 7, 8, 9}
+		elseif idx == 4 then
+			musics = {11, 12}
+			FXs = {13}
+			toPlay = {11, 12}
+		elseif idx == 5 then
+			musics = {14, 15}
+			FXs = {16, 17}
+			toPlay = {14, 15, 16}
+		end]]--
+		goToScene[idx] = function(event)
+			if event.phase == "ended" then
+				currentScene = idx
+				cancelTimers(timers)
+				timers = {}
+
+				if idx == 6 then
+					for i = 1, 6 do
+						gl.localGroup[gl.localGroup.numChildren - 1]:removeEventListener("touch", goToScene[i])
+						gl.localGroup[gl.localGroup.numChildren]:removeEventListener("touch", goToScene[i])
+					end
+					stopRecording()
+					return false
+				end
+
+				if (gl.isRecordingTimeRestricted == true) then
+					timers[1] = timer.performWithDelay((#gl.currentBacks - currentScene) * gl.fullRecordLength/(#gl.currentBacks - 1),stopRecording)
+				end
+
+				if currentScene ~= 5 then
+					timers[#timers + 1] = timer.performWithDelay(gl.fullRecordLength/(#gl.currentBacks - 1),
+						function ()
+							gl.localGroup[gl.localGroup.numChildren]:dispatchEvent({name = "touch", phase = "ended"})
+						end
+					)
+				end
+
+				--[[for i,v in pairs(findNext5HiddenBtns()) do
+					gl.mainGroup[2][v].isVisible = true
+					gl.mainGroup[2][v].txt.isVisible = true
+				end]]--
+
+				--[[for i = 1, 17 do
+					gl.localGroup[i].isVisible = false
+					gl.localGroup[i].txt.isVisible = false
+				end]]--
+				
+				local j = 1
+				--[[while (j <= gl.currentNumSamples) do
+					audio.stop(j)
+					audio.rewind({channel = j})
+
+					layout.trackCounters[j] = 0
+        			audio.setVolume(0,{channel = j})
+        			gl.localGroup[j].alpha = 0.5
+
+					j = j + 1
+				end]]--
+
+				for i = currentScene*2 + 1, currentScene * 2 + 2, 1 do
+					audio.play(gl.sampleKit[i][1],{channel = i,loops = -1})
+					audio.setVolume(0,{channel = i})
+
+					gl.localGroup[i].isVisible = true
+					gl.localGroup[i].txt.isVisible = true
+
+					recording.addAction(0,i,1,0,2,0)
+					recording.addAction(0,i,1,0,2,0)
+				end
+
+				gl.sceneNumber.text = "Next scene: "..tostring(currentScene + 1)
+				gl.currentSceneAppearTime = system.getTimer()
+
+				for i, v in pairs(gl.currentBacks) do
+					v.isVisible = false
+				end
+
+				gl.changeBackGround(gl.currentBacks[currentScene])
+
+				for i = 1, 6 do
+					gl.localGroup[gl.localGroup.numChildren - 1]:removeEventListener("touch", goToScene[i])
+					gl.localGroup[gl.localGroup.numChildren]:removeEventListener("touch", goToScene[i])
+				end
+
+				timer.performWithDelay(200, function() gl.localGroup[gl.localGroup.numChildren]:addEventListener("touch", goToScene[currentScene + 1]) end)
+				
+				if currentScene ~= 1 then
+					timer.performWithDelay(200, function () gl.localGroup[gl.localGroup.numChildren - 1]:addEventListener("touch", goToScene[currentScene - 1]) end)
+				end
+
+				if currentScene == 2 then
+					audio.setVolume(0.5,{channel = 1})
+					recording.addAction(0,1,1,0.5,2,0)
+					gl.localGroup[1].alpha = 1
+					layout.trackCounters[1] = 1
+				end
+				if currentScene == 5 then
+					audio.setVolume(0,{channel = 1})
+					recording.addAction(0,1,1,0,2,0)
+					gl.localGroup[1].alpha = 0.5
+					layout.trackCounters[1] = 2
 				end
 			end
 		end
@@ -244,11 +371,23 @@ local function hideBtns()
 end	
 
 function stopRecording(e)	
-	for i = 1, 6 do
-		gl.localGroup[19]:removeEventListener("touch", goToScene[i])
-		gl.localGroup[18]:removeEventListener("touch", goToScene[i])
+	if gl.currentLayout == "layout1" then
+		for i = 1, 6 do
+			gl.localGroup[19]:removeEventListener("touch", goToScene[i])
+			gl.localGroup[18]:removeEventListener("touch", goToScene[i])
+		end
+	else
+		for i = 1, 6 do
+			gl.localGroup[gl.localGroup.numChildren - 1]:removeEventListener("touch", goToScene[i])
+			gl.localGroup[gl.localGroup.numChildren]:removeEventListener("touch", goToScene[i])
+		end
 	end
 
+	for i = 1, gl.localGroup.numChildren, 1 do
+		gl.localGroup[i].isVisible = false
+		gl.localGroup[i].txt.isVisible = false
+	end
+	--[[
 	gl.localGroup[14].isVisible = false
 	gl.localGroup[15].isVisible = false
 	gl.localGroup[16].isVisible = false
@@ -258,15 +397,19 @@ function stopRecording(e)
 	gl.localGroup[15].txt.isVisible = false
 	gl.localGroup[16].txt.isVisible = false
 	gl.localGroup[17].txt.isVisible = false
+	]]--
+	if gl.currentLayout == "layout1" then
+		pl.shutUpFX(gl.localGroup,true,gl.currentNumSamples,numFX,numVoices)
+		pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
+	else
 
-	pl.shutUpFX(gl.localGroup,true,gl.currentNumSamples,numFX,numVoices)
-	pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
+	end
 	
 	cancelTimers(timers)
 	cancelTimers(goodEvilButtonTimers)
 	goodEvilButtonTimers = {}
 	timers = {}
-		
+	
 	gl.currentBacks[#gl.currentBacks - 1].isVisible = false
 	gl.changeBackGround(gl.currentBacks[#gl.currentBacks])								
 	gl.currentSceneAppearTime = system.getTimer()
@@ -302,12 +445,15 @@ function stopRecording(e)
 	gl.sceneNumber.isVisible = false
 	gl.nextSceneTimerTxt.isVisible = false
 
-	audio.stop(1)
-	audio.stop(gl.currentGoodChannel)
-	audio.stop(gl.currentEvilChannel)
-	
-	audio.play(gl.sharingMelody,{channel = gl.sharingChannel,loops = -1})
-	audio.setVolume(0.5,{channel = gl.sharingChannel})
+	audio.stop()
+	--audio.stop(gl.currentGoodChannel)
+	--audio.stop(gl.currentEvilChannel)
+	if gl.currentLayout == "layout1" then
+		audio.play(gl.sharingMelody,{channel = gl.sharingChannel,loops = -1})
+		audio.setVolume(0.5,{channel = gl.sharingChannel})
+	else
+
+	end
 
 	Runtime:removeEventListener("enterFrame",function ()
 												if (isRecSwitchedOn == true) then
@@ -322,7 +468,6 @@ function stopRecording(e)
 end
 
 function startRecording()
-
 	local function findNext5HiddenBtns()
 		local result = {}
 		local idx = 1
@@ -349,27 +494,24 @@ function startRecording()
 	calcSeekTimeInActiveChannels(pl.getActiveChannels())
 	isRecSwitchedOn = true
 	
-	gl.sceneNumber.isVisible = true		
-			
+	gl.sceneNumber.isVisible = true
+	
 	gl.nextSceneAppearTime = gl.fullRecordLength/(#gl.currentBacks - 1)
 	
 	gl.currentSceneAppearTime = system.getTimer()
 	
-	hideBtns()		
+	--hideBtns()
 	
 	if (gl.isRecordingTimeRestricted == true) then
 		timers[1] = timer.performWithDelay(gl.fullRecordLength,stopRecording)
 	end
-
-	
-	
 
 	idxs = {}
 	for idx,val in pairs(gl.currentBacks) do
 			idxs[#idxs + 1] = idx + 1
 			timers[#timers + 1] = timer.performWithDelay((idx)*gl.fullRecordLength/(#gl.currentBacks - 1),
 								function ()
-									gl.localGroup[19]:dispatchEvent({name = "touch", phase = "ended"})
+									gl.localGroup[gl.localGroup.numChildren]:dispatchEvent({name = "touch", phase = "ended"})
 									table.remove(idxs, 1)
 								end )
 			idx = idx - 1
@@ -385,7 +527,7 @@ function startRecording()
 		idx = idx + 1
 	end
 
-	goodEvilButtonTimers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime,
+	goodEvilButtonTimers[#goodEvilButtonTimers + 1] = timer.performWithDelay(gl.showChoiceTime,
 								function ()
 									gl.goodBtn.isVisible = true
 									gl.evilBtn.isVisible = true
@@ -393,13 +535,8 @@ function startRecording()
 									gl.evilBtn.txt.isVisible = true
 								end )
 								
-	goodEvilButtonTimers[#timers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
+	goodEvilButtonTimers[#goodEvilButtonTimers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
 								function ()
-									gl.goodBtn.isVisible = false
-									gl.evilBtn.isVisible = false
-									gl.goodBtn.txt.isVisible = false
-									gl.evilBtn.txt.isVisible = false
-									print("here")
 									if (gl.currentBasicMelody ~= gl.currentGoodMelody
 											and
 										gl.currentBasicMelody ~= gl.currentEvilMelody) then

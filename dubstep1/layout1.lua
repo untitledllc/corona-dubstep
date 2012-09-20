@@ -21,6 +21,9 @@ function new()
 	local numVoices = 0
 	
 	local gl = require("globals")
+	gl.fullRecordLength = 170000 / 1
+	gl.showChoiceTime = 30000 / 1
+	gl.choiceShownDurationTime = 8000
 
 	gl.currentLayout = "layout1"
 	gl.currentNumSamples = numSamples
@@ -390,12 +393,12 @@ function new()
 
 	
 
-	backs[1] = display.newImageRect("images/layout1/back1.png",gl.w,gl.h)
-	backs[2] = display.newImageRect("images/layout1/back2.png",gl.w,gl.h)
-	backs[3] = display.newImageRect("images/layout1/back3.png",gl.w,gl.h)
-	backs[4] = display.newImageRect("images/layout1/back4.png",gl.w,gl.h)
-	backs[5] = display.newImageRect("images/layout1/back5.png",gl.w,gl.h)
-	backs[6] = display.newImageRect("images/layout1/back6.png",gl.w,gl.h)
+	backs[1] = display.newImageRect("images/layout1/back1.jpg",gl.w,gl.h)
+	backs[2] = display.newImageRect("images/layout1/back2.jpg",gl.w,gl.h)
+	backs[3] = display.newImageRect("images/layout1/back3.jpg",gl.w,gl.h)
+	backs[4] = display.newImageRect("images/layout1/back4.jpg",gl.w,gl.h)
+	backs[5] = display.newImageRect("images/layout1/back5.jpg",gl.w,gl.h)
+	backs[6] = display.newImageRect("images/layout1/back6.jpg",gl.w,gl.h)
 	
 	backs[1].x,backs[1].y = gl.w/2,gl.h/2
 	backs[2].x,backs[2].y = gl.w/2,gl.h/2
@@ -423,12 +426,12 @@ function new()
 	gl.mainGroup = mainGroup
 	gl.localGroup  = localGroup 
 	gl.currentBacks = backs
-	gl.currentHiddenBtns = initHiddenBacks()
+	--gl.currentHiddenBtns = initHiddenBacks()
 	gl.sampleKit = sampleKit
 	gl.bindButtonsListeners = bindEventListeners
 	gl.unbindButtonsListeners = unbindEventListeners
 
-	rec.setScenesDirection()
+	rec.setScenesDirection1()
 	bindEventListeners()
 	
 	localGroup[localGroup.numChildren]:addEventListener("touch", rec.goToScene[2])

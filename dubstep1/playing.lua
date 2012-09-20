@@ -34,13 +34,6 @@ function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 		partSumms[idx] = summ + playParams[numSampleTypes+idx]
 		summ = summ + playParams[numSampleTypes+idx]
 		idx = idx + 1
-	end 	
-		
-	idx = 1
-	while (idx <= 1) do
-		audio.play(sampleKit[idx][1],{channel = idx,loops = -1})
-		audio.setVolume(0,{channel = idx})
-		idx = idx + 1
 	end
 		
 	idx = 1
@@ -387,8 +380,8 @@ function oldPlayFx(group,kit,index)
     		else	
     			audio.setVolume(0.5,{channel = index})  
    		end 
-    
-	    if group.numChildren ~= nil and index <= group.numChildren then
+    	
+	    if group.numChildren ~= nil and index <= group.numChildren and currentLayout == "layout1" then
 	    	group[index].alpha = 1
 	    	group[index].tween = transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
 	    end
@@ -601,129 +594,183 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 end
 
 function playGoodMelody(event)
-	gl.goodBtn.isVisible = false
-	gl.evilBtn.isVisible = false
-	gl.goodBtn.txt.isVisible = false
-	gl.evilBtn.txt.isVisible = false
-	gl.currentBasicMelody = gl.currentGoodMelody
+	if gl.currentLayout == "layout1" then
+		gl.goodBtn.isVisible = false
+		gl.evilBtn.isVisible = false
+		gl.goodBtn.txt.isVisible = false
+		gl.evilBtn.txt.isVisible = false
+		gl.currentBasicMelody = gl.currentGoodMelody
 
-	gl.unbindButtonsListeners()
+		gl.unbindButtonsListeners()
 
-	local volumes = {}
-	for i = 1, 17 do
-		print("zdes")
-		volumes[i] = audio.getVolume({ channel = i })
-		audio.setVolume(0, {channel = i})						
-		recording.addAction(system.getTimer() - 
-				curLayout.getLayoutAppearTime(),
-						i,
-							1,0,2,0)
-	end
-
-	for i, v in pairs(recording.timers) do
-		timer.pause(v)
-	end
-
-	playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)
-	
-	
-	timer.performWithDelay(1600, function()
+		local volumes = {}
 		for i = 1, 17 do
-			audio.setVolume(volumes[i], {channel = i})						
+			print("zdes")
+			volumes[i] = audio.getVolume({ channel = i })
+			audio.setVolume(0, {channel = i})						
 			recording.addAction(system.getTimer() - 
 					curLayout.getLayoutAppearTime(),
 							i,
-								1,volumes[i],2,0)
+								1,0,2,0)
 		end
+
 		for i, v in pairs(recording.timers) do
-			timer.resume(v)
-		end
-		gl.bindButtonsListeners()
-		if recording.currentScene - 1 > 0 then
-			gl.localGroup[gl.localGroup.numChildren - 1]:addEventListener("touch", recording.goToScene[recording.currentScene - 1])
-		end
-		if recording.currentScene + 1 < 7 then
-			gl.localGroup[gl.localGroup.numChildren]:addEventListener("touch", recording.goToScene[recording.currentScene + 1])
+			timer.pause(v)
 		end
 
-		audio.setVolume(0, {channel = currentGoodChannel})
-											
-		recording.addAction(system.getTimer() - 
-				curLayout.getLayoutAppearTime(),
-						currentGoodChannel,
-							1,0,2,0)
-	end)
-	
+		playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)
+		
+		
+		timer.performWithDelay(1600, function()
+			for i = 1, 17 do
+				audio.setVolume(volumes[i], {channel = i})						
+				recording.addAction(system.getTimer() - 
+						curLayout.getLayoutAppearTime(),
+								i,
+									1,volumes[i],2,0)
+			end
+			for i, v in pairs(recording.timers) do
+				timer.resume(v)
+			end
+			gl.bindButtonsListeners()
+			if recording.currentScene - 1 > 0 then
+				gl.localGroup[gl.localGroup.numChildren - 1]:addEventListener("touch", recording.goToScene[recording.currentScene - 1])
+			end
+			if recording.currentScene + 1 < 7 then
+				gl.localGroup[gl.localGroup.numChildren]:addEventListener("touch", recording.goToScene[recording.currentScene + 1])
+			end
 
-	--[[recording.addAction(system.getTimer() - 
-				curLayout.getLayoutAppearTime(),
-						currentBasicChannel,
-							0,0,2,0)
-	
-	audio.setVolume(0,{channel = currentBasicChannel})	]]--																
-	
+			audio.setVolume(0, {channel = currentGoodChannel})
+												
+			recording.addAction(system.getTimer() - 
+					curLayout.getLayoutAppearTime(),
+							currentGoodChannel,
+								1,0,2,0)
+		end)
+		
 
-
+		--[[recording.addAction(system.getTimer() - 
+					curLayout.getLayoutAppearTime(),
+							currentBasicChannel,
+								0,0,2,0)
+		
+		audio.setVolume(0,{channel = currentBasicChannel})	]]--	
+	else
+		gl.goodBtn.isVisible = false
+		gl.evilBtn.isVisible = false
+		gl.goodBtn.txt.isVisible = false
+		gl.evilBtn.txt.isVisible = false
+		gl.currentBasicMelody = gl.currentEvilMelody
+	end
 end
 
 function playEvilMelody(event)
-	gl.goodBtn.isVisible = false
-	gl.evilBtn.isVisible = false
-	gl.goodBtn.txt.isVisible = false
-	gl.evilBtn.txt.isVisible = false
-	gl.currentBasicMelody = gl.currentEvilMelody
-	local volumes = {}
-	for i = 1, 17 do
-		print("zdes")
-		volumes[i] = audio.getVolume({ channel = i })
-		audio.setVolume(0, {channel = i})						
-		recording.addAction(system.getTimer() - 
-				curLayout.getLayoutAppearTime(),
-						i,
-							1,0,2,0)
-	end
-
-	for i, v in pairs(recording.timers) do
-		timer.pause(v)
-	end
-
-	playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)	
-	
-	timer.performWithDelay(1600, function()
+	if gl.currentLayout == "layout1" then
+		gl.goodBtn.isVisible = false
+		gl.evilBtn.isVisible = false
+		gl.goodBtn.txt.isVisible = false
+		gl.evilBtn.txt.isVisible = false
+		gl.currentBasicMelody = gl.currentEvilMelody
+		local volumes = {}
 		for i = 1, 17 do
-			audio.setVolume(volumes[i], {channel = i})						
+			print("zdes")
+			volumes[i] = audio.getVolume({ channel = i })
+			audio.setVolume(0, {channel = i})						
 			recording.addAction(system.getTimer() - 
 					curLayout.getLayoutAppearTime(),
 							i,
-								1,volumes[i],2,0)
+								1,0,2,0)
 		end
+
 		for i, v in pairs(recording.timers) do
-			timer.resume(v)
+			timer.pause(v)
 		end
 
-	end)
-	
+		playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)	
+		
+		timer.performWithDelay(1600, function()
+			for i = 1, 17 do
+				audio.setVolume(volumes[i], {channel = i})						
+				recording.addAction(system.getTimer() - 
+						curLayout.getLayoutAppearTime(),
+								i,
+									1,volumes[i],2,0)
+			end
+			for i, v in pairs(recording.timers) do
+				timer.resume(v)
+			end
 
-	--[[recording.addAction(system.getTimer() - 
-				curLayout.getLayoutAppearTime(),
-						currentBasicChannel,
-							0,0,2,0)
-	
-	audio.setVolume(0,{channel = currentBasicChannel})	]]--																
-	audio.setVolume(0, {channel = currentEvilChannel})
-											
-	recording.addAction(system.getTimer() - 
-				curLayout.getLayoutAppearTime(),
-						currentEvilChannel,
-							1,0,2,0)
+		end)
+		
+
+		--[[recording.addAction(system.getTimer() - 
+					curLayout.getLayoutAppearTime(),
+							currentBasicChannel,
+								0,0,2,0)
+		
+		audio.setVolume(0,{channel = currentBasicChannel})	]]--																
+		audio.setVolume(0, {channel = currentEvilChannel})
+												
+		recording.addAction(system.getTimer() - 
+					curLayout.getLayoutAppearTime(),
+							currentEvilChannel,
+								1,0,2,0)
+	else
+		gl.goodBtn.isVisible = false
+		gl.evilBtn.isVisible = false
+		gl.goodBtn.txt.isVisible = false
+		gl.evilBtn.txt.isVisible = false
+		gl.currentBasicMelody = gl.currentEvilMelody
+	end
 	
 end
 
 function playBasicMelody() 
-
-	--audio.setVolume(0.5,{channel = 2})
+	idx = 1
+	while (idx <= 1) do
+		audio.play(gl.sampleKit[idx][1],{channel = idx,loops = -1})
+		audio.setVolume(0,{channel = idx})
+		idx = idx + 1
+	end
 	playFX(gl.localGroup, gl.sampleKit, 2)
 	
+end
+
+function playBasicMelody2()
+	audio.play(gl.currentBasicMelody1,{channel = gl.currentBasicChannel1,loops = -1})
+	audio.play(gl.currentBasicMelody2,{channel = gl.currentBasicChannel2,loops = -1})
+	audio.setVolume(0,{channel = gl.currentBasicChannel1})
+	audio.setVolume(0.5,{channel = gl.currentBasicChannel2})
+	
+	recording.addAction(0,currentBasicChannel1,1,0,2,0)
+	recording.addAction(0,currentBasicChannel2,1,0.5,2,0)
+
+	--curLayout.trackCounters[1] = curLayout.trackCounters[1] + 1
+	curLayout.trackCounters[2] = curLayout.trackCounters[2] + 1
+
+
+	audio.play(gl.sampleKit[3][1],{channel = 3,loops = -1})
+	audio.play(gl.sampleKit[4][1],{channel = 4,loops = -1})
+	audio.setVolume(0,{channel = 3})
+	audio.setVolume(0,{channel = 4})
+	
+	recording.addAction(0,3,1,0,2,0)
+	recording.addAction(0,3,1,0,2,0)
+
+
+	-- DEBUG
+
+	for i = 5, 12, 1 do
+		audio.play(gl.sampleKit[i][1],{channel = i,loops = -1})
+		audio.setVolume(0,{channel = i})
+
+		gl.localGroup[i].isVisible = true
+		gl.localGroup[i].txt.isVisible = true
+
+		recording.addAction(0,i,1,0,2,0)
+		recording.addAction(0,i,1,0,2,0)
+	end
+
 end
 
 function initSounds(kitAddress,numSamples,numFX,numVoices)
@@ -936,6 +983,45 @@ function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
 	--recording.addAction(0,2,1,0.5,2,0)
 	recording.addAction(0,currentGoodChannel,1,0,2,0)
 	recording.addAction(0,currentEvilChannel,1,0,2,0)
+	return tracks
+end
+
+function initSoundsSecondLayout(kitAddress,numSamples,numFX,numVoices)
+	local str
+	local track = {sound = nil,name = nil,startTime = nil}
+	local tracks = {}
+
+	gl.currentBasicMelody1 = audio.loadSound(kitAddress.."main1.wav")
+	gl.currentBasicMelody2 = audio.loadSound(kitAddress.."main2.wav")
+	
+	gl.currentBasicChannel1 = #tracks + 1
+	gl.currentBasicChannel2 = #tracks + 2
+	
+	track[1] = gl.currentBasicMelody1
+	track[2] = kitAddress.."main1.wav"
+	tracks[gl.currentBasicChannel1] = track
+	track = {}
+	
+	track[1] = gl.currentBasicMelody2
+	track[2] = kitAddress.."main2.wav"
+	tracks[gl.currentBasicChannel2] = track
+	track = {}
+
+	for i = 1, 5 do
+		for j = 1, 2 do
+			str = kitAddress.."evil"..i.."."..j..".wav"
+			track[1] = audio.loadSound(str)
+			track[2] = str
+			tracks[#tracks + 1] = track
+			track = {}
+		end
+	end
+
+	str = kitAddress.."gun-fx.mp3"
+	track[1] = audio.loadSound(str)
+	track[2] = str
+	tracks[#tracks + 1] = track
+	track = {}
 	return tracks
 end
 

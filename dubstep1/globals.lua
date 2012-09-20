@@ -7,6 +7,8 @@ currentBasicMelody = nil
 currentEvilMelody = nil
 currentGoodMelody = nil
 
+gunFxButton = nil
+
 currentBasicChannel = nil
 currentEvilChannel = nil
 currentGoodChannel = nil
@@ -23,7 +25,7 @@ isRecordingTimeRestricted = true
 timerTxt = nil
 
 changeLayoutTime = 30000
-fullRecordLength = (202000 - 32000) / 1
+fullRecordLength = 170000 / 1
 showChoiceTime = 30000 / 1
 choiceShownDurationTime = 8000
 currentSceneLocalTime = nil
@@ -180,6 +182,8 @@ function drawLayoutBtns()
 	
 	volumeBtn.txt = display.newText("EQ",0,0,native.systemFont,14)
 	volumeBtn.txt.x,volumeBtn.txt.y = w/16,h/16
+	volumeBtn.isVisible = false
+	volumeBtn.txt.isVisible = false
 	
 	btn1.scene = "mainScreen"
 	btn2.scene = currentLayout
@@ -193,8 +197,12 @@ function drawLayoutBtns()
 			audio.stop()
 			loading.isVisible = true
 			recording.cancelTimers(recording.timers)
+			recording.timers = {}
 			recording.cancelTimers(recording.goodEvilButtonTimers)
-			director:changeScene(event.target.scene)
+			recording.goodEvilButtonTimers = {}
+			timer.performWithDelay(200, function()
+				director:changeScene(event.target.scene)
+			end)
 		end
 	end
 	
