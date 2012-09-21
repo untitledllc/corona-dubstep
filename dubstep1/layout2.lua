@@ -45,6 +45,8 @@ function new()
 	trackCounters = playModule.resetCounters(numSamples)
 
 	local sampleKit = playModule.initSoundsSecondLayout(kitAddress,numSamples,numFX,numVoices)
+	gl.sampleKit = sampleKit
+	gl.lvl1Voices = gl.drawLvl1Voices()
 
 	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
@@ -389,15 +391,16 @@ function new()
 	btn28.alpha = 0.5
 	gl.gunFxButton.alpha = 0.5
 	
-	btn3.txt.isVisible  = true 	
-	btn4.txt.isVisible  = true 	
-	btn5.txt.isVisible  = true 	
-	btn6.txt.isVisible  = true
+	btn1.txt.isVisible  = false
+	btn3.txt.isVisible  = false 	
+	btn4.txt.isVisible  = false 	
+	btn5.txt.isVisible  = false 	
+	btn6.txt.isVisible  = false
 	btn7.txt.isVisible  = true
 	btn8.txt.isVisible  = true
-	btn9.txt.isVisible  = true 
-	btn10.txt.isVisible  = true 
-	btn11.txt.isVisible  = true
+	btn9.txt.isVisible  = false 
+	btn10.txt.isVisible  = false 
+	btn11.txt.isVisible  = false
 	btn12.txt.isVisible  = true
 	--[[btn13.txt.isVisible  = false
 	btn14.txt.isVisible  = false
@@ -413,15 +416,16 @@ function new()
 	btn24.txt.isVisible  = false
 	btn25.txt.isVisible  = false]]--
 
-	btn3.isVisible  = true 	
-	btn4.isVisible  = true 	
-	btn5.isVisible  = true 	
-	btn6.isVisible  = true
+	btn1.isVisible  = false
+	btn3.isVisible  = false 	
+	btn4.isVisible  = false 	
+	btn5.isVisible  = false 	
+	btn6.isVisible  = false
 	btn7.isVisible  = true
 	btn8.isVisible  = true
-	btn9.isVisible  = true 
-	btn10.isVisible  = true 
-	btn11.isVisible  = true
+	btn9.isVisible  = false 
+	btn10.isVisible  = false 
+	btn11.isVisible  = false
 	btn12.isVisible  = true
 	--[[btn13.isVisible  = false
 	btn14.isVisible  = false
@@ -494,12 +498,11 @@ function new()
 	
 	mainGroup:insert(1,backs[1])
 	mainGroup:insert(2,localGroup)
-	mainGroup:insert(3, gl.gunFxButton)
+	mainGroup:insert(4, gl.gunFxButton)
 
 	gl.mainGroup = mainGroup
 	gl.localGroup = localGroup 
 	gl.currentBacks = backs
-	gl.sampleKit = sampleKit
 	gl.bindButtonsListeners = bindEventListeners
 	gl.unbindButtonsListeners = unbindEventListeners
 	

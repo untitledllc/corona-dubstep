@@ -6,6 +6,8 @@ local volumePanel = require("volumeRegulator")
 local curLayout = require(gl.currentLayout)
 local numSampleTypes = 5
 
+local defaultVolume = 0.2
+
 local partSumms = {}
 
 local activeChannels = {["glitchChannel"] = nil}
@@ -167,7 +169,7 @@ local function playIntro(group,index,trackCounters)
        	if (volumePanel.scrolls[1] ~= nil) then	
         	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[1]),{channel = index})  	
     	else	
-    		audio.setVolume(0.5,{channel = index})  
+    		audio.setVolume(defaultVolume,{channel = index})  
         end 
         group[index].alpha = 1
         
@@ -203,7 +205,7 @@ function playMelody(group,index,trackCounters)
 		if (volumePanel.scrolls[2] ~= nil) then	
         	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[2]),{channel = index})  	
     	else	
-    		audio.setVolume(0.5,{channel = index})  
+    		audio.setVolume(defaultVolume,{channel = index})  
         end 
            
         group[index].alpha = 1
@@ -240,7 +242,7 @@ local function playDrums(group,index,trackCounters)
        	if (volumePanel.scrolls[3] ~= nil) then	
         	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[3]),{channel = index})  	
     	else	
-    		audio.setVolume(0.5,{channel = index})  
+    		audio.setVolume(defaultVolume,{channel = index})  
         end    
         group[index].alpha = 1
         
@@ -260,7 +262,7 @@ local function playDrums(group,index,trackCounters)
     trackCounters[index] = trackCounters[index] + 1
 end
 
-function playFX(group,kit,index)
+function playFX(group,kit,index, isVoice)
 	local function closeActiveChannel(event)
     	activeChannels[index] = {-1}
     	
@@ -296,7 +298,13 @@ function playFX(group,kit,index)
 	elseif curLayout.trackCounters[index] then
 		if (curLayout.trackCounters[index] and curLayout.trackCounters[index] == 0) then
     		audio.play(kit[index][1],{channel = index, loop = 0})
-    		audio.setVolume(0.5, {channel = index})
+    		if isVoice then
+
+    			audio.setVolume(1, {channel = index})
+    		else
+
+    			audio.setVolume(defaultVolume, {channel = index})
+    		end
     		if (recording.isRecStarted() == true) then
 	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
 	    								index,1,audio.getVolume({channel = index}),4,0)
@@ -319,7 +327,7 @@ function playFX(group,kit,index)
     		if (volumePanel.scrolls[4] ~= nil) then	
         			audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = index})  	
     			else	
-    				audio.setVolume(0.5,{channel = index})  
+    				audio.setVolume(defaultVolume,{channel = index})  
    			end 
    			if (recording.isRecStarted() == true) then
     			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
@@ -328,6 +336,13 @@ function playFX(group,kit,index)
    		end
 	else
 		audio.play(kit[index][1],{channel = index, loop = 0})
+		if isVoice then
+			audio.setVolume(1, {channel = index})
+			print("play!")
+		else
+			audio.setVolume(defaultVolume, {channel = index})
+		end
+		
     	if (recording.isRecStarted() == true) then
 	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
 	    							index,1,audio.getVolume({channel = index}),4,0)
@@ -378,7 +393,7 @@ function oldPlayFx(group,kit,index)
     	if (volumePanel.scrolls[4] ~= nil) then	
         		audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = index})  	
     		else	
-    			audio.setVolume(0.5,{channel = index})  
+    			audio.setVolume(0.8,{channel = index})
    		end 
     	
 	    if group.numChildren ~= nil and index <= group.numChildren and currentLayout == "layout1" then
@@ -428,7 +443,7 @@ function playVoice(group,kit,index)
     if (volumePanel.scrolls[5] ~= nil) then	
         	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = index})  	
     	else	
-    		audio.setVolume(0.5,{channel = index})  
+    		audio.setVolume(defaultVolume,{channel = index})  
     end 
     
     group[index].alpha = 1
@@ -538,7 +553,7 @@ function playGlitch(event)
 					if (volumePanel.scrolls[4] ~= nil) then	
         				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = val.channel})  	
     				else	
-    					audio.setVolume(0.5,{channel = val.channel})  
+    					audio.setVolume(defaultVolume,{channel = val.channel})  
    					end
    					
    				end
@@ -548,7 +563,7 @@ function playGlitch(event)
    					if (volumePanel.scrolls[5] ~= nil) then	
         				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = val.channel})  	
     				else	
-    					audio.setVolume(0.5,{channel = val.channel})  
+    					audio.setVolume(defaultVolume,{channel = val.channel})  
    					end
    					
    				end
@@ -737,28 +752,26 @@ function playBasicMelody()
 end
 
 function playBasicMelody2()
-	audio.play(gl.currentBasicMelody1,{channel = gl.currentBasicChannel1,loops = -1})
 	audio.play(gl.currentBasicMelody2,{channel = gl.currentBasicChannel2,loops = -1})
-	audio.setVolume(0,{channel = gl.currentBasicChannel1})
-	audio.setVolume(0.5,{channel = gl.currentBasicChannel2})
-	
-	recording.addAction(0,currentBasicChannel1,1,0,2,0)
-	recording.addAction(0,currentBasicChannel2,1,0.5,2,0)
+	audio.setVolume(defaultVolume,{channel = gl.currentBasicChannel2})
+	recording.addAction(0,currentBasicChannel2,1,defaultVolume,2,0)
+
+	audio.play(gl.sampleKit[7][1],{channel = 7,loops = -1})
+	audio.setVolume(0,{channel = 7})
+	recording.addAction(0,7,1,0,2,0)
+
+	audio.play(gl.sampleKit[8][1],{channel = 8,loops = -1})
+	audio.setVolume(0,{channel = 8})
+	recording.addAction(0,8,1,0,2,0)
+
+	audio.play(gl.sampleKit[12][1],{channel = 12,loops = -1})
+	audio.setVolume(0,{channel = 12})
+	recording.addAction(0,12,1,0,2,0)
 
 	--curLayout.trackCounters[1] = curLayout.trackCounters[1] + 1
 	curLayout.trackCounters[2] = curLayout.trackCounters[2] + 1
 
-
-	audio.play(gl.sampleKit[3][1],{channel = 3,loops = -1})
-	audio.play(gl.sampleKit[4][1],{channel = 4,loops = -1})
-	audio.setVolume(0,{channel = 3})
-	audio.setVolume(0,{channel = 4})
-	
-	recording.addAction(0,3,1,0,2,0)
-	recording.addAction(0,3,1,0,2,0)
-
-
-	-- DEBUG
+	--[[ DEBUG
 
 	for i = 5, 12, 1 do
 		audio.play(gl.sampleKit[i][1],{channel = i,loops = -1})
@@ -770,7 +783,7 @@ function playBasicMelody2()
 		recording.addAction(0,i,1,0,2,0)
 		recording.addAction(0,i,1,0,2,0)
 	end
-
+	]]--
 end
 
 function initSounds(kitAddress,numSamples,numFX,numVoices)

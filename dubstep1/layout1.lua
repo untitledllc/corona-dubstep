@@ -48,6 +48,10 @@ function new()
 	trackCounters = playModule.resetCounters(numSamples)
 
 	local sampleKit = playModule.initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
+	gl.sampleKit = sampleKit
+
+	--gl.lvl1Voices = gl.drawLvl1Voices()
+	
 	--trackCounters[2] = trackCounters[2] + 1
 	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
@@ -427,7 +431,7 @@ function new()
 	gl.localGroup  = localGroup 
 	gl.currentBacks = backs
 	--gl.currentHiddenBtns = initHiddenBacks()
-	gl.sampleKit = sampleKit
+	
 	gl.bindButtonsListeners = bindEventListeners
 	gl.unbindButtonsListeners = unbindEventListeners
 

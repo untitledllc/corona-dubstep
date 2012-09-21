@@ -59,8 +59,15 @@ shareBtn = nil
 
 function changeBackGround(object) 
 	object.isVisible = true
-	mainGroup:insert(1,object)
-	mainGroup:insert(2,localGroup)
+	object.alpha = 0
+	mainGroup:insert(2,object)
+	transition.to(object, {alpha = 1, time = 500})
+	transition.to(mainGroup[1], {alpha = 0, time = 500})
+	mainGroup:insert(3,localGroup)
+	timer.performWithDelay(500, function()
+		mainGroup:insert(1, object)
+		mainGroup:insert(2, localGroup)
+	end)
 end
 
 function mySeek(time,sound,chan,loop)
@@ -93,7 +100,6 @@ function seekGlitch(time)
 end
 
 function drawLayoutBtns()
-	print(loading)
 	activeChannels = {}
 	partSumms = {}
 	
@@ -221,6 +227,48 @@ function drawLayoutBtns()
 	btns[2] = btn2
 	btns[3] = repBtn
 	btns[4] = volumeBtn
+	return btns
+end
+
+function drawLvl1Voices()
+	local btns = {}
+	local path = "sounds1/voices/"
+
+	local track = {}
+	local j = 1
+	local oldSampleKitLength = #sampleKit
+	for i = oldSampleKitLength + 1, oldSampleKitLength + 19, 1 do
+		local str = path.."track"..i-oldSampleKitLength..".mp3"
+		track[1] = audio.loadSound(str)
+		track[2] = str
+		sampleKit[i] = track
+		track = {}
+
+		btns[#btns + 1] = display.newRoundedRect(1,1,w/12,h/12,8)
+		btns[#btns].txt = display.newText("track"..i-oldSampleKitLength..".mp3",0,0,native.systemFont,7)
+		if j <= 10 then
+			btns[#btns].x, btns[#btns].y =  w/10*j - w/20,12*h/17
+			btns[#btns].txt.x, btns[#btns].txt.y = w/10*j - w/20,12*h/17
+		else
+			btns[#btns].x, btns[#btns].y =  w/10*(j - 10) - w/20,13*h/16
+			btns[#btns].txt.x, btns[#btns].txt.y = w/10*(j - 10) - w/20,13*h/16
+		end
+		btns[#btns]:setFillColor(255, 200, 128)
+		btns[#btns].alpha = 0.5
+		btns[#btns].txt:setTextColor(0, 100, 0)
+
+		j = j + 1
+	end
+	local pl = require("playing")
+	for i = 1, 19, 1 do
+		btns[i]:addEventListener("touch",	function(e)
+												if e.phase == "ended" then
+													pl.playFX(display.newGroup(), sampleKit, i + oldSampleKitLength, true)
+												end
+											end
+		)
+	end
+
 	return btns
 end
 

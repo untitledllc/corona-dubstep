@@ -1,6 +1,7 @@
 module (...,package.seeall)
 
 local userActionList = {}
+local defaultVolume = 0.3
 
 local recPressTime = nil
 local endRecordingTime = nil
@@ -248,15 +249,64 @@ function setScenesDirection2()
 					j = j + 1
 				end]]--
 
-				for i = currentScene*2 + 1, currentScene * 2 + 2, 1 do
-					audio.play(gl.sampleKit[i][1],{channel = i,loops = -1})
-					audio.setVolume(0,{channel = i})
+				if currentScene == 2 then
+					audio.play(gl.sampleKit[6][1],{channel = 6,loops = -1})
+					audio.setVolume(0,{channel = 6})
+					recording.addAction(0,6,1,0,2,0)
 
-					gl.localGroup[i].isVisible = true
-					gl.localGroup[i].txt.isVisible = true
+					audio.play(gl.sampleKit[9][1],{channel = 9,loops = -1})
+					audio.setVolume(0,{channel = 9})
+					recording.addAction(0,9,1,0,2,0)
 
-					recording.addAction(0,i,1,0,2,0)
-					recording.addAction(0,i,1,0,2,0)
+					audio.play(gl.sampleKit[10][1],{channel = 10,loops = -1})
+					audio.setVolume(0,{channel = 10})
+					recording.addAction(0,10,1,0,2,0)
+
+					audio.play(gl.currentBasicMelody1,{channel = gl.currentBasicChannel1,loops = -1})
+					audio.setVolume(defaultVolume,{channel = gl.currentBasicChannel1})
+					recording.addAction(0,currentBasicChannel1,1,defaultVolume,2,0)
+					gl.localGroup[gl.currentBasicChannel1].alpha = 1
+					layout.trackCounters[gl.currentBasicChannel1] = 1
+
+					gl.localGroup[6].isVisible = true
+					gl.localGroup[9].isVisible = true
+					gl.localGroup[10].isVisible = true
+					gl.localGroup[gl.currentBasicChannel1].isVisible = true
+
+					gl.localGroup[6].txt.isVisible = true
+					gl.localGroup[9].txt.isVisible = true
+					gl.localGroup[10].txt.isVisible = true
+					gl.localGroup[gl.currentBasicChannel1].txt.isVisible = true
+				end
+
+				if currentScene == 3 then
+					audio.play(gl.sampleKit[3][1],{channel = 3,loops = -1})
+					audio.setVolume(0,{channel = 3})
+					recording.addAction(0,3,1,0,2,0)
+
+					audio.play(gl.sampleKit[4][1],{channel = 4,loops = -1})
+					audio.setVolume(defaultVolume,{channel = 4})
+					recording.addAction(0,4,1,defaultVolume,2,0)
+					layout.trackCounters[4] = 1
+					gl.localGroup[4].alpha = 1
+
+					audio.play(gl.sampleKit[5][1],{channel = 5,loops = -1})
+					audio.setVolume(0,{channel = 5})
+					recording.addAction(0,5,1,0,2,0)
+
+					audio.play(gl.sampleKit[11][1],{channel = 11,loops = -1})
+					audio.setVolume(0,{channel = 11})
+					recording.addAction(0,11,1,0,2,0)
+
+					gl.localGroup[3].isVisible = true
+					gl.localGroup[4].isVisible = true
+					gl.localGroup[5].isVisible = true
+					gl.localGroup[11].isVisible = true
+
+					gl.localGroup[3].txt.isVisible = true
+					gl.localGroup[4].txt.isVisible = true
+					gl.localGroup[5].txt.isVisible = true
+					gl.localGroup[11].txt.isVisible = true
 				end
 
 				gl.sceneNumber.text = "Next scene: "..tostring(currentScene + 1)
@@ -279,17 +329,34 @@ function setScenesDirection2()
 					timer.performWithDelay(200, function () gl.localGroup[gl.localGroup.numChildren - 1]:addEventListener("touch", goToScene[currentScene - 1]) end)
 				end
 
-				if currentScene == 2 then
-					audio.setVolume(0.5,{channel = 1})
-					recording.addAction(0,1,1,0.5,2,0)
-					gl.localGroup[1].alpha = 1
-					layout.trackCounters[1] = 1
-				end
 				if currentScene == 5 then
 					audio.setVolume(0,{channel = 1})
 					recording.addAction(0,1,1,0,2,0)
 					gl.localGroup[1].alpha = 0.5
 					layout.trackCounters[1] = 2
+					gl.localGroup[1].isVisible = false
+					gl.localGroup[1].txt.isVisible = false
+
+					audio.setVolume(0,{channel = 4})
+					recording.addAction(0,4,1,0,2,0)
+					gl.localGroup[4].alpha = 0.5
+					layout.trackCounters[4] = 2
+					gl.localGroup[4].isVisible = false
+					gl.localGroup[4].txt.isVisible = false
+
+					audio.setVolume(0,{channel = 10})
+					recording.addAction(0,10,1,0,2,0)
+					gl.localGroup[10].alpha = 0.5
+					layout.trackCounters[10] = 2
+					gl.localGroup[10].isVisible = false
+					gl.localGroup[10].txt.isVisible = false
+
+					audio.setVolume(0,{channel = 9})
+					recording.addAction(0,9,1,0,2,0)
+					gl.localGroup[9].alpha = 0.5
+					layout.trackCounters[9] = 2
+					gl.localGroup[9].isVisible = false
+					gl.localGroup[9].txt.isVisible = false
 				end
 			end
 		end
@@ -402,7 +469,12 @@ function stopRecording(e)
 		pl.shutUpFX(gl.localGroup,true,gl.currentNumSamples,numFX,numVoices)
 		pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
 	else
-
+		for i = 1, #gl.lvl1Voices do
+			gl.lvl1Voices[i].isVisible = false
+			gl.lvl1Voices[i].txt.isVisible = false
+			gl.gunFxButton.isVisible = false
+			gl.gunFxButton.txt.isVisible = false
+		end
 	end
 	
 	cancelTimers(timers)
@@ -450,7 +522,7 @@ function stopRecording(e)
 	--audio.stop(gl.currentEvilChannel)
 	if gl.currentLayout == "layout1" then
 		audio.play(gl.sharingMelody,{channel = gl.sharingChannel,loops = -1})
-		audio.setVolume(0.5,{channel = gl.sharingChannel})
+		audio.setVolume(defaultVolume,{channel = gl.sharingChannel})
 	else
 
 	end
