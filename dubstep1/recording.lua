@@ -329,6 +329,15 @@ function setScenesDirection2()
 					timer.performWithDelay(200, function () gl.localGroup[gl.localGroup.numChildren - 1]:addEventListener("touch", goToScene[currentScene - 1]) end)
 				end
 
+				if currentScene == 4 then
+					audio.setVolume(0,{channel = 4})
+					recording.addAction(0,4,1,0,2,0)
+					gl.localGroup[4].alpha = 0.5
+					layout.trackCounters[4] = 2
+					gl.localGroup[4].isVisible = false
+					gl.localGroup[4].txt.isVisible = false
+				end
+
 				if currentScene == 5 then
 					audio.setVolume(0,{channel = 1})
 					recording.addAction(0,1,1,0,2,0)
@@ -336,13 +345,6 @@ function setScenesDirection2()
 					layout.trackCounters[1] = 2
 					gl.localGroup[1].isVisible = false
 					gl.localGroup[1].txt.isVisible = false
-
-					audio.setVolume(0,{channel = 4})
-					recording.addAction(0,4,1,0,2,0)
-					gl.localGroup[4].alpha = 0.5
-					layout.trackCounters[4] = 2
-					gl.localGroup[4].isVisible = false
-					gl.localGroup[4].txt.isVisible = false
 
 					audio.setVolume(0,{channel = 10})
 					recording.addAction(0,10,1,0,2,0)
