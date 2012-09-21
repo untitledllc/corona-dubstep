@@ -514,7 +514,7 @@ function playGlitch(event)
 	if (event.phase == "began") then
 		isGlitchStarted = true
 		activeChannels = {}
- 			for i = 1, 32 do
+ 			for i = 1, 12 do
  				if audio.isChannelActive( i ) then
  					local vol = audio.getVolume({channel = i})
  					if vol > 0 then
@@ -571,7 +571,7 @@ function playGlitch(event)
    					end
    					
    				end]]--
-   				
+
    				audio.setVolume(val.v,{channel = val.ch}) 
    				--[[
    				if (val.channel > partSumms[4] and val.channel <= partSumms[5]) then
@@ -585,7 +585,144 @@ function playGlitch(event)
    				end
    				]]--
 				if (recording.isRecStarted()) then
-					if val.ch > 19 then
+					if val.ch > 13 then
+						recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    						val.ch,2,val.v,5,system.getTimer() - curLayout.getLayoutAppearTime())
+					else
+						recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    						val.ch,2,val.v,2,system.getTimer() - curLayout.getLayoutAppearTime())
+					end
+				end
+				
+			--end
+		end
+		
+		
+		display.getCurrentStage():setFocus(nil)
+	end
+end
+
+function playGlitchVoices(event)
+	local tiks = 0
+ 	local glitchStartTime = nil
+ 	local glitchFinishTime = nil
+	local prevMeasure = 0
+	local curMeasure = 0
+	local delta = 0
+	local glitchLocalTime = 0
+	local deltaSumm = 0
+	local activeChannelsCopy = {}
+	
+ 	local function runtimeGlitchHandler(e)
+ 		if (isGlitchStarted == true) then
+ 			
+ 			
+ 			if (deltaSumm > gl.glitchShutUpTime) then
+ 				event.target.alpha = 1
+ 				for idx,val in pairs(activeChannels) do
+					--if (val.channel ~= nil and val.channel > partSumms[3]) then
+						audio.setVolume(0,{channel = val.ch})
+					--end
+				end
+ 			end
+
+ 			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
+ 				event.target.alpha = 0.5
+ 				for idx,val in pairs(activeChannels) do
+					--if (val.channel ~= nil and val.channel > partSumms[3]) then
+						audio.setVolume(val.v,{channel = val.ch})	
+					--end
+				end
+				deltaSumm = 0
+ 			end 	
+ 			
+ 			if (curMeasure > prevMeasure) then
+				delta = curMeasure - prevMeasure
+				prevMeasure = curMeasure
+				deltaSumm = deltaSumm + delta
+			end
+ 			
+ 			curMeasure = system.getTimer()
+ 			
+ 			glitchLocalTime = glitchLocalTime + delta
+ 		end
+ 	end
+	
+	if (event.phase == "began") then
+		isGlitchStarted = true
+		activeChannels = {}
+ 			for i = 14, 32 do
+ 				if audio.isChannelActive( i ) then
+ 					local vol = audio.getVolume({channel = i})
+ 					if vol > 0 then
+ 						activeChannels[#activeChannels + 1] = {ch = i, v = vol}
+ 						--print(activeChannels[#activeChannels].ch, activeChannels[#activeChannels].v)
+ 					end
+ 				end
+ 			end
+		
+		prevMeasure = system.getTimer()
+		curMeasure = 0
+		--[[
+		local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
+    	activeChannel.channel = gl.glitchChannel
+    	activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
+    	activeChannel.category = 6
+    	activeChannel.volume = 0
+   		activeChannels.glitchChannel = activeChannel
+   		]]--
+		if (recording.isRecStarted()) then
+			glitchStartTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
+			recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
+		else
+			glitchStartTime = 0
+		end
+		
+		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)
+		display.getCurrentStage():setFocus(event.target, event.id)
+	end
+	
+	if (event.phase == "ended" or (event.phase == "moved"  and 
+		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
+		
+		Runtime:removeEventListener("enterFrame",runtimeGlitchHandler)
+		event.target.alpha = 0.5
+		isGlitchStarted = false
+		
+		if (recording.isRecStarted()) then
+			glitchFinishTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
+			recording.addAction(glitchFinishTime,gl.glitchChannel,0,0,6,0)
+		end
+		
+		--activeChannels.glitchChannel = {-1}
+
+		for idx,val in pairs(activeChannels) do
+			--if (val.channel ~= nil and val.channel > partSumms[3]) then
+			
+				--[[if (val.channel > partSumms[3] and val.channel <= partSumms[4]) then
+				
+					if (volumePanel.scrolls[4] ~= nil) then	
+        				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = val.channel})  	
+    				else	
+    					audio.setVolume(defaultVolume,{channel = val.channel})  
+   					end
+   					
+   				end]]--
+
+   				audio.setVolume(val.v,{channel = val.ch}) 
+   				--[[
+   				if (val.channel > partSumms[4] and val.channel <= partSumms[5]) then
+   				
+   					if (volumePanel.scrolls[5] ~= nil) then	
+        				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = val.channel})  	
+    				else	
+    					audio.setVolume(defaultVolume,{channel = val.channel})  
+   					end
+   					
+   				end
+   				]]--
+				if (recording.isRecStarted()) then
+					if val.ch > 13 then
 						recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
     						val.ch,2,val.v,5,system.getTimer() - curLayout.getLayoutAppearTime())
 					else

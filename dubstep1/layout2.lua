@@ -256,6 +256,7 @@ function new()
 	btn26 = display.newRoundedRect(1,1,w/20,h/2,4)
 	btn27 = display.newRoundedRect(1,1,w/10,h/10,2)
 	btn28 = display.newRoundedRect(1,1,w/10,h/10,2)
+	btn29 = display.newRoundedRect(1,1,w/20,h/2,4)
 
 	gl.gunFxButton = display.newRoundedRect(1,1,w/10,h/10,2)
 		
@@ -284,9 +285,10 @@ function new()
 	btn23.txt = display.newText("S3_5",0,0,native.systemFont,14)	
 	btn24.txt = display.newText("S4_5",0,0,native.systemFont,14)	
 	btn25.txt = display.newText("S5_5",0,0,native.systemFont,14)]]--	
-	btn26.txt = display.newText("Gl",0,0,native.systemFont,14)
+	btn26.txt = display.newText("Gl_M",0,0,native.systemFont,12)
 	btn27.txt = display.newText("prev",0,0,native.systemFont,14)
 	btn28.txt = display.newText("next",0,0,native.systemFont,14)
+	btn29.txt = display.newText("Gl_V",0,0,native.systemFont,12)
 
 	gl.gunFxButton.txt = display.newText("gunFx",0,0,native.systemFont,14)
 		
@@ -309,6 +311,7 @@ function new()
 	btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7]]--
 		
 	btn26.x,btn26.y = w/20,h/2
+	btn29.x,btn29.y = 3*w/20,h/2
 
 	btn1.txt.x,btn2.txt.x,btn3.txt.x,btn4.txt.x,btn5.txt.x,btn6.txt.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
 	btn7.txt.x,btn8.txt.x,btn9.txt.x,btn10.txt.x,btn11.txt.x = w/6,w/3,w/2,2*w/3,5*w/6
@@ -327,6 +330,8 @@ function new()
 	btn26.txt.x,btn26.txt.y = w/20,h/2
 	btn27.txt.x,btn28.txt.y = 9*w/10,3*h/8
 	btn28.txt.x,btn28.txt.y = 9*w/10,h/2
+
+	btn29.txt.x,btn29.txt.y = 3*w/20,h/2
 
 	gl.gunFxButton.txt.x, gl.gunFxButton.txt.y = 9*w/10, 2*h/3
 		
@@ -360,6 +365,8 @@ function new()
 	btn27:setFillColor(128,128,128)
 	gl.gunFxButton:setFillColor(255, 0, 0)
 
+	btn29:setFillColor(140,255,140)
+
 	btn1.alpha = 0.5
 	btn2.alpha = 1
 	btn3.alpha = 0.5
@@ -390,6 +397,8 @@ function new()
 	btn27.alpha = 0.5	
 	btn28.alpha = 0.5
 	gl.gunFxButton.alpha = 0.5
+
+	btn29.alpha = 0.5
 	
 	btn1.txt.isVisible  = false
 	btn3.txt.isVisible  = false 	
@@ -499,6 +508,7 @@ function new()
 	mainGroup:insert(1,backs[1])
 	mainGroup:insert(2,localGroup)
 	mainGroup:insert(4, gl.gunFxButton)
+	mainGroup:insert(5, btn29)
 
 	gl.mainGroup = mainGroup
 	gl.localGroup = localGroup 
@@ -514,6 +524,7 @@ function new()
 	bindEventListeners()
 	gl.gunFxButton:addEventListener("touch", playGunFx)	
 	btn26:addEventListener("touch",playModule.playGlitch)
+	btn29:addEventListener("touch",playModule.playGlitchVoices)
 	rec.setScenesDirection2()
 	localGroup[localGroup.numChildren]:addEventListener("touch", rec.goToScene[2])
 	
