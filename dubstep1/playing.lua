@@ -613,13 +613,13 @@ function playGlitchVoices(event)
 	local deltaSumm = 0
 	local activeChannelsCopy = {}
 	
- 	local function runtimeGlitchHandler(e)
- 		if (isGlitchStarted == true) then
+ 	local function runtimeGlitchHandlerV(e)
+ 		if (isGlitchStartedV == true) then
  			
  			
  			if (deltaSumm > gl.glitchShutUpTime) then
  				event.target.alpha = 1
- 				for idx,val in pairs(activeChannels) do
+ 				for idx,val in pairs(activeChannelsV) do
 					--if (val.channel ~= nil and val.channel > partSumms[3]) then
 						audio.setVolume(0,{channel = val.ch})
 					--end
@@ -628,7 +628,7 @@ function playGlitchVoices(event)
 
  			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
  				event.target.alpha = 0.5
- 				for idx,val in pairs(activeChannels) do
+ 				for idx,val in pairs(activeChannelsV) do
 					--if (val.channel ~= nil and val.channel > partSumms[3]) then
 						audio.setVolume(val.v,{channel = val.ch})	
 					--end
@@ -649,13 +649,13 @@ function playGlitchVoices(event)
  	end
 	
 	if (event.phase == "began") then
-		isGlitchStarted = true
-		activeChannels = {}
+		isGlitchStartedV = true
+		activeChannelsV = {}
  			for i = 14, 32 do
  				if audio.isChannelActive( i ) then
  					local vol = audio.getVolume({channel = i})
  					if vol > 0 then
- 						activeChannels[#activeChannels + 1] = {ch = i, v = vol}
+ 						activeChannelsV[#activeChannelsV + 1] = {ch = i, v = vol}
  						--print(activeChannels[#activeChannels].ch, activeChannels[#activeChannels].v)
  					end
  				end
@@ -678,16 +678,16 @@ function playGlitchVoices(event)
 			glitchStartTime = 0
 		end
 		
-		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)
+		Runtime:addEventListener("enterFrame",runtimeGlitchHandlerV)
 		display.getCurrentStage():setFocus(event.target, event.id)
 	end
 	
 	if (event.phase == "ended" or (event.phase == "moved"  and 
 		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
 		
-		Runtime:removeEventListener("enterFrame",runtimeGlitchHandler)
+		Runtime:removeEventListener("enterFrame",runtimeGlitchHandlerV)
 		event.target.alpha = 0.5
-		isGlitchStarted = false
+		isGlitchStartedV = false
 		
 		if (recording.isRecStarted()) then
 			glitchFinishTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
@@ -696,7 +696,7 @@ function playGlitchVoices(event)
 		
 		--activeChannels.glitchChannel = {-1}
 
-		for idx,val in pairs(activeChannels) do
+		for idx,val in pairs(activeChannelsV) do
 			--if (val.channel ~= nil and val.channel > partSumms[3]) then
 			
 				--[[if (val.channel > partSumms[3] and val.channel <= partSumms[4]) then
