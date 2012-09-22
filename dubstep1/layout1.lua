@@ -50,9 +50,8 @@ function new()
 	local sampleKit = playModule.initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
 	gl.sampleKit = sampleKit
 
-	--gl.lvl1Voices = gl.drawLvl1Voices()
+	gl.lvl1Voices = gl.drawLvl1Voices()
 	
-	--trackCounters[2] = trackCounters[2] + 1
 	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 
 	local function playSound1 (event)

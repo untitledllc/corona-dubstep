@@ -299,9 +299,9 @@ function new()
 	btn16.x,btn17.x,btn18.x,btn19.x,btn20.x = w/6,w/3,w/2,2*w/3,5*w/6
 	btn21.x,btn22.x,btn23.x,btn24.x,btn25.x = w/6,w/3,w/2,2*w/3,5*w/6]]--
 	btn27.x, btn28.x =  9*w/10,9*w/10
-	btn27.y, btn28.y = 3*h/8,h/2
+	btn27.y, btn28.y = 2*h/8,3*h/8
 
-	gl.gunFxButton.x, gl.gunFxButton.y = 9*w/10, 2*h/3
+	gl.gunFxButton.x, gl.gunFxButton.y = 9*w/10, h/2
 		
 	btn1.y,btn2.y,btn3.y,btn4.y,btn5.y,btn6.y = h/7,h/7,h/7,h/7,h/7,h/7
 	btn7.y,btn8.y,btn9.y,btn10.y,btn11.y = 2*h/7,2*h/7,2*h/7,2*h/7,2*h/7
@@ -310,8 +310,10 @@ function new()
 	btn16.y,btn17.y,btn18.y,btn19.y,btn20.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
 	btn21.y,btn22.y,btn23.y,btn24.y,btn25.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7]]--
 		
-	btn26.x,btn26.y = w/20,h/2
-	btn29.x,btn29.y = 3*w/20,h/2
+	--btn26.x,btn26.y = w/20,h/2
+	--btn29.x,btn29.y = 3*w/20,h/2
+	btn26.x,btn26.y = w/40,h/3
+	btn29.x,btn29.y = 4*w/50,h/3
 
 	btn1.txt.x,btn2.txt.x,btn3.txt.x,btn4.txt.x,btn5.txt.x,btn6.txt.x = w/7,2*w/7,3*w/7,4*w/7,5*w/7,6*w/7
 	btn7.txt.x,btn8.txt.x,btn9.txt.x,btn10.txt.x,btn11.txt.x = w/6,w/3,w/2,2*w/3,5*w/6
@@ -327,13 +329,13 @@ function new()
 	btn16.txt.y,btn17.txt.y,btn18.txt.y,btn19.txt.y,btn20.txt.y = 4*h/7,4*h/7,4*h/7,4*h/7,4*h/7
 	btn21.txt.y,btn22.txt.y,btn23.txt.y,btn24.txt.y,btn25.txt.y = 5*h/7,5*h/7,5*h/7,5*h/7,5*h/7]]--
 		
-	btn26.txt.x,btn26.txt.y = w/20,h/2
-	btn27.txt.x,btn28.txt.y = 9*w/10,3*h/8
-	btn28.txt.x,btn28.txt.y = 9*w/10,h/2
+	btn26.txt.x,btn26.txt.y = w/40,h/3
+	btn27.txt.x,btn28.txt.x = 9*w/10,9*w/10
+	btn27.txt.y,btn28.txt.y = 2*h/8,3*h/8
 
-	btn29.txt.x,btn29.txt.y = 3*w/20,h/2
+	btn29.txt.x,btn29.txt.y = 4*w/50,h/3
 
-	gl.gunFxButton.txt.x, gl.gunFxButton.txt.y = 9*w/10, 2*h/3
+	gl.gunFxButton.txt.x, gl.gunFxButton.txt.y = 9*w/10, h/2
 		
 	btn1:setFillColor(255,0,0)
 	btn2:setFillColor(255,0,0)
