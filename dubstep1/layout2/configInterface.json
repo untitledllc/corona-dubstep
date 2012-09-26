@@ -1,0 +1,562 @@
+{
+	"scenesNum": 5,
+	"sceneLength": 27000,
+	"showChoiceTime": 20000,
+	"choiceShownDurationTime": 7000,
+	"soundButtons": [
+		{
+			"type": "melody",
+			"scenes": [
+				3, 4, 5
+			],
+			"soundId": "s1",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				3,
+			],
+			"soundId": "s2",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				3, 4, 5
+			],
+			"soundId": "s3",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				2, 3, 4, 5
+			],
+			"soundId": "s4",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "s5",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "s6",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				2, 3, 4
+			],
+			"soundId": "s7",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				2, 3, 4
+			],
+			"soundId": "s8",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				3, 4, 5
+			],
+			"soundId": "s9",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "s10",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				2, 3, 4
+			],
+			"soundId": "s11",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "melody",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "s12",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "s13",
+			"left": 440,
+			"top": 110,
+			"w": 102,
+			"h": 79,
+			"rgb": [
+				255, 0, 0
+			],
+			"alpha": 0.5
+		},
+
+
+
+
+
+
+
+
+
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v1",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v2",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v3",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v4",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v5",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v6",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v7",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v8",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v9",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v10",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v11",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v12",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v13",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v14",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v15",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v16",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v17",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v18",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		},
+
+		{
+			"type": "voice",
+			"scenes": [
+				1, 2, 3, 4, 5
+			],
+			"soundId": "v19",
+			"left": 440,
+			"top": 110,
+			"w": 85,
+			"h": 64,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 0.5
+		}
+
+	],
+	"glitchButtons": [
+		{
+			"soundIds": [
+				"v1", "v2", "v3", "v4", "v5", "v6", "v7", "v8", "v9", "v10", 
+				"v11", "v12", "v13", "v14", "v15", "v16", "v17", "v18", "v19"
+			],
+			"left": 440,
+			"top": 110,
+			"w": 51,
+			"h": 384,
+			"rgb": [
+				140,255,140
+			],
+			"alpha": 0.5,
+			"label": "GL_S"
+		},
+
+		{
+			"soundIds": [
+				"s1", "s2", "s3", "s4", "s5", "s6", 
+				"s7", "s8", "s9", "s10", "s11", "s12"
+			],
+			"left": 440,
+			"top": 110,
+			"w": 51,
+			"h": 384,
+			"rgb": [
+				140,255,140
+			],
+			"alpha": 0.5,
+			"label": "GL_V"
+		}
+	]
+}

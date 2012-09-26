@@ -1,7 +1,12 @@
 module(...,package.seeall)
 
+jsonModule = require "json"
+
 w = display.contentWidth
 h = display.contentHeight
+
+-- track = {type = "fx/melody/voice", scene = 1..5, button = buttonStruct, sound = "sound1/track1.mp3", channel = 1..32 }
+soundsConfig = {}
 
 currentBasicMelody = nil
 currentEvilMelody = nil
@@ -56,6 +61,220 @@ loading = nil
 sceneNumber = nil
 
 shareBtn = nil
+
+function readFile(_fname, prefix, base)
+	-- set default base dir if none specified
+	if not base then base = nil end
+
+	if not prefix then prefix = "" end
+
+	local fname = prefix.._fname
+
+	-- create a file path for corona i/o
+	local path = system.pathForFile( fname, base )
+
+	-- will hold contents of file
+	local contents
+
+	-- io.open opens a file at path. returns nil if no file found
+	local file = io.open( path, "r" )
+	if file then
+	   -- read all contents of file into a string
+	   contents = file:read( "*a" )
+	   io.close( file )	-- close the file after using it
+	else
+		error("File "..fname.." not found")
+	end
+
+	return contents
+end
+
+
+-- track = {id, name, scenes = {1, 2, 3,..}, sound = @"sound1/track1.mp3", channel }
+-- buttonStruct = {soundId, scenes = {1, 2, 3,..}, x = 1, y = 1, w = 50, h = 50, rgb = {255, 255, 255}, alpha = 0.5}
+
+-- function createButton({track, left, top, width, height, type, rgb, alpha})
+function createButton(arg)
+	if type(arg) ~= "table" then
+		error("wrong type of arg: expected table")
+	end
+
+	if not arg.track or type(arg.track) ~= "table" then
+		error("Track corrupted")
+	end
+
+	local _top
+	local _left
+	local _width
+	local _height
+	local _label
+
+	if arg.left and type(arg.left) == "number" then
+		_left = arg.left
+
+		if arg.top and type(arg.top) == "number" then
+			_top = arg.top
+		else
+			error("wrong type of arg \"top\" ".."expected number, got "..type(arg.top))
+		end
+	else
+		_left = 1
+		_top = 1
+	end
+
+	if arg.width and type(arg.width) == "number" then
+		_width = arg.width
+
+		if arg.height and type(arg.height) == "number" then
+			_height = arg.height
+		else
+			error("wrong type of arg \"height\" ".."expected number, got "..type(arg.height))
+		end
+	else
+		_width = w/10
+		_height = h/10
+	end
+
+	if arg.track.name and type(arg.track.name) == "string" then
+		-- Убираем имя папки
+		local k = string.find(arg.track.name, "/")
+		if k ~= nil then
+			_label = string.sub(arg.track.name, k+1)
+		else
+			_label = arg.track.name
+		end
+
+		-- Убираем расширение файла
+		local k = string.find(_label, ".mp3") or string.find(_label, ".wav")
+		_label = string.sub(_label, 1, k-1)
+	else
+		error("wrong type of arg \"track.name\" ".."expected string, got "..type(arg.track.name))
+	end
+
+	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
+	b.txt = display.newText(_label,_left,_top,native.systemFont,12)
+
+	if arg.alpha and type(arg.alpha) == "number" then
+		b.alpha = arg.alpha
+	else
+		b.alpha = 0.5
+	end
+	
+	if arg.rgb and type(arg.rgb) == "table" then
+		if #arg.rgb == 3 then
+			for i, v in pairs(arg.rgb) do
+				if type(v) ~= "number" then
+					error("Wrong type of rgb componet expected number, got "..type(v))
+				end
+			end
+		else
+			error("Wrong number of rgb components")
+		end
+	elseif arg.rgb then 
+		error("Wrong type of arg \"rgb\" expected table, got "..type(arg.rgb))
+	else
+		b:setFillColor(128, 128, 128)
+	end
+
+	b:setFillColor(arg.rgb[1], arg.rgb[2], arg.rgb[3])
+
+	b:addEventListener("touch", function (event)
+									if event.phase == "ended" then
+										if arg.type == "fx" then
+											require("playing").playFX(arg.track, b)
+										elseif arg.type == "melody" then
+											require("playing").playMelody(arg.track, b)
+										elseif arg.type == "voice" then
+											require("playing").playVoice(arg.track, b)
+										end
+									end
+								end
+	)
+
+	return b
+end
+
+-- function createGlitchButton({soundIds, left, top, width, height, rgb, alpha, label})
+function createGlitchButton(arg)
+	if type(arg) ~= "table" then
+		error("wrong type of arg: expected table")
+	end
+
+	if not arg.soundIds or type(arg.soundIds) ~= "table" then
+		error("Table \"soundIds\" corrupted")
+	end
+
+	local _top
+	local _left
+	local _width
+	local _height
+	local _label
+
+	if arg.left and type(arg.left) == "number" then
+		_left = arg.left
+
+		if arg.top and type(arg.top) == "number" then
+			_top = arg.top
+		else
+			error("wrong type of arg \"top\" ".."expected number, got "..type(arg.top))
+		end
+	else
+		_left = 1
+		_top = 1
+	end
+
+	if arg.width and type(arg.width) == "number" then
+		_width = arg.width
+
+		if arg.height and type(arg.height) == "number" then
+			_height = arg.height
+		else
+			error("wrong type of arg \"height\" ".."expected number, got "..type(arg.height))
+		end
+	else
+		_width = w/10
+		_height = h/10
+	end
+
+	if arg.label and type(arg.label) == "string" then
+		_label = arg.label
+	else
+		_label = "GL"
+	end
+
+	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
+	b.txt = display.newText(_label,_left,_top,native.systemFont,12)
+
+	if arg.alpha and type(arg.alpha) == "number" then
+		b.alpha = arg.alpha
+	else
+		b.alpha = 0.5
+	end
+	
+	if arg.rgb and type(arg.rgb) == "table" then
+		if #arg.rgb == 3 then
+			for i, v in pairs(arg.rgb) do
+				if type(v) ~= "number" then
+					error("Wrong type of rgb componet expected number, got "..type(v))
+				end
+			end
+		else
+			error("Wrong number of rgb components")
+		end
+	elseif arg.rgb then 
+		error("Wrong type of arg \"rgb\" expected table, got "..type(arg.rgb))
+	else
+		b:setFillColor(128, 128, 128)
+	end
+
+	b:setFillColor(arg.rgb[1], arg.rgb[2], arg.rgb[3])
+	b.soundIds = arg.soundIds
+
+	local f = require("playing").playGlitch
+	b:addEventListener("touch", f)
+
+	return b
+end
 
 function changeBackGround(object) 
 	object.isVisible = true

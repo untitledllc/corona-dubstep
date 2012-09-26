@@ -1,0 +1,279 @@
+[
+	{
+		"id": "s1",
+		"name":	"ritm-1.mp3",
+		"scenes": [
+			1
+		],
+		"channel":	"1"
+	},
+
+	{
+		"id": "s2",
+		"name":	"sintezator-1.mp3",
+		"scenes": [
+			1, 2, 3
+		],
+		"channel":	"2"
+	},
+
+	{
+		"id": "s3",
+		"name":	"ritm-2.mp3",
+		"scenes": [
+			2, 3
+		],
+		"channel":	"3"
+	},
+
+	{
+		"id": "s4",
+		"name":	"bass-2.mp3",
+		"scenes": [
+			2, 3
+		],
+		"channel":	"4"
+	},
+
+	{
+		"id": "s5",
+		"name":	"tom-tom.mp3",
+		"scenes": [
+			3, 4, 5
+		],
+		"channel":	"5"
+	},
+
+	{
+		"id": "s6",
+		"name":	"space-fx.mp3",
+		"scenes": [
+			3
+		],
+		"channel":	"6"
+	},
+
+	{
+		"id": "s7",
+		"name":	"bass-3.mp3",
+		"scenes": [
+			5
+		],
+		"channel":	"7"
+	},
+
+	{
+		"id": "s8",
+		"name":	"ritm-3.mp3",
+		"scenes": [
+			4, 5
+		],
+		"channel":	"8"
+	},
+
+	{
+		"id": "s9",
+		"name":	"gun-fx.mp3",
+		"scenes": [
+			4
+		],
+		"forWayChoose": true,
+		"channel":	"9"
+	},
+
+	{
+		"id": "s10",
+		"name":	"bass-fx.mp3",
+		"scenes": [
+			5
+		],
+		"channel":	"10"
+	},
+
+	{
+		"id": "s11",
+		"name":	"forSharing.mp3",
+		"scenes": [
+			6
+		],
+		"last": true,
+		"channel":	"11"
+	},
+
+
+
+
+
+
+
+	{
+		"id": "v1",
+		"name": "voices/track1.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "12"
+	},
+
+	{
+		"id": "v2",
+		"name": "voices/track2.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "13"
+	},
+
+	{
+		"id": "v3",
+		"name": "voices/track3.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "14"
+	},
+
+	{
+		"id": "v4",
+		"name": "voices/track4.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "15"
+	},
+
+	{
+		"id": "v5",
+		"name": "voices/track5.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "16"
+	},
+
+	{
+		"id": "v6",
+		"name": "voices/track6.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "17"
+	},
+
+	{
+		"id": "v7",
+		"name": "voices/track7.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "18"
+	},
+
+	{
+		"id": "v8",
+		"name": "voices/track8.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "19"
+	},
+
+	{
+		"id": "v9",
+		"name": "voices/track9.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "20"
+	},
+
+	{
+		"id": "v10",
+		"name": "voices/track10.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "21"
+	},
+
+	{
+		"id": "v11",
+		"name": "voices/track11.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "22"
+	},
+
+	{
+		"id": "v12",
+		"name": "voices/track12.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "23"
+	},
+
+	{
+		"id": "v13",
+		"name": "voices/track13.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "24"
+	},
+
+	{
+		"id": "v14",
+		"name": "voices/track14.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "25"
+	},
+
+	{
+		"id": "v15",
+		"name": "voices/track15.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "26"
+	},
+
+	{
+		"id": "v16",
+		"name": "voices/track16.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "27"
+	},
+
+	{
+		"id": "v17",
+		"name": "voices/track17.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "28"
+	},
+
+	{
+		"id": "v18",
+		"name": "voices/track18.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "29"
+	},
+
+	{
+		"id": "v19",
+		"name": "voices/track19.mp3",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"channel": "30"
+	}
+]

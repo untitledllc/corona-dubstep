@@ -43,7 +43,8 @@ function new()
 			gl.loading.isVisible = true
 			localGroup[1]:removeEventListener("touch", toLevel1Handler)
 			localGroup[2]:removeEventListener("touch", toLevel2Handler)
-			timer.performWithDelay(20, function () director:changeScene("layout1") end)
+			gl.currentLayout = "layout1"
+			timer.performWithDelay(20, function () director:changeScene("level") end)
 		end
 	end
 	toLevel2Handler = function (event)
@@ -51,7 +52,8 @@ function new()
 			gl.loading.isVisible = true
 			localGroup[1]:removeEventListener("touch", toLevel1Handler)
 			localGroup[2]:removeEventListener("touch", toLevel2Handler)
-			timer.performWithDelay(20, function () director:changeScene("layout2") end)
+			gl.currentLayout = "layout2"
+			timer.performWithDelay(20, function () director:changeScene("level") end)
 		end
 	end
 	

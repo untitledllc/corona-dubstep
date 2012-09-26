@@ -1,11 +1,10 @@
 module (...,package.seeall)
 
-function new() 
-	local gl = require("globals")
+function new()
 	local localGroup = display.newGroup()
-	local splashImage = display.newImageRect("images/splashScreen/splashScreenImage.jpg",gl.w,gl.h)
+	local splashImage = display.newImageRect("images/splashScreen/splashScreenImage.jpg",display.contentWidth,display.contentHeight)
 	
-	splashImage.x,splashImage.y = gl.w/2,gl.h/2
+	splashImage.x,splashImage.y = display.contentWidth/2,display.contentHeight/2
 	
 	localGroup:insert(splashImage)
 	

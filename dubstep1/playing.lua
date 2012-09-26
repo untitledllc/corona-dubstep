@@ -2,7 +2,6 @@ module(...,package.seeall)
 
 local gl = require("globals") 
 local recording = require("recording")
-local volumePanel = require("volumeRegulator")
 local curLayout = require(gl.currentLayout)
 local numSampleTypes = 5
 
@@ -32,17 +31,7 @@ function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
 	local idx = 1
 	local summ = 0
 		
-	while (idx <= numSampleTypes) do
-		partSumms[idx] = summ + playParams[numSampleTypes+idx]
-		summ = summ + playParams[numSampleTypes+idx]
-		idx = idx + 1
-	end
-		
-	idx = 1
-	while (idx <= numSamples + numFX + numVoices) do
-		activeChannels[idx] = {-1}
-		idx = idx + 1
-	end	
+	
 end
 
 local function shutUpVoices(group,isShut,numSamples,numFX,numVoices)
@@ -944,256 +933,17 @@ function playBasicMelody2()
 	]]--
 end
 
-function initSounds(kitAddress,numSamples,numFX,numVoices)
-	local i = 1
-	local str
-	local track = {sound = nil,name = nil,startTime = nil}
-	local tracks = {}
-	while (i <= numSamples + numVoices + numFX) do
-		str = kitAddress.."Track"..tostring(i)..".mp3"
-		track[1] = audio.loadSound(str)
-		track[2] = str
-		tracks[i] = track
-		track = {}
-		i = i + 1
+function initSounds(kitAddress)
+	local soundsConfig = gl.jsonModule.decode( gl.readFile("configSounds.json", kitAddress))
+
+	for i, v in pairs(soundsConfig) do
+		local track = {}
+		v.sound = audio.loadSound(kitAddress..v.name)
+		v.channel = i
 	end
+	gl.soundsConfig = soundsConfig
 	
-	gl.currentBasicMelody = audio.loadSound(kitAddress.."Basic.mp3")
-	gl.currentEvilMelody = audio.loadSound(kitAddress.."Evil.mp3")
-	gl.currentGoodMelody = audio.loadSound(kitAddress.."Good.mp3")
-	
-	currentBasicChannel = i
-	currentGoodChannel = i + 1
-	currentEvilChannel = i + 2
-
-	gl.currentBasicChannel = currentBasicChannel
-	gl.currentGoodChannel = currentGoodChannel
-	gl.currentEvilChannel = currentEvilChannel
-	
-	track[1] = gl.currentBasicMelody
-	track[2] = kitAddress.."Basic.mp3"
-	tracks[currentBasicChannel] = track
-	track = {}
-	
-	track[1] = gl.currentGoodMelody
-	track[2] = kitAddress.."Good.mp3"
-	tracks[currentGoodChannel] = track
-	track = {}
-	
-	track[1] =  gl.currentEvilMelody
-	track[2] = kitAddress.."Evil.mp3"
-	tracks[currentEvilChannel] = track
-	
-	audio.play(gl.currentBasicMelody,{channel = currentBasicChannel,loops = -1})
-	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
-	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
-	return tracks
-end
-
-function initSoundsFirstLayout(kitAddress,numSamples,numFX,numVoices)
-	local i = 1
-	local str
-	local track = {sound = nil,name = nil,startTime = nil}
-	local tracks = {}
-
-	-- 1st scene
-	str = kitAddress.."ritm-1.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."sintezator-1.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	-- 2nd scene
-	str = kitAddress.."ritm-2.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."sintezator-1.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."bass-2.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	-- 3rd scene
-	str = kitAddress.."ritm-2.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."sintezator-1.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."bass-2.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."tom-tom.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."space-fx.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	-- 4th scene
-	str = kitAddress.."ritm-3.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-	
-	str = kitAddress.."tom-tom.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."gun-fx.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	-- 5th scene
-	str = kitAddress.."ritm-3.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-	
-	str = kitAddress.."tom-tom.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."bass-3.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-
-	str = kitAddress.."bass-fx.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-		
-	gl.currentBasicMelody = audio.loadSound(kitAddress.."Basic.mp3")
-	gl.currentEvilMelody = audio.loadSound(kitAddress.."Evil.mp3")
-	gl.currentGoodMelody = audio.loadSound(kitAddress.."Good.mp3")
-	gl.sharingMelody = audio.loadSound(kitAddress.."forSharing.mp3")
-	
-	currentBasicChannel = #tracks + 1
-	currentGoodChannel = #tracks + 2
-	currentEvilChannel = #tracks + 3
-	sharingChannel = #tracks + 4
-
-	gl.currentBasicChannel = currentBasicChannel
-	gl.currentGoodChannel = currentGoodChannel
-	gl.currentEvilChannel = currentEvilChannel
-	gl.sharingChannel = sharingChannel
-	
-	track[1] = gl.currentBasicMelody
-	track[2] = kitAddress.."Basic.mp3"
-	tracks[currentBasicChannel] = track
-	track = {}
-	
-	track[1] = gl.currentGoodMelody
-	track[2] = kitAddress.."Good.mp3"
-	tracks[currentGoodChannel] = track
-	track = {}
-	
-	track[1] =  gl.currentEvilMelody
-	track[2] = kitAddress.."Evil.mp3"
-	tracks[currentEvilChannel] = track
-	track = {}
-
-	track[1] =  gl.sharingMelody
-	track[2] = kitAddress.."forSharing.mp3"
-	tracks[sharingChannel] = track
-	track = {}
-
-	toGoodEvilFXChannel = #tracks + 1
-	str = kitAddress.."gun-fx.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[toGoodEvilFXChannel] = track
-	track = {}
-	
-	--audio.play(tracks[2][1],{channel = 2,loops = 0})
-	audio.play(gl.currentGoodMelody,{channel = currentGoodChannel,loops = -1})
-	audio.play(gl.currentEvilMelody,{channel = currentEvilChannel,loops = -1})
-	audio.setVolume(0,{channel = currentGoodChannel})
-	audio.setVolume(0,{channel = currentEvilChannel})
-	
-	--recording.addAction(0,2,1,0.5,2,0)
-	recording.addAction(0,currentGoodChannel,1,0,2,0)
-	recording.addAction(0,currentEvilChannel,1,0,2,0)
-	return tracks
-end
-
-function initSoundsSecondLayout(kitAddress,numSamples,numFX,numVoices)
-	local str
-	local track = {sound = nil,name = nil,startTime = nil}
-	local tracks = {}
-
-	gl.currentBasicMelody1 = audio.loadSound(kitAddress.."main1.mp3")
-	gl.currentBasicMelody2 = audio.loadSound(kitAddress.."main2.mp3")
-	
-	gl.currentBasicChannel1 = #tracks + 1
-	gl.currentBasicChannel2 = #tracks + 2
-	
-	track[1] = gl.currentBasicMelody1
-	track[2] = kitAddress.."main1.mp3"
-	tracks[gl.currentBasicChannel1] = track
-	track = {}
-	
-	track[1] = gl.currentBasicMelody2
-	track[2] = kitAddress.."main2.mp3"
-	tracks[gl.currentBasicChannel2] = track
-	track = {}
-
-	for i = 1, 5 do
-		for j = 1, 2 do
-			str = kitAddress.."evil"..i.."."..j..".mp3"
-			track[1] = audio.loadSound(str)
-			track[2] = str
-			tracks[#tracks + 1] = track
-			track = {}
-		end
-	end
-
-	str = kitAddress.."gun-fx.mp3"
-	track[1] = audio.loadSound(str)
-	track[2] = str
-	tracks[#tracks + 1] = track
-	track = {}
-	return tracks
+	return soundsConfig
 end
 
 function resetCounters(numSamples) 
