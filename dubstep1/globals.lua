@@ -10,6 +10,10 @@ soundsConfig = {}
 
 currentBasicMelody = nil
 currentEvilMelody = nil
+
+-- buttonInScenes = {sceneNum = {{buttonHandle1, pressed}, {buttonHandle2, pressed}, ...}, ...} - ставит кнопки в соответствие номеру сцены, на которой они должны быть
+buttonsInScenes = {}
+
 currentGoodMelody = nil
 
 gunFxButton = nil
@@ -93,7 +97,7 @@ end
 -- track = {id, name, scenes = {1, 2, 3,..}, sound = @"sound1/track1.mp3", channel }
 -- buttonStruct = {soundId, scenes = {1, 2, 3,..}, x = 1, y = 1, w = 50, h = 50, rgb = {255, 255, 255}, alpha = 0.5}
 
--- function createButton({track, left, top, width, height, type, rgb, alpha})
+-- function createButton({track, left, top, width, height, type, rgb, alpha, scenes, soundId})
 function createButton(arg)
 	if type(arg) ~= "table" then
 		error("wrong type of arg: expected table")
@@ -152,7 +156,9 @@ function createButton(arg)
 	end
 
 	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
-	b.txt = display.newText(_label,_left,_top,native.systemFont,12)
+	b.txt = display.newText(_label,_left,_top,native.systemFont,16)
+	b.txt.x = b.x
+	b.txt.y = b.y
 
 	if arg.alpha and type(arg.alpha) == "number" then
 		b.alpha = arg.alpha
@@ -178,6 +184,25 @@ function createButton(arg)
 
 	b:setFillColor(arg.rgb[1], arg.rgb[2], arg.rgb[3])
 
+	if not arg.scenes or type(arg.scenes) ~= "table" then
+		error("Wrong type of arg \"scenes\" expected table, got "..type(arg.scenes))
+	else
+		b.scenes = arg.scenes
+	end
+
+	if not arg.type or type(arg.type) ~= "string" then
+		error("Wrong type of arg \"type\" expected table, got "..type(arg.type))
+	else
+		b.type = arg.type
+	end
+
+	if not arg.soundId or type(arg.soundId) ~= "string" then
+		error("Wrong type of arg \"soundId\" expected table, got "..type(arg.soundId))
+	else
+		b.soundId = arg.soundId
+	end
+
+	print(b.x, b.y, _label, b.width)
 	b:addEventListener("touch", function (event)
 									if event.phase == "ended" then
 										if arg.type == "fx" then
@@ -243,7 +268,9 @@ function createGlitchButton(arg)
 	end
 
 	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
-	b.txt = display.newText(_label,_left,_top,native.systemFont,12)
+	b.txt = display.newText(_label,_left,_top,native.systemFont,16)
+	b.txt.x = b.x
+	b.txt.y = b.y
 
 	if arg.alpha and type(arg.alpha) == "number" then
 		b.alpha = arg.alpha
@@ -370,7 +397,7 @@ function drawLayoutBtns()
 	shareTxt:setTextColor(255,0,0)
 	shareBtn.txt = shareTxt
 	
-	btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/4,15*h/16
+	btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/16,12*h/16
 	btn1:setFillColor(140,255,0)
 	btn2:setFillColor(140,255,0)
 	btn1.alpha = 0.5
@@ -389,7 +416,7 @@ function drawLayoutBtns()
 	btn1.txt = display.newText("Back",0,0,native.systemFont,14)
 	btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
 	btn1.txt.x,btn1.txt.y = w/16,15*h/16
-	btn2.txt.x,btn2.txt.y = w/4,15*h/16
+	btn2.txt.x,btn2.txt.y = w/16,12*h/16
 	
 	repBtn.x,repBtn.y = 15*w/16,h/16
 	repBtn:setFillColor(255,140,140)

@@ -36,7 +36,9 @@ function new()
 	local sampleKit = playModule.initSounds(kitAddress)
 
 	for i, v in pairs(configInterface.soundButtons) do
-		local b = gl.createButton({["track"] = sampleKit[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = v.type, ["rgb"] = v.rgb, ["alpha"] = v.alpha})
+		local b = gl.createButton({["track"] = sampleKit[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = sampleKit[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId})
+		b.isVisible = false
+		b.txt.isVisible = false
 		localGroup:insert(b)
 	end
 
@@ -60,11 +62,11 @@ function new()
 	mainGroup:insert(1,backs[1])
 	mainGroup:insert(2,localGroup)
 
-	playModule.prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
-
 	gl.mainGroup = mainGroup
 	gl.localGroup = localGroup 
 	gl.currentBacks = backs
+
+	playModule.prepareToPlay()
 
 	--require("recording").startRecording()
 	

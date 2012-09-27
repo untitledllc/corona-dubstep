@@ -24,14 +24,42 @@ function getActiveChannels()
 	return activeChannels
 end
 
-function prepareToPlay(sampleKit,playParams,numSamples,numFX,numVoices)
-	gl.currentKit = sampleKit
-		
-	partSumms = {}
-	local idx = 1
-	local summ = 0
-		
-	
+function prepareToPlay()
+	-- gl.soundsConfig - треки с информацией из конфига
+	-- gl.mainGroup[2] - кнопки управления музыкой текущего уровня
+	for i = 1, gl.scenesNum, 1 do
+		gl.buttonsInScenes[i] = {}
+	end
+
+	-- Заполняем таблицу, в которой номеру сцены соответствует кнопка и информация о том, нажата она или нет
+	for i = 1, gl.mainGroup[2].numChildren, 1 do
+		if gl.mainGroup[2][i].scenes then
+			for j, v in pairs(gl.mainGroup[2][i].scenes) do
+				table.insert(gl.buttonsInScenes[tonumber(j)], {gl.mainGroup[2][i], v})
+			end
+		end
+	end
+
+	-- Делаем видимыми кнопки первой сцены
+	for i, v in pairs(gl.buttonsInScenes[1]) do
+		v[1].isVisible = true
+		v[1].txt.isVisible = true
+	end
+
+	-- запускаем все мелодии на воспроизведение
+	for i, v in pairs(gl.soundsConfig) do
+		if v.type == "melody" then
+			audio.play(v.sound, {channel = v.channel, loops = -1})
+			audio.setVolume(0, {channel = v.channel})
+		end
+	end
+
+	-- Нажимаем те кнопки, которые нажаты по умолчанию на первой сцене
+	for i, v in pairs(gl.buttonsInScenes[1]) do
+		if v[2] == true then
+			v[1]:dispatchEvent({name = "touch", phase = "ended"})
+		end
+	end
 end
 
 local function shutUpVoices(group,isShut,numSamples,numFX,numVoices)
@@ -179,43 +207,6 @@ local function playIntro(group,index,trackCounters)
     trackCounters[index] = trackCounters[index] + 1
 end
 
-function playMelody(group,index,trackCounters)
-	local startStop = nil
-	if (trackCounters[index] % 2 ~= 0) then
-        audio.setVolume(0,{channel = index})
-        group[index].alpha = 0.5
-        
-        startStop = 0
-        
-        activeChannels[index] = {-1}
-    else
-    	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-    
-		if (volumePanel.scrolls[2] ~= nil) then	
-        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[2]),{channel = index})  	
-    	else	
-    		audio.setVolume(defaultVolume,{channel = index})  
-        end 
-           
-        group[index].alpha = 1
-        
-    	activeChannel.channel = index
-    	activeChannel.startTime = 0
-    	activeChannel.category = 2
-    	activeChannel.volume = audio.getVolume({channel = index})
-    	activeChannels[index] = activeChannel
-    	
-    	startStop = 1
-    end
-    
-    if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-   	end
-    
-    trackCounters[index] = trackCounters[index] + 1
-end
-
 local function playDrums(group,index,trackCounters)
 	local startStop = nil
 	if (trackCounters[index] % 2 ~= 0) then
@@ -251,207 +242,118 @@ local function playDrums(group,index,trackCounters)
     trackCounters[index] = trackCounters[index] + 1
 end
 
-function playFX(group,kit,index, isVoice)
-	local function closeActiveChannel(event)
-    	activeChannels[index] = {-1}
-    	
-    	if (recording.isRecStarted() == true) then
-    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),4,0)
-   		end
-   		if curLayout.trackCounters[index] then
-			curLayout.trackCounters[index] = 0
-		end
-    end
-    
-    if group.numChildren ~= nil and index <= group.numChildren then
-		if group[index].tween then
-			--transition.cancel(group[index].tween )
-		end
+
+
+
+
+function playMelody(trackInfo,button)
+	if not button.pressed then
+		button.pressed = 1
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		button.alpha = 1
+	elseif button.pressed == 1 then
+		button.pressed = 0
+		audio.setVolume(0, {channel = trackInfo.channel})
+		button.alpha = 0.5
+	elseif button.pressed == 0 then
+		button.pressed = 1
+		button.pressed = 1
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		button.alpha = 1
 	end
-	if (curLayout.trackCounters[index] and curLayout.trackCounters[index] % 2 ~= 0) then
-		if (audio.isChannelPlaying(index)) then
-			if (fxTimer) then
-				--timer.cancel(fxTimer)
-			end
-			--closeActiveChannel(nil)
-		end
-		audio.setVolume(0, {channel = index})
-		--if group.numChildren ~= nil and index <= group.numChildren then
-		--	group[index].alpha = 0.5
-		--end
-		if (recording.isRecStarted() == true) then
+
+  --[[  if (recording.isRecStarted() == true) then
+    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
+   	end]]--
+end
+
+function playFX(trackInfo,button)
+	if not button.pressed then
+		button.pressed = 1
+		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
+			button.pressed = 0
+			--[[if (recording.isRecStarted() == true) then
+	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+	    							index,0,audio.getVolume({channel = index}),4,0)
+	   		end]]--
+		end})
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+
+		--[[if (recording.isRecStarted() == true) then
     		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
     							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-   		end
-	elseif curLayout.trackCounters[index] then
-		if (curLayout.trackCounters[index] and curLayout.trackCounters[index] == 0) then
-    		audio.play(kit[index][1],{channel = index, loop = 0})
-    		if isVoice then
+   		end]]--
 
-    			audio.setVolume(1, {channel = index})
-    		else
-
-    			audio.setVolume(defaultVolume, {channel = index})
-    		end
-    		if (recording.isRecStarted() == true) then
+		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+	else
+		button.pressed = 1
+		if button.tween then
+			transition.cancel(button.tween)
+			button.alpha = 0.5
+		end
+		audio.stop(trackInfo.channel)
+		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
+			button.pressed = 0
+			--[[if (recording.isRecStarted() == true) then
 	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    								index,1,audio.getVolume({channel = index}),4,0)
-	   		end
-	   		if group.numChildren ~= nil and index <= group.numChildren then
-	    		group[index].alpha = 1
-	    		group[index].tween = transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
-	    	end
-	    	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-		    activeChannel.channel = index
-		    activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
-		    activeChannel.category = 4
-		    activeChannel.volume = audio.getVolume({channel = index})
-		    activeChannels[index] = activeChannel
-		     
-		    
-		   	
-		    fxTimer = timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
-    	elseif (curLayout.trackCounters[index] and curLayout.trackCounters[index] ~= 0) then
-    		if (volumePanel.scrolls[4] ~= nil) then	
-        			audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = index})  	
-    			else	
-    				audio.setVolume(defaultVolume,{channel = index})  
-   			end 
-   			if (recording.isRecStarted() == true) then
-    			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    								index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-   			end
-   		end
-	else
-		audio.play(kit[index][1],{channel = index, loop = 0})
-		if isVoice then
-			audio.setVolume(1, {channel = index})
-			print("play!")
-		else
-			audio.setVolume(defaultVolume, {channel = index})
-		end
-		
-    	if (recording.isRecStarted() == true) then
-	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    							index,1,audio.getVolume({channel = index}),4,0)
-	   	end
-	    local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-		activeChannel.channel = index
-	    activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
-	    activeChannel.category = 4
-	    activeChannel.volume = audio.getVolume({channel = index})
-	    activeChannels[index] = activeChannel
-		fxTimer = timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
-	end
-	if curLayout.trackCounters[index] then
-		curLayout.trackCounters[index] = curLayout.trackCounters[index] + 1
-	end
-end
+	    							index,0,audio.getVolume({channel = index}),4,0)
+	   		end]]--
+		end})
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 
-function oldPlayFx(group,kit,index)
-	local function closeActiveChannel(event)
-    	activeChannels[index] = {-1}
-    	
-    	if (recording.isRecStarted() == true) then
+		--[[if (recording.isRecStarted() == true) then
     		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),4,0)
-   		end
-    end
-    
-    if group.numChildren ~= nil and index <= group.numChildren then
-		if group[index].tween then
-			transition.cancel(group[index].tween )
-		end
-	end
-	if (curLayout.trackCounters[index] and curLayout.trackCounters[index] % 2 ~= 0) then
-		if (audio.isChannelPlaying(index)) then
-			if (fxTimer) then
-				timer.cancel(fxTimer)
-			end
-			closeActiveChannel(nil)
-		end
-		audio.stop(index)
-		if group.numChildren ~= nil and index <= group.numChildren then
-			group[index].alpha = 0.5
-		end
-	else
+    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
+   		end]]--
 
-    	audio.play(kit[index][1],{channel = index})
-    
-    	if (volumePanel.scrolls[4] ~= nil) then	
-        		audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = index})  	
-    		else	
-    			audio.setVolume(0.8,{channel = index})
-   		end 
-    	
-	    if group.numChildren ~= nil and index <= group.numChildren and currentLayout == "layout1" then
-	    	group[index].alpha = 1
-	    	group[index].tween = transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
-	    end
-    
-	    local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-	    activeChannel.channel = index
-	    activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
-	    activeChannel.category = 4
-	    activeChannel.volume = audio.getVolume({channel = index})
-	    activeChannels[index] = activeChannel
-	     
-	    if (recording.isRecStarted() == true) then
-	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    							index,1,audio.getVolume({channel = index}),4,0)
-	   	end
-	   	
-	    fxTimer = timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
+		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
 	end
-	if curLayout.trackCounters[index] then
-		curLayout.trackCounters[index] = curLayout.trackCounters[index] + 1
-	end
-end
-
-function playVoice(group,kit,index)
-	local function closeActiveChannel(event)
-    	activeChannels[index] = {-1}
-    	
-    	if (recording.isRecStarted() == true) then
-    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,0,audio.getVolume({channel = index}),5,0)
-   		end
-    end
     
-	if (audio.isChannelPlaying(index)) then
-		if (voiceTimer) then
-			timer.cancel(voiceTimer)
-		end
-		closeActiveChannel(nil)
-	end
 	
-	audio.stop(index)
-    audio.play(kit[index][1],{channel = index})
-    
-    if (volumePanel.scrolls[5] ~= nil) then	
-        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = index})  	
-    	else	
-    		audio.setVolume(defaultVolume,{channel = index})  
-    end 
-    
-    group[index].alpha = 1
-    transition.to(group[index],{time = audio.getDuration(kit[index][1]),alpha = 0.5})
-    
-    local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-    
-    activeChannel.channel = index
-    activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
-    activeChannel.category = 5
-    activeChannel.volume = audio.getVolume({channel = index})
-    activeChannels[index] = activeChannel  
-    
-    if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,1,audio.getVolume({channel = index}),5,0)
-   	end
-    
-    voiceTimer = timer.performWithDelay(audio.getDuration(kit[index][1]),closeActiveChannel)
+end
+
+function playVoice(trackInfo,button)
+	if not button.pressed then
+		button.pressed = 1
+		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
+			button.pressed = 0
+			--[[if (recording.isRecStarted() == true) then
+	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+	    							index,0,audio.getVolume({channel = index}),4,0)
+	   		end]]--
+		end})
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+
+		--[[if (recording.isRecStarted() == true) then
+	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+	    						index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
+	   	end]]--
+
+		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+	else
+		button.pressed = 1
+		if button.tween then
+			transition.cancel(button.tween)
+			button.alpha = 0.5
+		end
+		audio.stop(trackInfo.channel)
+		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
+			button.pressed = 0
+			--[[if (recording.isRecStarted() == true) then
+		   		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+		   							index,0,audio.getVolume({channel = index}),4,0)
+		  		end]]--
+		end})
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+
+		--[[if (recording.isRecStarted() == true) then
+	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+	    						index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
+	   	end]]--
+
+		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+	end
 end
 
 function playGlitch(event)
@@ -464,11 +366,10 @@ function playGlitch(event)
 	local glitchLocalTime = 0
 	local deltaSumm = 0
 	local activeChannelsCopy = {}
+	--local isGlitchStarted = false
 	
- 	local function runtimeGlitchHandler(e)
+ 	function runtimeGlitchHandler(e)
  		if (isGlitchStarted == true) then
- 			
- 			
  			if (deltaSumm > gl.glitchShutUpTime) then
  				event.target.alpha = 1
  				for idx,val in pairs(activeChannels) do
@@ -497,17 +398,19 @@ function playGlitch(event)
  			curMeasure = system.getTimer()
  			
  			glitchLocalTime = glitchLocalTime + delta
+ 		else
+ 			Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
  		end
  	end
 	
 	if (event.phase == "began") then
 		isGlitchStarted = true
 		activeChannels = {}
- 			for i = 1, 12 do
- 				if audio.isChannelActive( i ) then
- 					local vol = audio.getVolume({channel = i})
+ 			for i, v in pairs(event.target.soundIds) do
+ 				if audio.isChannelActive( gl.soundsConfig[v].channel ) then
+ 					local vol = audio.getVolume({channel = gl.soundsConfig[v].channel})
  					if vol > 0 then
- 						activeChannels[#activeChannels + 1] = {ch = i, v = vol}
+ 						activeChannels[#activeChannels + 1] = {ch = gl.soundsConfig[v].channel, v = vol}
  						--print(activeChannels[#activeChannels].ch, activeChannels[#activeChannels].v)
  					end
  				end
@@ -585,145 +488,6 @@ function playGlitch(event)
 				
 			--end
 		end
-		
-		
-		display.getCurrentStage():setFocus(nil)
-	end
-end
-
-function playGlitchVoices(event)
-	local tiks = 0
- 	local glitchStartTime = nil
- 	local glitchFinishTime = nil
-	local prevMeasure = 0
-	local curMeasure = 0
-	local delta = 0
-	local glitchLocalTime = 0
-	local deltaSumm = 0
-	local activeChannelsCopy = {}
-	
- 	local function runtimeGlitchHandlerV(e)
- 		if (isGlitchStartedV == true) then
- 			
- 			
- 			if (deltaSumm > gl.glitchShutUpTime) then
- 				event.target.alpha = 1
- 				for idx,val in pairs(activeChannelsV) do
-					--if (val.channel ~= nil and val.channel > partSumms[3]) then
-						audio.setVolume(0,{channel = val.ch})
-					--end
-				end
- 			end
-
- 			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
- 				event.target.alpha = 0.5
- 				for idx,val in pairs(activeChannelsV) do
-					--if (val.channel ~= nil and val.channel > partSumms[3]) then
-						audio.setVolume(val.v,{channel = val.ch})	
-					--end
-				end
-				deltaSumm = 0
- 			end 	
- 			
- 			if (curMeasure > prevMeasure) then
-				delta = curMeasure - prevMeasure
-				prevMeasure = curMeasure
-				deltaSumm = deltaSumm + delta
-			end
- 			
- 			curMeasure = system.getTimer()
- 			
- 			glitchLocalTime = glitchLocalTime + delta
- 		end
- 	end
-	
-	if (event.phase == "began") then
-		isGlitchStartedV = true
-		activeChannelsV = {}
- 			for i = 14, 32 do
- 				if audio.isChannelActive( i ) then
- 					local vol = audio.getVolume({channel = i})
- 					if vol > 0 then
- 						activeChannelsV[#activeChannelsV + 1] = {ch = i, v = vol}
- 						--print(activeChannels[#activeChannels].ch, activeChannels[#activeChannels].v)
- 					end
- 				end
- 			end
-		
-		prevMeasure = system.getTimer()
-		curMeasure = 0
-		--[[
-		local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-    	activeChannel.channel = gl.glitchChannel
-    	activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
-    	activeChannel.category = 6
-    	activeChannel.volume = 0
-   		activeChannels.glitchChannel = activeChannel
-   		]]--
-		if (recording.isRecStarted()) then
-			glitchStartTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
-		else
-			glitchStartTime = 0
-		end
-		
-		Runtime:addEventListener("enterFrame",runtimeGlitchHandlerV)
-		display.getCurrentStage():setFocus(event.target, event.id)
-	end
-	
-	if (event.phase == "ended" or (event.phase == "moved"  and 
-		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
-		
-		Runtime:removeEventListener("enterFrame",runtimeGlitchHandlerV)
-		event.target.alpha = 0.5
-		isGlitchStartedV = false
-		
-		if (recording.isRecStarted()) then
-			glitchFinishTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			recording.addAction(glitchFinishTime,gl.glitchChannel,0,0,6,0)
-		end
-		
-		--activeChannels.glitchChannel = {-1}
-
-		for idx,val in pairs(activeChannelsV) do
-			--if (val.channel ~= nil and val.channel > partSumms[3]) then
-			
-				--[[if (val.channel > partSumms[3] and val.channel <= partSumms[4]) then
-				
-					if (volumePanel.scrolls[4] ~= nil) then	
-        				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = val.channel})  	
-    				else	
-    					audio.setVolume(defaultVolume,{channel = val.channel})  
-   					end
-   					
-   				end]]--
-
-   				audio.setVolume(val.v,{channel = val.ch}) 
-   				--[[
-   				if (val.channel > partSumms[4] and val.channel <= partSumms[5]) then
-   				
-   					if (volumePanel.scrolls[5] ~= nil) then	
-        				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = val.channel})  	
-    				else	
-    					audio.setVolume(defaultVolume,{channel = val.channel})  
-   					end
-   					
-   				end
-   				]]--
-				if (recording.isRecStarted()) then
-					if val.ch > 13 then
-						recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    						val.ch,2,val.v,5,system.getTimer() - curLayout.getLayoutAppearTime())
-					else
-						recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    						val.ch,2,val.v,2,system.getTimer() - curLayout.getLayoutAppearTime())
-					end
-				end
-				
-			--end
-		end
-		
-		
 		display.getCurrentStage():setFocus(nil)
 	end
 end
@@ -766,7 +530,7 @@ function playGoodMelody(event)
 		gl.unbindButtonsListeners()
 
 		local volumes = {}
-		for i = 1, 17 do
+		for i = 1, 32 do
 			print("zdes")
 			volumes[i] = audio.getVolume({ channel = i })
 			audio.setVolume(0, {channel = i})						
@@ -784,7 +548,7 @@ function playGoodMelody(event)
 		
 		
 		timer.performWithDelay(1600, function()
-			for i = 1, 17 do
+			for i = 1, 32 do
 				audio.setVolume(volumes[i], {channel = i})						
 				recording.addAction(system.getTimer() - 
 						curLayout.getLayoutAppearTime(),
@@ -834,7 +598,7 @@ function playEvilMelody(event)
 		gl.evilBtn.txt.isVisible = false
 		gl.currentBasicMelody = gl.currentEvilMelody
 		local volumes = {}
-		for i = 1, 17 do
+		for i = 1, 32 do
 			print("zdes")
 			volumes[i] = audio.getVolume({ channel = i })
 			audio.setVolume(0, {channel = i})						
@@ -851,7 +615,7 @@ function playEvilMelody(event)
 		playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)	
 		
 		timer.performWithDelay(1600, function()
-			for i = 1, 17 do
+			for i = 1, 32 do
 				audio.setVolume(volumes[i], {channel = i})						
 				recording.addAction(system.getTimer() - 
 						curLayout.getLayoutAppearTime(),
@@ -884,17 +648,6 @@ function playEvilMelody(event)
 		gl.evilBtn.txt.isVisible = false
 		gl.currentBasicMelody = gl.currentEvilMelody
 	end
-	
-end
-
-function playBasicMelody() 
-	idx = 1
-	while (idx <= 1) do
-		audio.play(gl.sampleKit[idx][1],{channel = idx,loops = -1})
-		audio.setVolume(0,{channel = idx})
-		idx = idx + 1
-	end
-	playFX(gl.localGroup, gl.sampleKit, 2)
 	
 end
 
@@ -936,10 +689,11 @@ end
 function initSounds(kitAddress)
 	local soundsConfig = gl.jsonModule.decode( gl.readFile("configSounds.json", kitAddress))
 
+	local channelCounter = 1
 	for i, v in pairs(soundsConfig) do
-		local track = {}
 		v.sound = audio.loadSound(kitAddress..v.name)
-		v.channel = i
+		v.channel = channelCounter
+		channelCounter = channelCounter + 1
 	end
 	gl.soundsConfig = soundsConfig
 	
