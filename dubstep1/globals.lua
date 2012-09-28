@@ -447,7 +447,7 @@ function drawLayoutBtns()
 	volumeBtn.txt.isVisible = false
 	
 	btn1.scene = "mainScreen"
-	btn2.scene = currentLayout
+	btn2.scene = "level"
 	repBtn.scene = "replayModule"
 	volumeBtn.scene = "volumeRegulator"
 	
