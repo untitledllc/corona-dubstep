@@ -5,6 +5,8 @@ jsonModule = require "json"
 w = display.contentWidth
 h = display.contentHeight
 
+sceneChangingTimer = nil
+
 -- track = {type = "fx/melody/voice", scene = 1..5, button = buttonStruct, sound = "sound1/track1.mp3", channel = 1..32 }
 soundsConfig = {}
 
@@ -22,6 +24,7 @@ currentBasicChannel = nil
 currentEvilChannel = nil
 currentGoodChannel = nil
 
+currentScene = nil
 currentKit = nil
 currentLayout = nil
 currentNumSamples = nil
@@ -54,9 +57,8 @@ btn2 = nil
 volumeBtn = nil
 goodBtn = nil
 evilBtn = nil
+nextSceneButton = nil
 
-goodTxt = nil
-evilTxt = nil
 eqTxt = nil
 repTxt = nil
 
@@ -202,7 +204,8 @@ function createButton(arg)
 		b.soundId = arg.soundId
 	end
 
-	print(b.x, b.y, _label, b.width)
+	b.channel = arg.track.channel
+
 	b:addEventListener("touch", function (event)
 									if event.phase == "ended" then
 										if arg.type == "fx" then
@@ -360,16 +363,16 @@ function drawLayoutBtns()
 	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
 	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
 	repBtn = display.newRoundedRect(1,1,w/10,h/15,4)
+
+	nextSceneButton = display.newRoundedRect(10*w/14, 3*h/12, 2*w/16, 3*h/15, 8)
+	nextSceneButton.txt = display.newText("Next scene", 0, 0, native.systemFont, 16)
+	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
+	nextSceneButton.alpha = 0.5
+	nextSceneButton:setFillColor(128, 128, 128)
+
 	
-	goodTxt = display.newText("Good",0,0,native.systemFont,14)
-	evilTxt = display.newText("Evil",0,0,native.systemFont,14)
-	goodTxt.x,goodTxt.y = w/2,15*h/16
-	evilTxt.x,evilTxt.y = 5*w/8,15*h/16
-	goodTxt.isVisible = false
-	evilTxt.isVisible = false
-	
-	goodBtn = display.newRoundedRect(1,1,w/10,h/10,10)
-	evilBtn = display.newRoundedRect(1,1,w/10,h/10,10)
+	goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
+	evilBtn = display.newRoundedRect(7*w/16,3*h/12,4*w/16,5*h/15,10)
 	
 	volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
@@ -403,15 +406,21 @@ function drawLayoutBtns()
 	btn1.alpha = 0.5
 	btn2.alpha = 0.5
 	
-	goodBtn.x,goodBtn.y = w/2,15*h/16
-	evilBtn.x,evilBtn.y = 5*w/8,15*h/16
 	goodBtn:setFillColor(0,100,255)
 	evilBtn:setFillColor(255,100,0)
-	goodBtn.isVisible = false
-	evilBtn.isVisible = false
-	
-	goodBtn.txt = goodTxt
-	evilBtn.txt = evilTxt
+	goodBtn.alpha = 0.5
+	evilBtn.alpha = 0.5
+	--goodBtn.isVisible = false
+	--evilBtn.isVisible = false
+
+	goodBtn.txt = display.newText("Good",0,0,native.systemFont,16)
+	evilBtn.txt = display.newText("Evil",0,0,native.systemFont,16)
+	goodBtn.txt.x,goodBtn.txt.y = goodBtn.x, goodBtn.y
+	evilBtn.txt.x,evilBtn.txt.y = evilBtn.x, evilBtn.y
+	evilBtn.txt:toBack()
+	goodBtn.txt:toBack()
+	--goodBtn.txt.isVisible = false
+	--evilBtn.txt.isVisible = false
 	
 	btn1.txt = display.newText("Back",0,0,native.systemFont,14)
 	btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
@@ -458,6 +467,8 @@ function drawLayoutBtns()
 		end
 	end
 	
+	nextSceneButton:addEventListener("touch", require("playing").nextScene)
+
 	btn1:addEventListener("touch",changeScene)
 	btn2:addEventListener("touch",changeScene)
 	repBtn:addEventListener("touch",changeScene)

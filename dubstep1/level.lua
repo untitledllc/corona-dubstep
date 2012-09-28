@@ -19,6 +19,7 @@ function new()
 
 	local configInterface = gl.jsonModule.decode( gl.readFile("configInterface.json", kitAddress) )
 
+	gl.sceneLength = configInterface.sceneLength
 	gl.scenesNum = configInterface.scenesNum
 	gl.fullRecordLength = configInterface.sceneLength * configInterface.scenesNum
 	gl.showChoiceTime = configInterface.showChoiceTime
@@ -50,11 +51,11 @@ function new()
 	gl.btns = gl.drawLayoutBtns()
 	
 	for idx,val in pairs(gl.btns) do
-		gl.btns[idx].alpha = 0.5
+		val.alpha = 0.5
 	end
-	
-	for i = 1, gl.scenesNum + 1, 1 do
-		backs[i] = display.newImageRect("images/"..gl.currentLayout.."/back"..i..".jpg",gl.w,gl.h)
+
+	for i, v in pairs(configInterface.backGrounds) do
+		backs[i] = display.newImageRect(v.fileName,gl.w,gl.h)
 		backs[i].x, backs[i].y = gl.w/2,gl.h/2
 		backs[i].isVisible = false
 	end
@@ -67,6 +68,10 @@ function new()
 	gl.currentBacks = backs
 
 	playModule.prepareToPlay()
+
+	gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
+		gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
+	end)
 
 	--require("recording").startRecording()
 	

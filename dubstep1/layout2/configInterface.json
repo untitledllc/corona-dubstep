@@ -573,5 +573,38 @@
 			"alpha": 0.5,
 			"label": "GL_S"
 		}
+	],
+
+	"backGrounds": [
+		{
+			"fileName": "images/layout2/back1.jpg"
+
+		},
+
+		{
+			"fileName": "images/layout2/back2.jpg"
+
+		},
+
+		{
+			"fileName": "images/layout2/back3.jpg"
+
+		},
+
+		{
+			"fileName": "images/layout2/back4.jpg"
+
+		},
+
+		{
+			"fileName": "images/layout2/back5.jpg"
+
+		},
+
+		{
+			"fileName": "images/layout2/back6.jpg"
+
+		}
+
 	]
 }

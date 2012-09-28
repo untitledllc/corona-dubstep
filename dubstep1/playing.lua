@@ -60,6 +60,120 @@ function prepareToPlay()
 			v[1]:dispatchEvent({name = "touch", phase = "ended"})
 		end
 	end
+
+	-- Ставим первый бэкграунд
+	gl.mainGroup[1].isVisible = true
+
+	gl.currentScene = 1
+end
+
+-- Проверяет, принадлежит ли кнопка сцене
+function ifButtonInScene(b, sNum)
+	local fl = false
+	for i, v in pairs(gl.buttonsInScenes[sNum]) do
+		if v[1] == b then
+			fl = true
+			break
+		end
+	end
+
+	return fl
+end
+
+local function unpressButton(b)
+	if b.tween then
+		transition.cancel(b.tween)
+	end
+	b.alpha = 0.5
+	b.pressed = 0
+	audio.setVolume(0, {channel = b.channel})
+	if b.type == "melody" then
+
+	elseif b.type == "fx" then
+
+	elseif b.type == "voice" then
+
+	end
+end
+
+function nextScene(event)
+	if event.phase == "ended" then
+		gl.currentScene = gl.currentScene + 1
+		timer.cancel(gl.sceneChangingTimer)
+		if gl.currentScene <= gl.scenesNum then
+
+			-- Переключаем таймер перехода на следующую сцену
+			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
+				gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
+			end)
+
+			-- Меняем бэкграунд
+			local backs = require("level").getLayoutBacks()
+
+			gl.mainGroup:remove(1)
+			gl.mainGroup:insert(1, backs[gl.currentScene])
+
+			-- Плавно
+			transition.to(backs[gl.currentScene - 1], {alpha = 0, time = 500})
+			backs[gl.currentScene].alpha = 0
+			backs[gl.currentScene].isVisible = true
+			transition.to(backs[gl.currentScene], {alpha = 1, time = 500})
+
+			timer.performWithDelay(600, function()
+				backs[gl.currentScene - 1].isVisible = false
+			end)
+			
+			-- Скрываем кнопки предыдущей сцены, которых нет в новой сцене
+			for i, v in pairs(gl.buttonsInScenes[gl.currentScene - 1]) do
+				if not ifButtonInScene(v[1], gl.currentScene) then
+					v[1].isVisible = false
+					v[1].txt.isVisible = false
+					-- Если кнопка нажата, то "отжимаем"
+					if v[1].pressed and v[1].pressed ~= 0 then
+						unpressButton(v[1])
+					end
+				end
+			end
+
+			-- Показываем кнопки новой сцены
+			for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
+				v[1].isVisible = true
+				v[1].txt.isVisible = true
+			end
+
+			-- Нажимаем ненажатые кнопки новой сцены, если они должны быть нажаты
+			for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
+				if v[2] == true and (not v[1].pressed  or v[1].pressed == 0) then
+					v[1]:dispatchEvent({name = "touch", phase = "ended"})
+				end
+			end
+		-- Если закончились сцены
+		else
+			-- Скрываем кнопки
+			for i = 1, gl.mainGroup[2].numChildren, 1 do
+					gl.mainGroup[2][i].isVisible = false
+					gl.mainGroup[2][i].txt.isVisible = false
+
+					-- Если кнопка нажата, то "отжимаем"
+					if gl.mainGroup[2][i].pressed and gl.mainGroup[2][i].pressed ~= 0 then
+						unpressButton(gl.mainGroup[2][i])
+					end
+			end
+			gl.goodBtn.isVisible = false
+			gl.goodBtn.txt.isVisible = false
+			gl.evilBtn.isVisible = false
+			gl.evilBtn.txt.isVisible = false
+			gl.nextSceneButton.isVisible = false
+			gl.nextSceneButton.txt.isVisible = false
+
+			-- Снимаем обработчик перехода между сценами
+			gl.nextSceneButton:removeEventListener("touch", nextScene)
+
+			-- Кнопка шаринга
+			gl.shareBtn.isVisible = true
+			gl.shareBtn.txt.isVisible = true
+		end
+	end
 end
 
 local function shutUpVoices(group,isShut,numSamples,numFX,numVoices)
