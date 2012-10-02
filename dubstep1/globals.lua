@@ -13,8 +13,11 @@ soundsConfig = {}
 currentBasicMelody = nil
 currentEvilMelody = nil
 
--- buttonInScenes = {sceneNum = {{buttonHandle1, pressed}, {buttonHandle2, pressed}, ...}, ...} - ставит кнопки в соответствие номеру сцены, на которой они должны быть
+-- buttonInScenes = {sceneNum = {{button1Id, pressed}, {button2Id, pressed}, ...}, ...} - ставит кнопки в соответствие номеру сцены, на которой они должны быть
 buttonsInScenes = {}
+
+-- soundInScenes = {sceneNum = {soundInfo1Id, soundInfo2Id, ...}, ...} - ставит id треков в соответствие номеру сцены, на которой они должны быть
+soundsInScenes = {}
 
 currentGoodMelody = nil
 
@@ -67,6 +70,9 @@ loading = nil
 sceneNumber = nil
 
 shareBtn = nil
+
+choosenSide = nil
+ifChoosen = false
 
 function readFile(_fname, prefix, base)
 	-- set default base dir if none specified
@@ -410,8 +416,8 @@ function drawLayoutBtns()
 	evilBtn:setFillColor(255,100,0)
 	goodBtn.alpha = 0.5
 	evilBtn.alpha = 0.5
-	--goodBtn.isVisible = false
-	--evilBtn.isVisible = false
+	goodBtn.isVisible = false
+	evilBtn.isVisible = false
 
 	goodBtn.txt = display.newText("Good",0,0,native.systemFont,16)
 	evilBtn.txt = display.newText("Evil",0,0,native.systemFont,16)
@@ -419,8 +425,8 @@ function drawLayoutBtns()
 	evilBtn.txt.x,evilBtn.txt.y = evilBtn.x, evilBtn.y
 	evilBtn.txt:toBack()
 	goodBtn.txt:toBack()
-	--goodBtn.txt.isVisible = false
-	--evilBtn.txt.isVisible = false
+	goodBtn.txt.isVisible = false
+	evilBtn.txt.isVisible = false
 	
 	btn1.txt = display.newText("Back",0,0,native.systemFont,14)
 	btn2.txt = display.newText("Restart",0,0,native.systemFont,14)

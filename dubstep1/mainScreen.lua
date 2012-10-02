@@ -44,6 +44,7 @@ function new()
 			localGroup[1]:removeEventListener("touch", toLevel1Handler)
 			localGroup[2]:removeEventListener("touch", toLevel2Handler)
 			gl.currentLayout = "layout1"
+			gl.choosenSide = "dobro"
 			timer.performWithDelay(20, function () director:changeScene("level") end)
 		end
 	end
@@ -53,6 +54,7 @@ function new()
 			localGroup[1]:removeEventListener("touch", toLevel1Handler)
 			localGroup[2]:removeEventListener("touch", toLevel2Handler)
 			gl.currentLayout = "layout2"
+			gl.choosenSide = "evil"
 			timer.performWithDelay(20, function () director:changeScene("level") end)
 		end
 	end

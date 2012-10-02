@@ -5,6 +5,8 @@ local recording = require("recording")
 local curLayout = require(gl.currentLayout)
 local numSampleTypes = 5
 
+local runtimeGlitchHandler
+
 local defaultVolume = 0.2
 
 local partSumms = {}
@@ -27,37 +29,39 @@ end
 function prepareToPlay()
 	-- gl.soundsConfig - треки с информацией из конфига
 	-- gl.mainGroup[2] - кнопки управления музыкой текущего уровня
-	for i = 1, gl.scenesNum, 1 do
-		gl.buttonsInScenes[i] = {}
-	end
-
-	-- Заполняем таблицу, в которой номеру сцены соответствует кнопка и информация о том, нажата она или нет
-	for i = 1, gl.mainGroup[2].numChildren, 1 do
-		if gl.mainGroup[2][i].scenes then
-			for j, v in pairs(gl.mainGroup[2][i].scenes) do
-				table.insert(gl.buttonsInScenes[tonumber(j)], {gl.mainGroup[2][i], v})
-			end
-		end
-	end
 
 	-- Делаем видимыми кнопки первой сцены
 	for i, v in pairs(gl.buttonsInScenes[1]) do
-		v[1].isVisible = true
-		v[1].txt.isVisible = true
+		gl.configInterface.soundButtons[v[1]].button.isVisible = true
+		gl.configInterface.soundButtons[v[1]].button.txt.isVisible = true
 	end
 
-	-- запускаем все мелодии на воспроизведение
-	for i, v in pairs(gl.soundsConfig) do
-		if v.type == "melody" then
-			audio.play(v.sound, {channel = v.channel, loops = -1})
-			audio.setVolume(0, {channel = v.channel})
+	if gl.tracksStartSameTime then 
+		-- запускаем все мелодии на воспроизведение
+		for i, v in pairs(gl.soundsConfig) do
+			if v.type == "melody" and v.sound then
+				local ch = audio.findFreeChannel()
+				v.channel = ch
+				audio.play(v.sound, {channel = v.channel, loops = -1})
+				audio.setVolume(0, {channel = v.channel})
+			end
+		end
+	else
+		-- запускаем на воспроизведение мелодии 1 сцены
+		for i, v in pairs(gl.soundsInScenes[1]) do
+			if gl.soundsConfig[v].type == "melody" and gl.soundsConfig[v].sound then
+				local ch = audio.findFreeChannel()
+				gl.soundsConfig[v].channel = ch
+				audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
+				audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+			end
 		end
 	end
 
 	-- Нажимаем те кнопки, которые нажаты по умолчанию на первой сцене
 	for i, v in pairs(gl.buttonsInScenes[1]) do
-		if v[2] == true then
-			v[1]:dispatchEvent({name = "touch", phase = "ended"})
+		if v[2] == true and gl.configInterface.soundButtons[v[1]].button then
+			gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "touch", phase = "ended"})
 		end
 	end
 
@@ -71,7 +75,19 @@ end
 function ifButtonInScene(b, sNum)
 	local fl = false
 	for i, v in pairs(gl.buttonsInScenes[sNum]) do
-		if v[1] == b then
+		if gl.configInterface.soundButtons[v[1]].button == b then
+			fl = true
+			break
+		end
+	end
+
+	return fl
+end
+
+function ifMelodyInScene(mInfo, sNum)
+	local fl = false
+	for i, v in pairs(gl.soundsInScenes[sNum]) do
+		if v == mInfo.id then
 			fl = true
 			break
 		end
@@ -86,7 +102,7 @@ local function unpressButton(b)
 	end
 	b.alpha = 0.5
 	b.pressed = 0
-	audio.setVolume(0, {channel = b.channel})
+	audio.setVolume(0, {channel = gl.soundsConfig[b.soundId].channel})
 	if b.type == "melody" then
 
 	elseif b.type == "fx" then
@@ -98,9 +114,16 @@ end
 
 function nextScene(event)
 	if event.phase == "ended" then
+		gl.ifChoosen = true
+		for i = 1, #recording.goodEvilButtonTimers, 1 do
+			timer.cancel(recording.goodEvilButtonTimers[i])
+		end
+
 		gl.currentScene = gl.currentScene + 1
 		timer.cancel(gl.sceneChangingTimer)
 		if gl.currentScene <= gl.scenesNum then
+
+			
 
 			-- Переключаем таймер перехода на следующую сцену
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
@@ -122,29 +145,89 @@ function nextScene(event)
 			timer.performWithDelay(600, function()
 				backs[gl.currentScene - 1].isVisible = false
 			end)
-			
+
 			-- Скрываем кнопки предыдущей сцены, которых нет в новой сцене
 			for i, v in pairs(gl.buttonsInScenes[gl.currentScene - 1]) do
-				if not ifButtonInScene(v[1], gl.currentScene) then
-					v[1].isVisible = false
-					v[1].txt.isVisible = false
-					-- Если кнопка нажата, то "отжимаем"
-					if v[1].pressed and v[1].pressed ~= 0 then
-						unpressButton(v[1])
+				if gl.configInterface.soundButtons[v[1]].button then
+					if not ifButtonInScene(gl.configInterface.soundButtons[v[1]].button, gl.currentScene) then
+						gl.configInterface.soundButtons[v[1]].button.isVisible = false
+						gl.configInterface.soundButtons[v[1]].button.txt.isVisible = false
+						-- Если кнопка нажата, то "отжимаем"
+						if gl.configInterface.soundButtons[v[1]].button.pressed and gl.configInterface.soundButtons[v[1]].button.pressed ~= 0 then
+							unpressButton(gl.configInterface.soundButtons[v[1]].button)
+						end
+						gl.configInterface.soundButtons[v[1]].button.txt:removeSelf()
+						gl.configInterface.soundButtons[v[1]].button.txt = nil
+						gl.configInterface.soundButtons[v[1]].button:removeSelf()
+						gl.configInterface.soundButtons[v[1]].button = nil
+					end
+				end
+			end
+
+
+			if not gl.tracksStartSameTime then
+				-- подгружаем музыку новой сцены (если она не запущена вся сразу)
+				local channelCounter = 1
+				for i, v in pairs(gl.soundsInScenes[gl.currentScene]) do
+					if gl.soundsConfig[v].side and gl.soundsConfig[v].side == gl.choosenSide then
+						gl.soundsConfig[v].sound = audio.loadSound(gl.kitAddress..gl.soundsConfig[v].side.."/"..gl.soundsConfig[v].name)
+					elseif not gl.soundsConfig[v].side then
+						gl.soundsConfig[v].sound = audio.loadSound(gl.kitAddress..gl.soundsConfig[v].name)
+					end
+					gl.soundsConfig[v].channel = channelCounter
+					channelCounter = channelCounter + 1
+				end
+
+				-- останавливаем и выгружаем мелодии предыдущей сцены
+				for i, v in pairs(gl.soundsInScenes[gl.currentScene - 1]) do
+					if gl.soundsConfig[v].type == "melody" and gl.soundsConfig[v].sound then
+						if not ifMelodyInScene(gl.soundsConfig[v], gl.currentScene) then
+							audio.stop(gl.soundsConfig[v].channel)
+							audio.dispose(gl.soundsConfig[v].sound)
+							gl.soundsConfig[v].sound = nil
+						end
+					end
+				end
+
+				-- запускаем на воспроизведение мелодии новой сцены
+				for i, v in pairs(gl.soundsInScenes[gl.currentScene]) do
+					if gl.soundsConfig[v].type == "melody" and gl.soundsConfig[v].sound then
+						local ch = audio.findFreeChannel()
+						gl.soundsConfig[v].channel = ch
+						audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
+						audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+					end
+				end
+
+				-- создаём кнопки новой сцены
+				for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
+					local curBInfo = gl.configInterface.soundButtons[v[1]]
+					if (curBInfo.side and curBInfo.side == gl.choosenSide) or (not curBInfo.side) then
+						local b = gl.createButton({["track"] = gl.soundsConfig[curBInfo.soundId], ["left"] = curBInfo.left, ["top"] = curBInfo.top, ["width"] = curBInfo.w, ["height"] = curBInfo.h, ["type"] = gl.soundsConfig[curBInfo.soundId].type, ["rgb"] = curBInfo.rgb, ["alpha"] = curBInfo.alpha, ["scenes"] = curBInfo.scenes, ["soundId"] = curBInfo.soundId})
+						b.isVisible = false
+						b.txt.isVisible = false
+						gl.configInterface.soundButtons[v[1]].button = b
+						gl.mainGroup[2]:insert(b)
 					end
 				end
 			end
 
 			-- Показываем кнопки новой сцены
 			for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
-				v[1].isVisible = true
-				v[1].txt.isVisible = true
+				if gl.configInterface.soundButtons[v[1]].button then
+					gl.configInterface.soundButtons[v[1]].button.isVisible = true
+					gl.configInterface.soundButtons[v[1]].button.txt.isVisible = true
+				end
 			end
 
 			-- Нажимаем ненажатые кнопки новой сцены, если они должны быть нажаты
 			for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
-				if v[2] == true and (not v[1].pressed  or v[1].pressed == 0) then
-					v[1]:dispatchEvent({name = "touch", phase = "ended"})
+				if gl.configInterface.soundButtons[v[1]].button then
+					if v[2] == true and (not gl.configInterface.soundButtons[v[1]].button.pressed  or gl.configInterface.soundButtons[v[1]].button.pressed == 0) then
+						if gl.configInterface.soundButtons[v[1]].button then
+							gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "touch", phase = "ended"})
+						end
+					end
 				end
 			end
 		-- Если закончились сцены
@@ -165,6 +248,16 @@ function nextScene(event)
 			gl.evilBtn.txt.isVisible = false
 			gl.nextSceneButton.isVisible = false
 			gl.nextSceneButton.txt.isVisible = false
+
+			-- включаем музыку экрана с кнопкой шаринга
+			local path = system.pathForFile(gl.kitAddress.."share.mp3")
+			print(path)
+			if path then
+				local shareMusic = audio.loadSound(gl.kitAddress.."share.mp3")
+				local ch = audio.findFreeChannel()
+				audio.play(shareMusic, {channel = ch, loops = -1})
+				audio.setVolume(0.5, {channel = ch})
+			end
 
 			-- Снимаем обработчик перехода между сценами
 			gl.nextSceneButton:removeEventListener("touch", nextScene)
@@ -385,6 +478,8 @@ end
 function playFX(trackInfo,button)
 	if not button.pressed then
 		button.pressed = 1
+		local ch = audio.findFreeChannel()
+		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
 			--[[if (recording.isRecStarted() == true) then
@@ -407,6 +502,8 @@ function playFX(trackInfo,button)
 			button.alpha = 0.5
 		end
 		audio.stop(trackInfo.channel)
+		local ch = audio.findFreeChannel()
+		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
 			--[[if (recording.isRecStarted() == true) then
@@ -430,6 +527,8 @@ end
 function playVoice(trackInfo,button)
 	if not button.pressed then
 		button.pressed = 1
+		local ch = audio.findFreeChannel()
+		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
 			--[[if (recording.isRecStarted() == true) then
@@ -452,6 +551,8 @@ function playVoice(trackInfo,button)
 			button.alpha = 0.5
 		end
 		audio.stop(trackInfo.channel)
+		local ch = audio.findFreeChannel()
+		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
 			--[[if (recording.isRecStarted() == true) then
@@ -470,6 +571,8 @@ function playVoice(trackInfo,button)
 	end
 end
 
+
+
 function playGlitch(event)
  	local tiks = 0
  	local glitchStartTime = nil
@@ -482,7 +585,7 @@ function playGlitch(event)
 	local activeChannelsCopy = {}
 	--local isGlitchStarted = false
 	
- 	function runtimeGlitchHandler(e)
+ 	runtimeGlitchHandler = function(e)
  		if (isGlitchStarted == true) then
  			if (deltaSumm > gl.glitchShutUpTime) then
  				event.target.alpha = 1
@@ -633,68 +736,37 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 	end
 end
 
+local function playChoosingMelody()
+	local m = audio.loadSound(gl.kitAddress.."chooseSide.mp3" )
+	audio.play(m, {channel = audio.findFreeChannel(20), loops = 0, onComplete = function()
+		audio.dispose(m)
+	end})
+end
+
 function playGoodMelody(event)
+	gl.ifChoosen = true
+	gl.goodBtn.isVisible = false
+	gl.evilBtn.isVisible = false
+	gl.goodBtn.txt.isVisible = false
+	gl.evilBtn.txt.isVisible = false
+	gl.choosenSide = "dobro"
+
 	if gl.currentLayout == "layout1" then
-		gl.goodBtn.isVisible = false
-		gl.evilBtn.isVisible = false
-		gl.goodBtn.txt.isVisible = false
-		gl.evilBtn.txt.isVisible = false
-		gl.currentBasicMelody = gl.currentGoodMelody
 
-		gl.unbindButtonsListeners()
-
-		local volumes = {}
-		for i = 1, 32 do
-			print("zdes")
-			volumes[i] = audio.getVolume({ channel = i })
-			audio.setVolume(0, {channel = i})						
-			recording.addAction(system.getTimer() - 
-					curLayout.getLayoutAppearTime(),
-							i,
-								1,0,2,0)
-		end
-
-		for i, v in pairs(recording.timers) do
-			timer.pause(v)
-		end
-
-		playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)
+		audio.stop()
+		playChoosingMelody()
 		
+		timer.cancel(gl.sceneChangingTimer)		
 		
 		timer.performWithDelay(1600, function()
-			for i = 1, 32 do
-				audio.setVolume(volumes[i], {channel = i})						
-				recording.addAction(system.getTimer() - 
-						curLayout.getLayoutAppearTime(),
-								i,
-									1,volumes[i],2,0)
-			end
-			for i, v in pairs(recording.timers) do
-				timer.resume(v)
-			end
-			gl.bindButtonsListeners()
-			if recording.currentScene - 1 > 0 then
-				gl.localGroup[gl.localGroup.numChildren - 1]:addEventListener("touch", recording.goToScene[recording.currentScene - 1])
-			end
-			if recording.currentScene + 1 < 7 then
-				gl.localGroup[gl.localGroup.numChildren]:addEventListener("touch", recording.goToScene[recording.currentScene + 1])
-			end
-
-			audio.setVolume(0, {channel = currentGoodChannel})
-												
-			recording.addAction(system.getTimer() - 
-					curLayout.getLayoutAppearTime(),
-							currentGoodChannel,
-								1,0,2,0)
+			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
 		end)
 		
 
 		--[[recording.addAction(system.getTimer() - 
 					curLayout.getLayoutAppearTime(),
 							currentBasicChannel,
-								0,0,2,0)
-		
-		audio.setVolume(0,{channel = currentBasicChannel})	]]--	
+								0,0,2,0)]]--	
 	else
 		gl.goodBtn.isVisible = false
 		gl.evilBtn.isVisible = false
@@ -705,56 +777,29 @@ function playGoodMelody(event)
 end
 
 function playEvilMelody(event)
+	gl.ifChoosen = true
+	gl.goodBtn.isVisible = false
+	gl.evilBtn.isVisible = false
+	gl.goodBtn.txt.isVisible = false
+	gl.evilBtn.txt.isVisible = false
+	gl.choosenSide = "evil"
+
 	if gl.currentLayout == "layout1" then
-		gl.goodBtn.isVisible = false
-		gl.evilBtn.isVisible = false
-		gl.goodBtn.txt.isVisible = false
-		gl.evilBtn.txt.isVisible = false
-		gl.currentBasicMelody = gl.currentEvilMelody
-		local volumes = {}
-		for i = 1, 32 do
-			print("zdes")
-			volumes[i] = audio.getVolume({ channel = i })
-			audio.setVolume(0, {channel = i})						
-			recording.addAction(system.getTimer() - 
-					curLayout.getLayoutAppearTime(),
-							i,
-								1,0,2,0)
-		end
 
-		for i, v in pairs(recording.timers) do
-			timer.pause(v)
-		end
-
-		playFX(gl.localGroup,gl.currentKit,toGoodEvilFXChannel)	
+		audio.stop()
+		playChoosingMelody()
+		
+		timer.cancel(gl.sceneChangingTimer)		
 		
 		timer.performWithDelay(1600, function()
-			for i = 1, 32 do
-				audio.setVolume(volumes[i], {channel = i})						
-				recording.addAction(system.getTimer() - 
-						curLayout.getLayoutAppearTime(),
-								i,
-									1,volumes[i],2,0)
-			end
-			for i, v in pairs(recording.timers) do
-				timer.resume(v)
-			end
-
+			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
 		end)
 		
 
 		--[[recording.addAction(system.getTimer() - 
 					curLayout.getLayoutAppearTime(),
 							currentBasicChannel,
-								0,0,2,0)
-		
-		audio.setVolume(0,{channel = currentBasicChannel})	]]--																
-		audio.setVolume(0, {channel = currentEvilChannel})
-												
-		recording.addAction(system.getTimer() - 
-					curLayout.getLayoutAppearTime(),
-							currentEvilChannel,
-								1,0,2,0)
+								0,0,2,0)]]--	
 	else
 		gl.goodBtn.isVisible = false
 		gl.evilBtn.isVisible = false
@@ -762,52 +807,48 @@ function playEvilMelody(event)
 		gl.evilBtn.txt.isVisible = false
 		gl.currentBasicMelody = gl.currentEvilMelody
 	end
-	
 end
 
-function playBasicMelody2()
-	audio.play(gl.currentBasicMelody2,{channel = gl.currentBasicChannel2,loops = -1})
-	audio.setVolume(defaultVolume,{channel = gl.currentBasicChannel2})
-	recording.addAction(0,currentBasicChannel2,1,defaultVolume,2,0)
-
-	audio.play(gl.sampleKit[7][1],{channel = 7,loops = -1})
-	audio.setVolume(0,{channel = 7})
-	recording.addAction(0,7,1,0,2,0)
-
-	audio.play(gl.sampleKit[8][1],{channel = 8,loops = -1})
-	audio.setVolume(0,{channel = 8})
-	recording.addAction(0,8,1,0,2,0)
-
-	audio.play(gl.sampleKit[12][1],{channel = 12,loops = -1})
-	audio.setVolume(0,{channel = 12})
-	recording.addAction(0,12,1,0,2,0)
-
-	--curLayout.trackCounters[1] = curLayout.trackCounters[1] + 1
-	curLayout.trackCounters[2] = curLayout.trackCounters[2] + 1
-
-	--[[ DEBUG
-
-	for i = 5, 12, 1 do
-		audio.play(gl.sampleKit[i][1],{channel = i,loops = -1})
-		audio.setVolume(0,{channel = i})
-
-		gl.localGroup[i].isVisible = true
-		gl.localGroup[i].txt.isVisible = true
-
-		recording.addAction(0,i,1,0,2,0)
-		recording.addAction(0,i,1,0,2,0)
-	end
-	]]--
-end
 
 function initSounds(kitAddress)
 	local soundsConfig = gl.jsonModule.decode( gl.readFile("configSounds.json", kitAddress))
 
+	for i = 1, gl.scenesNum, 1 do
+		gl.soundsInScenes[i] = {}
+	end
+
+	for i, val in pairs(soundsConfig) do
+		if val.scenes then
+			for j, v in pairs(val.scenes) do
+				table.insert(gl.soundsInScenes[tonumber(v)], i)
+			end
+		end
+	end
+
 	local channelCounter = 1
-	for i, v in pairs(soundsConfig) do
-		v.sound = audio.loadSound(kitAddress..v.name)
-		v.channel = channelCounter
-		channelCounter = channelCounter + 1
+	-- подгружаем всю музыку сразу
+	if gl.tracksStartSameTime then
+		for i, v in pairs(soundsConfig) do
+			if v.side and v.side == gl.choosenSide then
+				v.sound = audio.loadSound(kitAddress..v.side.."/"..v.name)
+			elseif not v.side then
+				v.sound = audio.loadSound(kitAddress..v.name)
+			end
+			
+			v.channel = channelCounter
+			channelCounter = channelCounter + 1
+		end
+	-- подгружаем только музыку первой сцены
+	else
+		for i, v in pairs(gl.soundsInScenes[1]) do
+			if soundsConfig[v].side and soundsConfig[v].side == gl.choosenSide then
+				soundsConfig[v].sound = audio.loadSound(kitAddress..soundsConfig[v].side.."/"..soundsConfig[v].name)
+			elseif not soundsConfig[v].side then
+				soundsConfig[v].sound = audio.loadSound(kitAddress..soundsConfig[v].name)
+			end
+			soundsConfig[v].channel = channelCounter
+			channelCounter = channelCounter + 1
+		end
 	end
 	gl.soundsConfig = soundsConfig
 	

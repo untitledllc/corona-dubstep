@@ -212,13 +212,13 @@ function startRecording()
 	end
 	
 	local idx = 1
-	while (idx <= #gl.currentBacks + 1 - 1) do
+	--[[while (idx <= #gl.currentBacks + 1 - 1) do
 		timers[#timers + 1] = timer.performWithDelay(idx*gl.fullRecordLength/(#gl.currentBacks - 1),
 							function ()
 								gl.currentSceneAppearTime = system.getTimer()
 							end )
 		idx = idx + 1
-	end
+	end]]--
 
 	goodEvilButtonTimers[#goodEvilButtonTimers + 1] = timer.performWithDelay(gl.showChoiceTime,
 								function ()
@@ -230,10 +230,9 @@ function startRecording()
 								
 	goodEvilButtonTimers[#goodEvilButtonTimers + 1] = timer.performWithDelay(gl.showChoiceTime + gl.choiceShownDurationTime,
 								function ()
-									if (gl.currentBasicMelody ~= gl.currentGoodMelody
-											and
-										gl.currentBasicMelody ~= gl.currentEvilMelody) then
-										
+									print("1")
+									if not gl.ifChoosen then
+										print("2")
 											local function playRandom()
 												math.randomseed(math.random())
 												if (math.random() > 0.5) then
