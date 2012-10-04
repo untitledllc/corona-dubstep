@@ -32,8 +32,14 @@ function prepareToPlay()
 
 	-- Делаем видимыми кнопки первой сцены
 	for i, v in pairs(gl.buttonsInScenes[1]) do
-		gl.configInterface.soundButtons[v[1]].button.isVisible = true
-		gl.configInterface.soundButtons[v[1]].button.txt.isVisible = true
+		local curBInfo = gl.configInterface.soundButtons[v[1]]
+		if curBInfo.side and curBInfo.side == gl.choosenSide then
+			curBInfo.button.isVisible = true
+			curBInfo.button.txt.isVisible = true
+		elseif not curBInfo.side then
+			curBInfo.button.isVisible = true
+			curBInfo.button.txt.isVisible = true
+		end
 	end
 
 	if gl.tracksStartSameTime then 
@@ -148,25 +154,35 @@ function nextScene(event)
 
 			-- Скрываем кнопки предыдущей сцены, которых нет в новой сцене
 			for i, v in pairs(gl.buttonsInScenes[gl.currentScene - 1]) do
-				if gl.configInterface.soundButtons[v[1]].button then
-					if not ifButtonInScene(gl.configInterface.soundButtons[v[1]].button, gl.currentScene) then
-						gl.configInterface.soundButtons[v[1]].button.isVisible = false
-						gl.configInterface.soundButtons[v[1]].button.txt.isVisible = false
-						-- Если кнопка нажата, то "отжимаем"
-						if gl.configInterface.soundButtons[v[1]].button.pressed and gl.configInterface.soundButtons[v[1]].button.pressed ~= 0 then
-							unpressButton(gl.configInterface.soundButtons[v[1]].button)
+				local curBInfo = gl.configInterface.soundButtons[v[1]]
+				if curBInfo.button then
+					if gl.tracksStartSameTime then 
+						if not ifButtonInScene(curBInfo.button, gl.currentScene) then
+							curBInfo.button.isVisible = false
+							curBInfo.button.txt.isVisible = false
+							-- Если кнопка нажата, то "отжимаем"
+							if curBInfo.button.pressed and curBInfo.button.pressed ~= 0 then
+								unpressButton(curBInfo.button)
+							end
+							--gl.configInterface.soundButtons[v[1]].button.txt:removeSelf()
+							--gl.configInterface.soundButtons[v[1]].button.txt = nil
+							--gl.configInterface.soundButtons[v[1]].button:removeSelf()
+							--gl.configInterface.soundButtons[v[1]].button = nil
 						end
-						gl.configInterface.soundButtons[v[1]].button.txt:removeSelf()
-						gl.configInterface.soundButtons[v[1]].button.txt = nil
-						gl.configInterface.soundButtons[v[1]].button:removeSelf()
-						gl.configInterface.soundButtons[v[1]].button = nil
+					else
+						curBInfo.button.isVisible = false
+						curBInfo.button.txt.isVisible = false
+						-- Если кнопка нажата, то "отжимаем"
+						if curBInfo.button.pressed and curBInfo.button.pressed ~= 0 then
+							unpressButton(curBInfo.button)
+						end
 					end
 				end
 			end
 
 
 			if not gl.tracksStartSameTime then
-				-- подгружаем музыку новой сцены (если она не запущена вся сразу)
+				--[[ подгружаем музыку новой сцены (если она не запущена вся сразу)
 				local channelCounter = 1
 				for i, v in pairs(gl.soundsInScenes[gl.currentScene]) do
 					if gl.soundsConfig[v].side and gl.soundsConfig[v].side == gl.choosenSide then
@@ -176,18 +192,19 @@ function nextScene(event)
 					end
 					gl.soundsConfig[v].channel = channelCounter
 					channelCounter = channelCounter + 1
-				end
+				end]]--
 
-				-- останавливаем и выгружаем мелодии предыдущей сцены
+				-- останавливаем мелодии предыдущей сцены
 				for i, v in pairs(gl.soundsInScenes[gl.currentScene - 1]) do
 					if gl.soundsConfig[v].type == "melody" and gl.soundsConfig[v].sound then
-						if not ifMelodyInScene(gl.soundsConfig[v], gl.currentScene) then
+						--if not ifMelodyInScene(gl.soundsConfig[v], gl.currentScene) then
 							audio.stop(gl.soundsConfig[v].channel)
-							audio.dispose(gl.soundsConfig[v].sound)
-							gl.soundsConfig[v].sound = nil
-						end
+							gl.soundsConfig[v].channel = nil
+							--audio.dispose(gl.soundsConfig[v].sound)
+							--gl.soundsConfig[v].sound = nil
+						--end
 					end
-				end
+				end--
 
 				-- запускаем на воспроизведение мелодии новой сцены
 				for i, v in pairs(gl.soundsInScenes[gl.currentScene]) do
@@ -199,34 +216,39 @@ function nextScene(event)
 					end
 				end
 
-				-- создаём кнопки новой сцены
+				--[[ создаём кнопки новой сцены
 				for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
-					local curBInfo = gl.configInterface.soundButtons[v[1]]
+					local curBInfo = gl.configInterface.soundButtons[v[1] ]
 					if (curBInfo.side and curBInfo.side == gl.choosenSide) or (not curBInfo.side) then
 						local b = gl.createButton({["track"] = gl.soundsConfig[curBInfo.soundId], ["left"] = curBInfo.left, ["top"] = curBInfo.top, ["width"] = curBInfo.w, ["height"] = curBInfo.h, ["type"] = gl.soundsConfig[curBInfo.soundId].type, ["rgb"] = curBInfo.rgb, ["alpha"] = curBInfo.alpha, ["scenes"] = curBInfo.scenes, ["soundId"] = curBInfo.soundId})
 						b.isVisible = false
 						b.txt.isVisible = false
-						gl.configInterface.soundButtons[v[1]].button = b
+						gl.configInterface.soundButtons[v[1] ].button = b
 						gl.mainGroup[2]:insert(b)
 					end
-				end
+				end]]--
 			end
 
 			-- Показываем кнопки новой сцены
 			for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
-				if gl.configInterface.soundButtons[v[1]].button then
-					gl.configInterface.soundButtons[v[1]].button.isVisible = true
-					gl.configInterface.soundButtons[v[1]].button.txt.isVisible = true
+				local curBInfo = gl.configInterface.soundButtons[v[1]]
+				if curBInfo.button then
+					if curBInfo.side and curBInfo.side == gl.choosenSide then
+						curBInfo.button.isVisible = true
+						curBInfo.button.txt.isVisible = true
+					elseif not curBInfo.side then
+						curBInfo.button.isVisible = true
+						curBInfo.button.txt.isVisible = true
+					end
 				end
 			end
 
 			-- Нажимаем ненажатые кнопки новой сцены, если они должны быть нажаты
 			for i, v in pairs(gl.buttonsInScenes[gl.currentScene]) do
-				if gl.configInterface.soundButtons[v[1]].button then
-					if v[2] == true and (not gl.configInterface.soundButtons[v[1]].button.pressed  or gl.configInterface.soundButtons[v[1]].button.pressed == 0) then
-						if gl.configInterface.soundButtons[v[1]].button then
-							gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "touch", phase = "ended"})
-						end
+				local curBInfo = gl.configInterface.soundButtons[v[1]]
+				if curBInfo.button and curBInfo.side == gl.choosenSide then
+					if v[2] == true and (not curBInfo.button.pressed  or curBInfo.button.pressed == 0) then
+						gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "touch", phase = "ended"})
 					end
 				end
 			end
@@ -251,7 +273,6 @@ function nextScene(event)
 
 			-- включаем музыку экрана с кнопкой шаринга
 			local path = system.pathForFile(gl.kitAddress.."share.mp3")
-			print(path)
 			if path then
 				local shareMusic = audio.loadSound(gl.kitAddress.."share.mp3")
 				local ch = audio.findFreeChannel()
@@ -624,7 +645,7 @@ function playGlitch(event)
 		isGlitchStarted = true
 		activeChannels = {}
  			for i, v in pairs(event.target.soundIds) do
- 				if audio.isChannelActive( gl.soundsConfig[v].channel ) then
+ 				if  gl.soundsConfig[v].channel and audio.isChannelActive( gl.soundsConfig[v].channel ) then
  					local vol = audio.getVolume({channel = gl.soundsConfig[v].channel})
  					if vol > 0 then
  						activeChannels[#activeChannels + 1] = {ch = gl.soundsConfig[v].channel, v = vol}
@@ -738,9 +759,12 @@ end
 
 local function playChoosingMelody()
 	local m = audio.loadSound(gl.kitAddress.."chooseSide.mp3" )
-	audio.play(m, {channel = audio.findFreeChannel(20), loops = 0, onComplete = function()
+	print(m)
+	local ch = audio.findFreeChannel()
+	audio.play(m, {channel = ch, loops = 0, onComplete = function()
 		audio.dispose(m)
 	end})
+	audio.setVolume(0.5, {channel = ch})
 end
 
 function playGoodMelody(event)
@@ -749,16 +773,41 @@ function playGoodMelody(event)
 	gl.evilBtn.isVisible = false
 	gl.goodBtn.txt.isVisible = false
 	gl.evilBtn.txt.isVisible = false
-	gl.choosenSide = "dobro"
+	local newSide = "dobro"
 
 	if gl.currentLayout == "layout1" then
 
 		audio.stop()
+		timer.cancel(gl.sceneChangingTimer)	
 		playChoosingMelody()
 		
-		timer.cancel(gl.sceneChangingTimer)		
+		-- если сторона поменялась, то подгружаем треки новой стороны
+		if gl.choosenSide ~= newSide then
+			for i, v in pairs(gl.soundsConfig) do
+				if v.side and v.side == newSide then
+					v.sound = audio.loadSound(gl.kitAddress..v.side.."/"..v.name)
+					v.channel = nil
+				elseif v.side then
+					audio.dispose(v.sound)
+					v.sound = nil
+					v.channel = nil
+				end
+			end
+
+			--[[ и создаем кнопки новой стороны
+			for i, v in pairs(gl.configInterface.soundButtons) do
+				if v.side and v.side == newSide then
+					local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId})
+					b.isVisible = false
+					b.txt.isVisible = false
+					v.button = b
+					gl.mainGroup[2]:insert(b)
+				end
+			end]]--
+		end
 		
-		timer.performWithDelay(1600, function()
+		-- переходим к следующей сцене
+		timer.performWithDelay(1000, function()
 			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
 		end)
 		
@@ -774,6 +823,8 @@ function playGoodMelody(event)
 		gl.evilBtn.txt.isVisible = false
 		gl.currentBasicMelody = gl.currentEvilMelody
 	end
+
+	gl.choosenSide = newSide
 end
 
 function playEvilMelody(event)
@@ -782,16 +833,41 @@ function playEvilMelody(event)
 	gl.evilBtn.isVisible = false
 	gl.goodBtn.txt.isVisible = false
 	gl.evilBtn.txt.isVisible = false
-	gl.choosenSide = "evil"
+	local newSide = "evil"
 
 	if gl.currentLayout == "layout1" then
 
 		audio.stop()
+		timer.cancel(gl.sceneChangingTimer)	
 		playChoosingMelody()
 		
-		timer.cancel(gl.sceneChangingTimer)		
+		-- если сторона поменялась, то подгружаем треки новой стороны
+		if gl.choosenSide ~= newSide then
+			for i, v in pairs(gl.soundsConfig) do
+				if v.side and v.side == newSide then
+					v.sound = audio.loadSound(gl.kitAddress..v.side.."/"..v.name)
+					v.channel = nil
+				elseif v.side then
+					audio.dispose(v.sound)
+					v.sound = nil
+					v.channel = nil
+				end
+			end
+
+			--[[ и создаем кнопки новой стороны
+			for i, v in pairs(gl.configInterface.soundButtons) do
+				if v.side and v.side == newSide then
+					local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId})
+					b.isVisible = false
+					b.txt.isVisible = false
+					v.button = b
+					gl.mainGroup[2]:insert(b)
+				end
+			end]]--
+		end
 		
-		timer.performWithDelay(1600, function()
+		-- переходим к следующей сцене
+		timer.performWithDelay(1000, function()
 			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
 		end)
 		
@@ -807,6 +883,8 @@ function playEvilMelody(event)
 		gl.evilBtn.txt.isVisible = false
 		gl.currentBasicMelody = gl.currentEvilMelody
 	end
+
+	gl.choosenSide = newSide
 end
 
 
@@ -825,9 +903,8 @@ function initSounds(kitAddress)
 		end
 	end
 
-	local channelCounter = 1
-	-- подгружаем всю музыку сразу
-	if gl.tracksStartSameTime then
+	-- подгружаем всю музыку сразу (для текущей стороны)
+	--if gl.tracksStartSameTime then
 		for i, v in pairs(soundsConfig) do
 			if v.side and v.side == gl.choosenSide then
 				v.sound = audio.loadSound(kitAddress..v.side.."/"..v.name)
@@ -835,11 +912,10 @@ function initSounds(kitAddress)
 				v.sound = audio.loadSound(kitAddress..v.name)
 			end
 			
-			v.channel = channelCounter
-			channelCounter = channelCounter + 1
+			v.channel = nil
 		end
 	-- подгружаем только музыку первой сцены
-	else
+	--[[else
 		for i, v in pairs(gl.soundsInScenes[1]) do
 			if soundsConfig[v].side and soundsConfig[v].side == gl.choosenSide then
 				soundsConfig[v].sound = audio.loadSound(kitAddress..soundsConfig[v].side.."/"..soundsConfig[v].name)
@@ -849,7 +925,7 @@ function initSounds(kitAddress)
 			soundsConfig[v].channel = channelCounter
 			channelCounter = channelCounter + 1
 		end
-	end
+	--end]]
 	gl.soundsConfig = soundsConfig
 	
 	return soundsConfig

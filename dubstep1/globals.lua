@@ -164,7 +164,7 @@ function createButton(arg)
 	end
 
 	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
-	b.txt = display.newText(_label,_left,_top,native.systemFont,16)
+	b.txt = display.newText(_label,_left,_top,native.systemFont,14)
 	b.txt.x = b.x
 	b.txt.y = b.y
 
@@ -467,6 +467,18 @@ function drawLayoutBtns()
 			recording.timers = {}
 			recording.cancelTimers(recording.goodEvilButtonTimers)
 			recording.goodEvilButtonTimers = {}
+			timer.cancel(sceneChangingTimer)
+			for i, v in pairs(soundsConfig) do
+				if v.sound then
+					audio.dispose(v.sound)
+				end
+				v = {}
+			end
+			choosenSide = defaultSide
+			soundsConfig = {}
+			configInterface = {}
+			buttonsInScenes = {}
+			soundsInScenes = {}
 			timer.performWithDelay(200, function()
 				director:changeScene(event.target.scene)
 			end)

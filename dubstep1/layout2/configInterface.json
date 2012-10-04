@@ -2,8 +2,9 @@
 	"scenesNum": 5,
 	"sceneLength": 27000,
 	"showChoiceTime": 20000,
-	"choiceShownDurationTime": 7000,
+	"choiceShownDurationTime": 6500,
 	"tracksStartSameTime": true,
+	"defaultSide": "evil",
 	"soundButtons": [
 		{
 			"scenes": {

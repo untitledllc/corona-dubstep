@@ -1,13 +1,15 @@
 {
 	"scenesNum": 5,
 	"sceneLength": 29000,
-	"showChoiceTime": 21000,
+	"showChoiceTime": 2100,
 	"choiceShownDurationTime": 7500,
 	"tracksStartSameTime": false,
+	"defaultSide": "dobro",
 	"soundButtons": [
 		{
 			"scenes": {
-				"1": true
+				"1": true,
+				"2": true
 			},
 			"soundId": "s1",
 			"left": 10,
@@ -23,7 +25,9 @@
 
 		{
 			"scenes": {
-				"1": false
+				"3": true,
+				"4": true,
+				"5": true
 			},
 			"soundId": "s2",
 			"left": 120,
@@ -39,7 +43,8 @@
 
 		{
 			"scenes": {
-				"1": false
+				"3": true,
+				"4": true,
 			},
 			"soundId": "s3",
 			"left": 230,
@@ -55,7 +60,8 @@
 
 		{
 			"scenes": {
-				"1": false
+				"3": true,
+				"4": true
 			},
 			"soundId": "s4",
 			"left": 340,
@@ -71,7 +77,9 @@
 
 		{
 			"scenes": {
-				"2": true
+				"2": true,
+				"4": true,
+				"5": true
 			},
 			"soundId": "s5",
 			"left": 450,
@@ -87,7 +95,11 @@
 
 		{
 			"scenes": {
-				"2": false
+				"1": true,
+				"2": true,
+				"3": true,
+				"4": true,
+				"5": true
 			},
 			"soundId": "s6",
 			"left": 560,
@@ -103,7 +115,11 @@
 
 		{
 			"scenes": {			
-				"2": false
+				"1": true,
+				"2": true,
+				"3": true,
+				"4": true,
+				"5": true
 			},
 			"soundId": "s7",
 			"left": 10,
@@ -119,7 +135,9 @@
 
 		{
 			"scenes": {
-				"2": false
+				"3": true,
+				"4": true,
+				"5": true
 			},
 			"soundId": "s8",
 			"left": 120,
@@ -135,7 +153,8 @@
 
 		{
 			"scenes": {
-				"2": false
+				"2": true,
+				"4": true
 			},
 			"soundId": "s9",
 			"left": 230,
@@ -151,201 +170,9 @@
 
 		{
 			"scenes": {
-				"3": true
+				"1": true
 			},
 			"soundId": "s10",
-			"left": 10,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"3": false
-			},
-			"soundId": "s11",
-			"left": 120,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"3": false
-			},
-			"soundId": "s12",
-			"left": 230,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"3": false
-			},
-			"soundId": "s13",
-			"left": 340,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"3": false
-			},
-			"soundId": "s14",
-			"left": 450,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"3": false
-			},
-			"soundId": "s15",
-			"left": 560,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"3": false
-			},
-			"soundId": "s16",
-			"left": 670,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": true
-			},
-			"soundId": "s17",
-			"left": 450,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": false
-			},
-			"soundId": "s18",
-			"left": 560,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": false
-			},
-			"soundId": "s19",
-			"left": 10,
-			"top": 100,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": false
-			},
-			"soundId": "s20",
-			"left": 120,
-			"top": 100,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": false
-			},
-			"soundId": "s21",
-			"left": 230,
-			"top": 100,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": false
-			},
-			"soundId": "s22",
 			"left": 340,
 			"top": 100,
 			"w": 100,
@@ -359,139 +186,13 @@
 
 		{
 			"scenes": {
-				"4": false
-			},
-			"soundId": "s23",
-			"left": 450,
-			"top": 100,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": false
-			},
-			"soundId": "s24",
-			"left": 560,
-			"top": 100,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"4": false
-			},
-			"soundId": "s25",
-			"left": 670,
-			"top": 100,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
+				"3": true,
+				"4": true,
 				"5": true
 			},
-			"soundId": "s26",
-			"left": 10,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"5": false
-			},
-			"soundId": "s27",
-			"left": 120,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"5": false
-			},
-			"soundId": "s28",
-			"left": 230,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"5": false
-			},
-			"soundId": "s29",
-			"left": 340,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"5": false
-			},
-			"soundId": "s30",
+			"soundId": "s11",
 			"left": 450,
-			"top": 10,
-			"w": 100,
-			"h": 79,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"dobro",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"5": false
-			},
-			"soundId": "s31",
-			"left": 560,
-			"top": 10,
+			"top": 100,
 			"w": 100,
 			"h": 79,
 			"rgb": [
@@ -505,9 +206,9 @@
 			"scenes": {
 				"2": true
 			},
-			"soundId": "s32",
+			"soundId": "s12",
 			"left": 230,
-			"top": 100,
+			"top": 10,
 			"w": 100,
 			"h": 79,
 			"rgb": [
@@ -519,11 +220,11 @@
 
 		{
 			"scenes": {
-				"2": false
+				"2": true
 			},
-			"soundId": "s33",
+			"soundId": "s13",
 			"left": 340,
-			"top": 100,
+			"top": 10,
 			"w": 100,
 			"h": 79,
 			"rgb": [
@@ -535,11 +236,11 @@
 
 		{
 			"scenes": {
-				"2": false
+				"2": true
 			},
-			"soundId": "s34",
+			"soundId": "s14",
 			"left": 450,
-			"top": 100,
+			"top": 10,
 			"w": 100,
 			"h": 79,
 			"rgb": [
@@ -551,11 +252,11 @@
 
 		{
 			"scenes": {
-				"2": false
+				"2": true
 			},
-			"soundId": "s35",
+			"soundId": "s15",
 			"left": 560,
-			"top": 100,
+			"top": 10,
 			"w": 100,
 			"h": 79,
 			"rgb": [
@@ -567,11 +268,11 @@
 
 		{
 			"scenes": {
-				"2": false
+				"2": true
 			},
-			"soundId": "s36",
+			"soundId": "s16",
 			"left": 670,
-			"top": 100,
+			"top": 10,
 			"w": 100,
 			"h": 79,
 			"rgb": [
@@ -929,10 +630,7 @@
 			"soundIds": [
 				"s1", "s2", "s3", "s4", "s5", "s6", 
 				"s7", "s8", "s9", "s10", "s11", "s12",
-				"s13", "s14", "s15", "s16", "s17", "s18",
-				"s19", "s20", "s21", "s22", "s23", "s24",
-				"s25", "s26", "s27", "s28", "s29", "s30",
-				"s31", "s32", "s33", "s34", "s35", "s36"
+				"s13", "s14", "s15", "s16"
 			],
 			"left": 80,
 			"top": 190,

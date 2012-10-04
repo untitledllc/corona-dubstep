@@ -199,7 +199,7 @@ function startRecording()
 	currentSceneAppearTime = layout.getLayoutAppearTime()
 	gl.nextSceneAppearTime = 0
 	
-	gl.sceneNumber.isVisible = true
+	gl.sceneNumber.isVisible = false
 	
 	gl.nextSceneAppearTime = gl.fullRecordLength/(#gl.currentBacks - 1)
 	
