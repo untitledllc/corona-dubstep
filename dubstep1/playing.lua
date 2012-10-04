@@ -135,7 +135,7 @@ function nextScene(event)
 		timer.cancel(gl.sceneChangingTimer)
 		if gl.currentScene <= gl.scenesNum then
 
-			
+			print("ololo")
 
 			-- Переключаем таймер перехода на следующую сцену
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
@@ -650,7 +650,7 @@ function playGoodMelody(event)
 		gl.currentBasicMelody = gl.currentEvilMelody
 	end
 
-	gl.choosenSide = newSide
+	--gl.choosenSide = newSide
 end
 
 function playEvilMelody(event)

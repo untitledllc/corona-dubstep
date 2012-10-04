@@ -146,100 +146,100 @@
 
 	"v1": {
 		"id": "v1",
-		"name": "voices/track1.mp3",
+		"name": "voices/ten_thousand_bucks.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "12"
 	},
 
 	"v5": {
 		"id": "v5",
-		"name": "voices/track5.mp3",
+		"name": "voices/couple_of_cadillacs_actually.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "16"
 	},
 
 	"v6": {
 		"id": "v6",
-		"name": "voices/track6.mp3",
+		"name": "voices/corporations_are_people_my_friend.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "17"
 	},
 
 	"v7": {
 		"id": "v7",
-		"name": "voices/track7.mp3",
+		"name": "voices/i_like_being_able_to_fire_people.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "18"
 	},
 
 	"v8": {
 		"id": "v8",
-		"name": "voices/track8.mp3",
+		"name": "voices/bonjour.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "19"
 	},
 
 	"v10": {
 		"id": "v10",
-		"name": "voices/track10.mp3",
+		"name": "voices/yall.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "21"
 	},
 
 	"v11": {
 		"id": "v11",
-		"name": "voices/track11.mp3",
+		"name": "voices/im_running_for_office_i_cant_have_illegals.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "22"
 	},
 
 	"v12": {
 		"id": "v12",
-		"name": "voices/track12.mp3",
+		"name": "voices/guess_what_ive_made_a_lot_of_money.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "23"
 	},
 
 	"v16": {
 		"id": "v16",
-		"name": "voices/track16.mp3",
+		"name": "voices/it_seems_right_here_the_trees_are_the_right_height.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "27"
 	},
 
@@ -250,29 +250,29 @@
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "28"
 	},
 
 	"v18": {
 		"id": "v18",
-		"name": "voices/track18.mp3",
+		"name": "voices/im_not_concerned_about_the_very_poor.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "29"
 	},
 
 	"v19": {
 		"id": "v19",
-		"name": "voices/track19.mp3",
+		"name": "voices/who_let_the_dogs_out.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.82,
 		"channel": "30"
 	},
 
@@ -318,7 +318,7 @@
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 0.7,
 		"channel": "30"
 	},
 

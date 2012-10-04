@@ -149,20 +149,24 @@ function createButton(arg)
 		_height = h/10
 	end
 
-	if arg.track.name and type(arg.track.name) == "string" then
-		-- Убираем имя папки
-		local k = string.find(arg.track.name, "/")
-		if k ~= nil then
-			_label = string.sub(arg.track.name, k+1)
-		else
-			_label = arg.track.name
-		end
+	if not arg.label then
+		if arg.track.name and type(arg.track.name) == "string" then
+			-- Убираем имя папки
+			local k = string.find(arg.track.name, "/")
+			if k ~= nil then
+				_label = string.sub(arg.track.name, k+1)
+			else
+				_label = arg.track.name
+			end
 
-		-- Убираем расширение файла
-		local k = string.find(_label, ".mp3") or string.find(_label, ".wav")
-		_label = string.sub(_label, 1, k-1)
+			-- Убираем расширение файла
+			local k = string.find(_label, ".mp3") or string.find(_label, ".wav")
+			_label = string.sub(_label, 1, k-1)
+		else
+			error("wrong type of arg \"track.name\" ".."expected string, got "..type(arg.track.name))
+		end
 	else
-		error("wrong type of arg \"track.name\" ".."expected string, got "..type(arg.track.name))
+		_label = arg.label
 	end
 
 	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
@@ -470,17 +474,17 @@ function drawLayoutBtns()
 			recording.cancelTimers(recording.goodEvilButtonTimers)
 			recording.goodEvilButtonTimers = {}
 			timer.cancel(sceneChangingTimer)
-			for i, v in pairs(soundsConfig) do
-				if v.sound then
-					audio.dispose(v.sound)
-				end
-				v = {}
-			end
+			--for i, v in pairs(soundsConfig) do
+			--	if v.sound then
+			--		audio.dispose(v.sound)
+			--	end
+			--	v = {}
+			--end
 			choosenSide = defaultSide
-			soundsConfig = {}
-			configInterface = {}
-			buttonsInScenes = {}
-			soundsInScenes = {}
+			--soundsConfig = {}
+			--configInterface = {}
+			--buttonsInScenes = {}
+			--soundsInScenes = {}
 			timer.performWithDelay(200, function()
 				director:changeScene(event.target.scene)
 			end)

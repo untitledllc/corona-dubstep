@@ -15,7 +15,7 @@ function new()
 	local level2Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)
 
 	--level1Btn.x,level1Btn.y = gl.w/3,gl.h/2
-	level2Btn.x,level2Btn.y = 2*gl.w/3,gl.h/2
+	level2Btn.x,level2Btn.y = gl.w/2,gl.h/2
 	
 	--level1Btn:setFillColor(255,255,0)
 	level2Btn:setFillColor(0,255,255)
@@ -24,7 +24,7 @@ function new()
 	local txtLevel2 = display.newText("Continue",0,0,native.systemFont,14)	
 	
 	--txtLevel1.x,txtLevel1.y = gl.w/3,gl.h/2
-	txtLevel2.x,txtLevel2.y = 2*gl.w/3,gl.h/2
+	txtLevel2.x,txtLevel2.y = gl.w/2,gl.h/2
 	
 	--txtLevel1:setTextColor(0,0,0)
 	txtLevel2:setTextColor(0,0,0)
