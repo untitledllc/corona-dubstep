@@ -1,7 +1,7 @@
 {
 	"scenesNum": 5,
 	"sceneLength": 29000,
-	"showChoiceTime": 2100,
+	"showChoiceTime": 21000,
 	"choiceShownDurationTime": 7500,
 	"tracksStartSameTime": false,
 	"defaultSide": "dobro",

@@ -7,6 +7,8 @@ h = display.contentHeight
 
 sceneChangingTimer = nil
 
+startRecordTime = nil
+
 -- track = {type = "fx/melody/voice", scene = 1..5, button = buttonStruct, sound = "sound1/track1.mp3", channel = 1..32 }
 soundsConfig = {}
 

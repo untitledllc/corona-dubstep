@@ -52,14 +52,14 @@ end
 
 local function completeUserActList()
 	local idx = 1
-	addAction(endRecordingTime - recPressTime,-1,0,0,-1,0)
+	--addAction(endRecordingTime - recPressTime,-1,0,0,-1,0)
 	idx = idx + 1
 end
 
 local function calcSeekTimeInActiveChannels(activeChannels)
 	for idx,val in pairs(activeChannels) do
 		if (val[1] ~= -1) then
-			addAction(0,val.channel,1,val.volume,val.category,recPressTime - val.startTime)
+			--addAction(0,val.channel,1,val.volume,val.category,recPressTime - val.startTime)
 		end
 	end
 end
@@ -143,14 +143,14 @@ function stopRecording(e)
 
 	endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
 
-	recording.addAction(endRecordingTime - recPressTime,
-    							1,0,0,4,-1)
+	--recording.addAction(endRecordingTime - recPressTime,
+   -- 							1,0,0,4,-1)
 
-	recording.addAction(endRecordingTime - recPressTime,
-    							gl.currentGoodChannel,0,0,4,-1)
+	--recording.addAction(endRecordingTime - recPressTime,
+    --							gl.currentGoodChannel,0,0,4,-1)
 
-	recording.addAction(endRecordingTime - recPressTime,
-    							gl.currentEvilChannel,0,0,4,-1)
+	--recording.addAction(endRecordingTime - recPressTime,
+    --							gl.currentEvilChannel,0,0,4,-1)
 	
 	gl.shareBtn.isVisible = true
 	gl.shareBtn.txt.isVisible = true
@@ -274,14 +274,13 @@ function startRecording()
 											
 end
 
-function addAction(time,index,actType,vol,category,chActTime)
+function addAction(time,index,actType,vol,soundHandle)
     local action = {}
 	action["actionTime"] = time
 	action["channel"] = index
 	action["actType"] = actType
 	action["volume"] = vol
-	action["category"] = category
-	action["channelActiveTime"] = chActTime
+	action["sound"] = soundHandle
 	userActionList[#userActionList + 1] = action
 end
 

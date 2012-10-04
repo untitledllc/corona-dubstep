@@ -42,24 +42,30 @@ function prepareToPlay()
 		end
 	end
 
+	gl.startRecordTime = system.getTimer()
+
 	if gl.tracksStartSameTime then 
 		-- запускаем все мелодии на воспроизведение
 		for i, v in pairs(gl.soundsConfig) do
 			if v.type == "melody" and v.sound then
-				local ch = audio.findFreeChannel()
-				v.channel = ch
-				audio.play(v.sound, {channel = v.channel, loops = -1})
-				audio.setVolume(0, {channel = v.channel})
+				if (v.side and v.side == gl.choosenSide) or (not v.side) then
+					local ch = audio.findFreeChannel()
+					v.channel = ch
+					audio.play(v.sound, {channel = v.channel, loops = -1})
+					audio.setVolume(0, {channel = v.channel})
+				end
 			end
 		end
 	else
 		-- запускаем на воспроизведение мелодии 1 сцены
 		for i, v in pairs(gl.soundsInScenes[1]) do
 			if gl.soundsConfig[v].type == "melody" and gl.soundsConfig[v].sound then
-				local ch = audio.findFreeChannel()
-				gl.soundsConfig[v].channel = ch
-				audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
-				audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+				if (gl.soundsConfig[v].side and gl.soundsConfig[v].side == gl.choosenSide) or (not gl.soundsConfig[v].side) then
+					local ch = audio.findFreeChannel()
+					gl.soundsConfig[v].channel = ch
+					audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
+					audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+				end
 			end
 		end
 	end
@@ -209,10 +215,12 @@ function nextScene(event)
 				-- запускаем на воспроизведение мелодии новой сцены
 				for i, v in pairs(gl.soundsInScenes[gl.currentScene]) do
 					if gl.soundsConfig[v].type == "melody" and gl.soundsConfig[v].sound then
-						local ch = audio.findFreeChannel()
-						gl.soundsConfig[v].channel = ch
-						audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
-						audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+						if (gl.soundsConfig[v].side and gl.soundsConfig[v].side == gl.choosenSide) or (not gl.soundsConfig[v].side) then
+							local ch = audio.findFreeChannel()
+							gl.soundsConfig[v].channel = ch
+							audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
+							audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+						end
 					end
 				end
 
@@ -289,188 +297,6 @@ function nextScene(event)
 		end
 	end
 end
-
-local function shutUpVoices(group,isShut,numSamples,numFX,numVoices)
-	if (isShut == true) then
-		local idx = numSamples + numFX + 1
-		while (idx <= numSamples + numVoices) do
-			group[idx].alpha = 0.5
-			
-			audio.stop(idx)
-			
-			if (recording.isRecStarted() == true) then
-      			if (recording.isRecStarted() == true) then
-    				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							idx,0,audio.getVolume({channel = idx}),5,-1)
-   				end
-   			end
-			
-			idx = idx + 1
-		end
-	end
-end
-
-local function shutUpDrums(group,isShut,partSumms,trackCounters)
-	if (isShut == true) then
-		local idx = partSumms[2] + 1
-		while (idx <= partSumms[3]) do		
-			group[idx].alpha = 0.5
-			
-			local channelVolume = audio.getVolume( { channel=idx } )
-			if (channelVolume ~= 0) then
-				trackCounters[idx] = 1
-			else
-				trackCounters[idx] = 0
-			end
-			audio.setVolume(0,{channel = idx})
-			activeChannels[idx] = {-1}
-			
-			if (recording.isRecStarted() == true) then
-				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-										idx,0,audio.getVolume({channel = idx}),3,-1)
-   			end
-			
-			idx = idx + 1
-		end
-	end
-end
-
-function shutUpMelodies(group,isShut,partSumms,trackCounters)
-	if (isShut == true) then
-		local MelodiesIdxs = {1, 3, 4, 6, 7, 11, 12, 14, 15}
-		for i, idx in pairs(MelodiesIdxs) do
-			group[idx].alpha = 0.5
-			
-			local channelVolume = audio.getVolume( { channel=idx } )
-			if (channelVolume ~= 0) then
-				trackCounters[idx] = 1
-			else
-				trackCounters[idx] = 0
-			end
-			audio.setVolume(0,{channel = idx})
-			activeChannels[idx] = {-1}
-			
-			if (recording.isRecStarted() == true) then
-				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-										idx,0,audio.getVolume({channel = idx}),2,-1)
-   			end
-		end
-	end
-end
-
-local function shutUpIntros(group,isShut,partSumms,trackCounters)	
-	if (isShut == true) then
-		local idx = 1
-		while (idx <= partSumms[1]) do		
-			group[idx].alpha = 0.5
-
-			local channelVolume = audio.getVolume( { channel=idx } )
-			if (channelVolume ~= 0) then
-				trackCounters[idx] = 1
-			else
-				trackCounters[idx] = 0
-			end
-			audio.setVolume(0,{channel = idx})
-			activeChannels[idx] = {-1}
-			
-			if (recording.isRecStarted() == true) then
-				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-										idx,0,audio.getVolume({channel = idx}),1,-1)
-   			end
-   			
-			idx = idx + 1
-		end
-	end
-end
-
-function shutUpFX(group,isShut,numSamples,numFX,numVoices)
-	if (isShut == true) then
-		local FXIndxs = {2, 5, 8, 9, 10, 13, 16, 17}
-		for i,idx in pairs(FXIndxs) do
-			group[idx].alpha = 0.5
-			audio.stop(idx)
-			
-			if (recording.isRecStarted() == true) then
-    			if (recording.isRecStarted() == true) then
-    				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							idx,0,audio.getVolume({channel = idx}),4,-1)
-   				end
-   			end
-		end
-	end
-end
-
-local function playIntro(group,index,trackCounters)
-	if (trackCounters[index] % 2 ~= 0) then
-        audio.setVolume(0,{channel = index})
-        group[index].alpha = 0.5
-        
-        startStop = 0
-        
-        activeChannels[index] = {-1}
-    else
-    	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}  
-       	
-       	if (volumePanel.scrolls[1] ~= nil) then	
-        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[1]),{channel = index})  	
-    	else	
-    		audio.setVolume(defaultVolume,{channel = index})  
-        end 
-        group[index].alpha = 1
-        
-        activeChannel.channel = index
-    	activeChannel.startTime = 0
-    	activeChannel.category = 1
-    	activeChannel.volume = audio.getVolume({channel = index})
-    	activeChannels[index] = activeChannel
-    	
-    	startStop = 1
-    end
-    
-    if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),1,system.getTimer() - curLayout.getLayoutAppearTime())
-   	end
-   	
-    trackCounters[index] = trackCounters[index] + 1
-end
-
-local function playDrums(group,index,trackCounters)
-	local startStop = nil
-	if (trackCounters[index] % 2 ~= 0) then
-        audio.setVolume(0,{channel = index})
-        group[index].alpha = 0.5
-        
-        startStop = 0
-        
-        activeChannels[index] = {-1}
-    else
-    	local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-     
-       	if (volumePanel.scrolls[3] ~= nil) then	
-        	audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[3]),{channel = index})  	
-    	else	
-    		audio.setVolume(defaultVolume,{channel = index})  
-        end    
-        group[index].alpha = 1
-        
-        activeChannel.channel = index
-    	activeChannel.startTime = 0
-    	activeChannel.category = 3
-    	activeChannel.volume = audio.getVolume({channel = index})
-    	activeChannels[index] = activeChannel
-   		startStop = 1
-    end
-    
-    if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),3,system.getTimer() - curLayout.getLayoutAppearTime())
-   	end
-   	
-    trackCounters[index] = trackCounters[index] + 1
-end
-
-
 
 
 
@@ -665,8 +491,8 @@ function playGlitch(event)
    		activeChannels.glitchChannel = activeChannel
    		]]--
 		if (recording.isRecStarted()) then
-			glitchStartTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
+			--glitchStartTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
+			--recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
 		else
 			glitchStartTime = 0
 		end
@@ -683,8 +509,8 @@ function playGlitch(event)
 		isGlitchStarted = false
 		
 		if (recording.isRecStarted()) then
-			glitchFinishTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			recording.addAction(glitchFinishTime,gl.glitchChannel,0,0,6,0)
+			--glitchFinishTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
+			--recording.addAction(glitchFinishTime,gl.glitchChannel,0,0,6,0)
 		end
 		
 		--activeChannels.glitchChannel = {-1}
@@ -716,11 +542,11 @@ function playGlitch(event)
    				]]--
 				if (recording.isRecStarted()) then
 					if val.ch > 13 then
-						recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    						val.ch,2,val.v,5,system.getTimer() - curLayout.getLayoutAppearTime())
+						--recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    					--	val.ch,2,val.v,5,system.getTimer() - curLayout.getLayoutAppearTime())
 					else
-						recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    						val.ch,2,val.v,2,system.getTimer() - curLayout.getLayoutAppearTime())
+						--recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
+    					--	val.ch,2,val.v,2,system.getTimer() - curLayout.getLayoutAppearTime())
 					end
 				end
 				
@@ -783,7 +609,7 @@ function playGoodMelody(event)
 		
 		-- если сторона поменялась, то подгружаем треки новой стороны
 		if gl.choosenSide ~= newSide then
-			for i, v in pairs(gl.soundsConfig) do
+			--[[for i, v in pairs(gl.soundsConfig) do
 				if v.side and v.side == newSide then
 					v.sound = audio.loadSound(gl.kitAddress..v.side.."/"..v.name)
 					v.channel = nil
@@ -792,7 +618,7 @@ function playGoodMelody(event)
 					v.sound = nil
 					v.channel = nil
 				end
-			end
+			end]]--
 
 			--[[ и создаем кнопки новой стороны
 			for i, v in pairs(gl.configInterface.soundButtons) do
@@ -807,7 +633,7 @@ function playGoodMelody(event)
 		end
 		
 		-- переходим к следующей сцене
-		timer.performWithDelay(1000, function()
+		timer.performWithDelay(1400, function()
 			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
 		end)
 		
@@ -843,7 +669,7 @@ function playEvilMelody(event)
 		
 		-- если сторона поменялась, то подгружаем треки новой стороны
 		if gl.choosenSide ~= newSide then
-			for i, v in pairs(gl.soundsConfig) do
+			--[[for i, v in pairs(gl.soundsConfig) do
 				if v.side and v.side == newSide then
 					v.sound = audio.loadSound(gl.kitAddress..v.side.."/"..v.name)
 					v.channel = nil
@@ -852,7 +678,7 @@ function playEvilMelody(event)
 					v.sound = nil
 					v.channel = nil
 				end
-			end
+			end]]--
 
 			--[[ и создаем кнопки новой стороны
 			for i, v in pairs(gl.configInterface.soundButtons) do
@@ -867,7 +693,7 @@ function playEvilMelody(event)
 		end
 		
 		-- переходим к следующей сцене
-		timer.performWithDelay(1000, function()
+		timer.performWithDelay(1400, function()
 			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
 		end)
 		
@@ -906,7 +732,7 @@ function initSounds(kitAddress)
 	-- подгружаем всю музыку сразу (для текущей стороны)
 	--if gl.tracksStartSameTime then
 		for i, v in pairs(soundsConfig) do
-			if v.side and v.side == gl.choosenSide then
+			if v.side then --and v.side == gl.choosenSide then
 				v.sound = audio.loadSound(kitAddress..v.side.."/"..v.name)
 			elseif not v.side then
 				v.sound = audio.loadSound(kitAddress..v.name)
