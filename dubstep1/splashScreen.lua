@@ -7,6 +7,9 @@ function new()
 	splashImage.x,splashImage.y = display.contentWidth/2,display.contentHeight/2
 	
 	localGroup:insert(splashImage)
+
+
+
 	
 	return localGroup
 end
