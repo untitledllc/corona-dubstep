@@ -245,11 +245,11 @@
 			"left": 160,
 			"top": 460,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "10.000 bucks",
+			"label": " А мы покричали",
 			"alpha": 0.5
 		},
 
@@ -265,11 +265,11 @@
 			"left": 300,
 			"top": 460,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "Couple of Cadillacs",
+			"label": "Где тут шубы",
 			"alpha": 0.5
 		},
 
@@ -285,11 +285,11 @@
 			"left": 440,
 			"top": 460,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "Corporations are people",
+			"label": "Ди или нет",
 			"alpha": 0.5
 		},
 
@@ -305,11 +305,11 @@
 			"left": 580,
 			"top": 460,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "Fire people",
+			"label": "Дорогие мои",
 			"alpha": 0.5
 		},
 
@@ -325,11 +325,11 @@
 			"left": 720,
 			"top": 460,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "Je m'apelle Mitt Romney",
+			"label": "Капитализму смерть",
 			"alpha": 0.5
 		},
 
@@ -345,11 +345,11 @@
 			"left": 860,
 			"top": 460,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "Y'all",
+			"label": "Кто здесь власть",
 			"alpha": 0.5
 		},
 
@@ -363,13 +363,13 @@
 			},
 			"soundId": "v11",
 			"left": 160,
-			"top": 600,
+			"top": 535,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "I can't have illegals",
+			"label": "Ложь и провокация",
 			"alpha": 0.5
 		},
 
@@ -383,13 +383,13 @@
 			},
 			"soundId": "v12",
 			"left": 300,
-			"top": 600,
+			"top": 535,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "I've made a lot of money",
+			"label": "Шакалы",
 			"alpha": 0.5
 		},
 
@@ -403,13 +403,13 @@
 			},
 			"soundId": "v16",
 			"left": 440,
-			"top": 600,
+			"top": 535,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "Trees are the right height",
+			"label": "Не забудем не простим",
 			"alpha": 0.5
 		},
 
@@ -423,13 +423,13 @@
 			},
 			"soundId": "v17",
 			"left": 580,
-			"top": 600,
+			"top": 535,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "I'm also unemployed",
+			"label": "Один за всех",
 			"alpha": 0.5
 		},
 
@@ -443,13 +443,13 @@
 			},
 			"soundId": "v18",
 			"left": 720,
-			"top": 600,
+			"top": 535,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "Not concerned about the poor",
+			"label": "С этой площади не уйду",
 			"alpha": 0.5
 		},
 
@@ -463,18 +463,136 @@
 			},
 			"soundId": "v19",
 			"left": 860,
-			"top": 600,
+			"top": 535,
 			"w": 130,
-			"h": 130,
+			"h": 65,
 			"rgb": [
 				255, 200, 128
 			],
-			"label": "WHO LET THE DOGS OUT",
+			"label": "Что вы врете гады",
 			"alpha": 0.5
 		},
 
+		{
+			"scenes": {
+				"1": false,
+				"2": false,
+				"3": false,
+				"4": false,
+				"5": false
+			},
+			"soundId": "v30",
+			"left": 160,
+			"top": 665,
+			"w": 130,
+			"h": 65,
+			"rgb": [
+				255, 200, 128
+			],
+			"label": "А вы на меня",
+			"alpha": 0.5
+		},
 
-
+        {
+            "scenes": {
+                "1": false,
+                "2": false,
+                "3": false,
+                "4": false,
+                "5": false
+            },
+            "soundId": "v31",
+            "left": 300,
+            "top": 665,
+            "w": 130,
+            "h": 65,
+            "rgb": [
+                255, 200, 128
+            ],
+            "label": "Кто не с нами",
+            "alpha": 0.5
+        },
+        
+        {
+            "scenes": {
+                "1": false,
+                "2": false,
+                "3": false,
+                "4": false,
+                "5": false
+            },
+            "soundId": "v32",
+            "left": 440,
+            "top": 665,
+            "w": 130,
+            "h": 65,
+            "rgb": [
+                255, 200, 128
+            ],
+            "label": "Не говори гоп",
+            "alpha": 0.5
+        },
+        
+        {
+            "scenes": {
+                "1": false,
+                "2": false,
+                "3": false,
+                "4": false,
+                "5": false
+            },
+            "soundId": "v33",
+            "left": 580,
+            "top": 665,
+            "w": 130,
+            "h": 65,
+            "rgb": [
+                255, 200, 128
+            ],
+            "label": "Ну вобщето неприлично",
+            "alpha": 0.5
+        },
+        
+        {
+            "scenes": {
+                "1": false,
+                "2": false,
+                "3": false,
+                "4": false,
+                "5": false
+            },
+            "soundId": "v34",
+            "left": 720,
+            "top": 665,
+            "w": 130,
+            "h": 65,
+            "rgb": [
+                255, 200, 128
+            ],
+            "label": "Пусть жену",
+            "alpha": 0.5
+        },
+        
+        {
+            "scenes": {
+                "1": false,
+                "2": false,
+                "3": false,
+                "4": false,
+                "5": false
+            },
+            "soundId": "v35",
+            "left": 860,
+            "top": 665,
+            "w": 130,
+            "h": 65,
+            "rgb": [
+                255, 200, 128
+            ],
+            "label": "Я пахал",
+            "alpha": 0.5
+        },
+        
 		{
 			"scenes": {
 				"1": false,

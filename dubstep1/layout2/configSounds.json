@@ -146,135 +146,201 @@
 
 	"v1": {
 		"id": "v1",
-		"name": "voices/ten_thousand_bucks.wav",
+		"name": "voices/track1.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "12"
 	},
 
 	"v5": {
 		"id": "v5",
-		"name": "voices/couple_of_cadillacs_actually.mp3",
+		"name": "voices/track2.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "16"
 	},
 
 	"v6": {
 		"id": "v6",
-		"name": "voices/corporations_are_people_my_friend.mp3",
+		"name": "voices/track3.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "17"
 	},
 
 	"v7": {
 		"id": "v7",
-		"name": "voices/i_like_being_able_to_fire_people.wav",
+		"name": "voices/track4.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "18"
 	},
 
 	"v8": {
 		"id": "v8",
-		"name": "voices/bonjour.mp3",
+		"name": "voices/track5.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "19"
 	},
 
 	"v10": {
 		"id": "v10",
-		"name": "voices/yall.mp3",
+		"name": "voices/track6.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "21"
 	},
 
 	"v11": {
 		"id": "v11",
-		"name": "voices/im_running_for_office_i_cant_have_illegals.wav",
+		"name": "voices/track7.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "22"
 	},
 
 	"v12": {
 		"id": "v12",
-		"name": "voices/guess_what_ive_made_a_lot_of_money.mp3",
+		"name": "voices/track8.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "23"
 	},
 
 	"v16": {
 		"id": "v16",
-		"name": "voices/it_seems_right_here_the_trees_are_the_right_height.wav",
+		"name": "voices/track9.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "27"
 	},
 
 	"v17": {
 		"id": "v17",
-		"name": "voices/track17.mp3",
+		"name": "voices/track10.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "28"
 	},
 
 	"v18": {
 		"id": "v18",
-		"name": "voices/im_not_concerned_about_the_very_poor.wav",
+		"name": "voices/track11.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "29"
 	},
 
 	"v19": {
 		"id": "v19",
-		"name": "voices/who_let_the_dogs_out.mp3",
+		"name": "voices/track12.mp3",
 		"type": "voice",
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "30"
 	},
+	
+    "v30": {
+        "id": "v30",
+        "name": "voices/track13.mp3",
+        "type": "voice",
+        "scenes": [
+            1, 2, 3, 4, 5
+        ],
+        "defaultVolume": 1.0,
+        "channel": "30"
+    },
+    
+    "v31": {
+        "id": "v31",
+        "name": "voices/track14.mp3",
+        "type": "voice",
+        "scenes": [
+            1, 2, 3, 4, 5
+        ],
+        "defaultVolume": 1.0,
+        "channel": "30"
+    },
+    
+    "v32": {
+        "id": "v32",
+        "name": "voices/track15.mp3",
+        "type": "voice",
+        "scenes": [
+            1, 2, 3, 4, 5
+        ],
+        "defaultVolume": 1.0,
+        "channel": "30"
+    },
+    
+    "v33": {
+        "id": "v33",
+        "name": "voices/track16.mp3",
+        "type": "voice",
+        "scenes": [
+            1, 2, 3, 4, 5
+        ],
+        "defaultVolume": 1.0,
+        "channel": "30"
+    },
+    
+    "v34": {
+        "id": "v34",
+        "name": "voices/track17.mp3",
+        "type": "voice",
+        "scenes": [
+            1, 2, 3, 4, 5
+        ],
+        "defaultVolume": 1.0,
+        "channel": "30"
+    },
+    
+    "v35": {
+        "id": "v35",
+        "name": "voices/track18.mp3",
+        "type": "voice",
+        "scenes": [
+            1, 2, 3, 4, 5
+        ],
+        "defaultVolume": 1.0,
+        "channel": "30"
+    },
 
 
 
