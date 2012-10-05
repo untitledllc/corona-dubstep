@@ -11,34 +11,28 @@ function new()
 	gl.loading.x,gl.loading.y = gl.w/2,gl.h/4
 	gl.loading.isVisible = false
 	
---	gl.rotator = display.newImageRect("images/mainScreen/rotator.jpeg",gl.w/5,gl.h/5)
---	gl.rotator.x,gl.rotator.y = gl.w/2,3*gl.h/4
-	
---	local backGround = display.newImageRect("images/mainScreen/mainScreenImage.png",gl.w,gl.h)
---	backGround.x,backGround.y = gl.w/2,gl.h/2
-	
-	local level1Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)
+	--local level1Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)
 	local level2Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)
 
-	level1Btn.x,level1Btn.y = gl.w/3,gl.h/2
-	level2Btn.x,level2Btn.y = 2*gl.w/3,gl.h/2
+	--level1Btn.x,level1Btn.y = gl.w/3,gl.h/2
+	level2Btn.x,level2Btn.y = gl.w/2,gl.h/2
 	
-	level1Btn:setFillColor(255,255,0)
+	--level1Btn:setFillColor(255,255,0)
 	level2Btn:setFillColor(0,255,255)
 	
-	local txtLevel1 = display.newText("Lvl1",0,0,native.systemFont,14)	
-	local txtLevel2 = display.newText("Lvl2",0,0,native.systemFont,14)	
+	--local txtLevel1 = display.newText("Lvl1",0,0,native.systemFont,14)	
+	local txtLevel2 = display.newText("Continue",0,0,native.systemFont,14)	
 	
-	txtLevel1.x,txtLevel1.y = gl.w/3,gl.h/2
-	txtLevel2.x,txtLevel2.y = 2*gl.w/3,gl.h/2
+	--txtLevel1.x,txtLevel1.y = gl.w/3,gl.h/2
+	txtLevel2.x,txtLevel2.y = gl.w/2,gl.h/2
 	
-	txtLevel1:setTextColor(0,0,0)
+	--txtLevel1:setTextColor(0,0,0)
 	txtLevel2:setTextColor(0,0,0)
 
-	local toLevel1Handler
+	--local toLevel1Handler
 	local toLevel2Handler
 	
-	toLevel1Handler = function (event)
+	--[[toLevel1Handler = function (event)
 		if event.phase == "ended" then
 			gl.loading.isVisible = true
 			localGroup[1]:removeEventListener("touch", toLevel1Handler)
@@ -47,12 +41,12 @@ function new()
 			gl.choosenSide = "dobro"
 			timer.performWithDelay(20, function () director:changeScene("level") end)
 		end
-	end
+	end]]--
 	toLevel2Handler = function (event)
 		if event.phase == "ended" then
 			gl.loading.isVisible = true
-			localGroup[1]:removeEventListener("touch", toLevel1Handler)
-			localGroup[2]:removeEventListener("touch", toLevel2Handler)
+			localGroup[1]:removeEventListener("touch", toLevel2Handler)
+			--localGroup[2]:removeEventListener("touch", toLevel1Handler)
 			gl.currentLayout = "layout2"
 			gl.choosenSide = "evil"
 			timer.performWithDelay(20, function () director:changeScene("level") end)
@@ -60,7 +54,7 @@ function new()
 	end
 	
 	local function bindListeners() 
-		local handlerTable = {toLevel1Handler,toLevel2Handler}
+		local handlerTable = {toLevel2Handler}--,toLevel1Handler}
 		
 		local idx = 1
 		while (idx <= #handlerTable) do
@@ -69,7 +63,7 @@ function new()
 		end
 	end
 	
-	localGroup:insert(level1Btn)
+	--localGroup:insert(level1Btn)
 	localGroup:insert(level2Btn)
 	localGroup:insert(gl.loading)
 	
