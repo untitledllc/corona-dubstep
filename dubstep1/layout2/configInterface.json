@@ -682,7 +682,25 @@
 				255, 200, 128
 			],
 			"alpha": 0.5
-		}
+		},
+        {
+            "scenes": {
+                "1": false,
+                "2": false,
+                "3": false,
+                "4": false,
+                "5": false
+            },
+            "soundId": "fx6",
+            "left": 800,
+            "top": 370,
+            "w": 100,
+            "h": 80,
+            "rgb": [
+                255, 200, 128
+            ],
+            "alpha": 0.5
+        }
 
 	],
 	"glitchButtons": [
