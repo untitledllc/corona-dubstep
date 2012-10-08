@@ -184,7 +184,7 @@
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.82,
+		"defaultVolume": 1.0,
 		"channel": "18"
 	},
 

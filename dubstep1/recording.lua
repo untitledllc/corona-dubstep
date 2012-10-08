@@ -242,8 +242,8 @@ function startRecording()
 												end
 											end
 											
-										--playRandom()
-										pl.playGoodMelody()
+										playRandom()
+										--pl.playGoodMelody()
 									end
 								end )								
 
@@ -251,7 +251,7 @@ function startRecording()
 	gl.timerTxt.isVisible = true
 	gl.nextSceneTimerTxt.isVisible = true
 	
-	Runtime:addEventListener("enterFrame",function ()
+	--[[Runtime:addEventListener("enterFrame",function ()
 												if (isRecSwitchedOn == true) then
 													gl.timerTxt.text = "Time left: "..tostring(
 														math.round((gl.fullRecordLength - 
@@ -271,9 +271,19 @@ function startRecording()
 										      				gl.currentSceneLocalTime)/1000))
 											  end
 										   end )
-											
+	]]--						
 end
 
+--[[ 
+action = 
+	{
+		actionTime,	-- time elapsed since the start of record
+		channel,	-- Channel number of action
+		actType,	-- "chVolume/pause/resume/start/stop/startGlitch/endGlitch"
+		volume,		-- The value of the volume on the channel
+		sound,		-- Handle to a sound file
+	}
+]]--
 function addAction(time,index,actType,vol,soundHandle)
     local action = {}
 	action["actionTime"] = time

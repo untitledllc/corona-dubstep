@@ -11,7 +11,7 @@ local function toMainScreen(event)
 end
 
 local function main()
-	local startSound = audio.loadSound("startSound.mp3")
+	local startSound = audio.loadStream("startSound.mp3")
 	audio.play(startSound, {channel = 30, loops = 0, onComplete = function()
 		audio.dispose(startSound)
 	end})

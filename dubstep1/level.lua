@@ -22,8 +22,6 @@ function new()
 	local localGroup = display.newGroup()
 	
 	local playModule = require("playing")
-	
-	layoutAppearTime = system.getTimer()
 
 	for i, v in pairs(gl.configInterface.soundButtons) do
 		local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId, ["label"] = v.label})
@@ -57,6 +55,8 @@ function new()
 	gl.mainGroup = mainGroup
 	gl.localGroup = localGroup 
 	gl.currentBacks = backs
+
+	layoutAppearTime = system.getTimer()
 
 	playModule.prepareToPlay()
 

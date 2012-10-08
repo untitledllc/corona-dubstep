@@ -2,7 +2,7 @@ module(...,package.seeall)
 
 local gl = require("globals") 
 local recording = require("recording")
-local curLayout = require(gl.currentLayout)
+local curLayout = require("level")
 local numSampleTypes = 5
 
 local runtimeGlitchHandler
@@ -282,7 +282,7 @@ function nextScene(event)
 			-- включаем музыку экрана с кнопкой шаринга
 			local path = system.pathForFile(gl.kitAddress.."share.mp3")
 			if path then
-				local shareMusic = audio.loadSound(gl.kitAddress.."share.mp3")
+				local shareMusic = audio.loadStream(gl.kitAddress.."share.mp3")
 				local ch = audio.findFreeChannel()
 				audio.play(shareMusic, {channel = ch, loops = -1})
 				audio.setVolume(0.5, {channel = ch})
@@ -584,7 +584,7 @@ function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParam
 end
 
 local function playChoosingMelody()
-	local m = audio.loadSound(gl.kitAddress.."chooseSide.mp3" )
+	local m = audio.loadStream(gl.kitAddress.."chooseSide.mp3" )
 	print(m)
 	local ch = audio.findFreeChannel()
 	audio.play(m, {channel = ch, loops = 0, onComplete = function()
@@ -732,10 +732,18 @@ function initSounds(kitAddress)
 	-- подгружаем всю музыку сразу (для текущей стороны)
 	--if gl.tracksStartSameTime then
 		for i, v in pairs(soundsConfig) do
-			if v.side then --and v.side == gl.choosenSide then
-				v.sound = audio.loadSound(kitAddress..v.side.."/"..v.name)
-			elseif not v.side then
-				v.sound = audio.loadSound(kitAddress..v.name)
+			if v.type == "melody" then
+				if v.side then --and v.side == gl.choosenSide then
+					v.sound = audio.loadStream(kitAddress..v.side.."/"..v.name)
+				elseif not v.side then
+					v.sound = audio.loadStream(kitAddress..v.name)
+				end
+			else
+				if v.side then --and v.side == gl.choosenSide then
+					v.sound = audio.loadSound(kitAddress..v.side.."/"..v.name)
+				elseif not v.side then
+					v.sound = audio.loadSound(kitAddress..v.name)
+				end
 			end
 			
 			v.channel = nil

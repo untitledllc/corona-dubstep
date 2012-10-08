@@ -436,8 +436,8 @@ function drawLayoutBtns()
 	
 	btn1.txt = display.newText("Back",0,0,native.systemFont,14)
 	btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
-	btn1.txt.x,btn1.txt.y = w/16,15*h/16
-	btn2.txt.x,btn2.txt.y = w/16,12*h/16
+	btn1.txt.x,btn1.txt.y = btn1.x, btn1.y
+	btn2.txt.x,btn2.txt.y = btn2.x, btn2.y
 	
 	repBtn.x,repBtn.y = 15*w/16,h/16
 	repBtn:setFillColor(255,140,140)
@@ -474,12 +474,15 @@ function drawLayoutBtns()
 			recording.cancelTimers(recording.goodEvilButtonTimers)
 			recording.goodEvilButtonTimers = {}
 			timer.cancel(sceneChangingTimer)
-			--for i, v in pairs(soundsConfig) do
-			--	if v.sound then
-			--		audio.dispose(v.sound)
-			--	end
-			--	v = {}
-			--end
+			for i, v in pairs(soundsConfig) do
+				if v.sound then
+					if v.type == "melody" then
+						audio.rewind(v.sound)
+					end
+					v.channel = nil
+				end
+			end
+			--local sampleKit = playModule.initSounds(kitAddress)
 			choosenSide = defaultSide
 			--soundsConfig = {}
 			--configInterface = {}
@@ -520,7 +523,7 @@ function drawLvl1Voices()
 	local oldSampleKitLength = #sampleKit
 	for i = oldSampleKitLength + 1, oldSampleKitLength + 19, 1 do
 		local str = path.."track"..i-oldSampleKitLength..".mp3"
-		track[1] = audio.loadSound(str)
+		track[1] = audio.loadStream(str)
 		track[2] = str
 		sampleKit[i] = track
 		track = {}

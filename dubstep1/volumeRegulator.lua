@@ -19,7 +19,7 @@ fxVolume = 0.5
 local gl = require("globals")
 local pl = require("playing")
 local rc = require("recording")
-local layout = require(gl.currentLayout)
+local layout = require("level")
 
 local ptSumms = nil
 

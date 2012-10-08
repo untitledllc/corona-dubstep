@@ -7,6 +7,6 @@ settings =
 	},
 	androidPermissions =
     {
-       "android.permission.RECORD_AUDIO"
+       
     },
 }
