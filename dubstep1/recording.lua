@@ -35,7 +35,7 @@ function cancelTimers(tim)
 	end
 end
 
-local function printUserActList()
+function printUserActList()
 	print("Start rec =",recPressTime)
 
 	for idx,val in pairs(userActionList) do
@@ -43,8 +43,14 @@ local function printUserActList()
 		print("Channel = ",val["channel"])
 		print("actionType = ",val["actType"])
 		print("Volume = ",val["volume"])
-		print("Category = ",val["category"])
-		print("channelActiveTime = ",val["channelActiveTime"])
+		print("id = ",val["id"])
+		print("loops = ",val["loops"])
+		if val["activeChannels"] then
+			print("Glitched channels = \n")
+			for i, value in pairs(val["activeChannels"]) do
+				print("		"..value.ch.." "..value.v)
+			end
+		end
 		print("\n")
 	end
 	print("-----------------------------------------------")
@@ -279,18 +285,23 @@ action =
 	{
 		actionTime,	-- time elapsed since the start of record
 		channel,	-- Channel number of action
-		actType,	-- "chVolume/pause/resume/start/stop/startGlitch/endGlitch"
+		actType,	-- "chVolume/pause/resume/start/stop/startGlitch/stopGlitch"
 		volume,		-- The value of the volume on the channel
-		sound,		-- Handle to a sound file
+		sound,		-- Id of the sound
+		loops,		-- Number of loops for playing
 	}
 ]]--
-function addAction(time,index,actType,vol,soundHandle)
+function addAction(time,ch,actType,vol,id, loops, activeChannels)
     local action = {}
 	action["actionTime"] = time
-	action["channel"] = index
+	action["channel"] = ch
 	action["actType"] = actType
 	action["volume"] = vol
-	action["sound"] = soundHandle
+	action["id"] = id
+	action["loops"] = loops
+	if activeChannels then
+		action["activeChannels"] = activeChannels
+	end
 	userActionList[#userActionList + 1] = action
 end
 

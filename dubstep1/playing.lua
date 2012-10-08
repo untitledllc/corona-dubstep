@@ -51,8 +51,12 @@ function prepareToPlay()
 				if (v.side and v.side == gl.choosenSide) or (not v.side) then
 					local ch = audio.findFreeChannel()
 					v.channel = ch
+					
 					audio.play(v.sound, {channel = v.channel, loops = -1})
+					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "start", 0, v.id, -1)
+					
 					audio.setVolume(0, {channel = v.channel})
+					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "chVolume", 0, v.id, -1)
 				end
 			end
 		end
@@ -63,8 +67,12 @@ function prepareToPlay()
 				if (gl.soundsConfig[v].side and gl.soundsConfig[v].side == gl.choosenSide) or (not gl.soundsConfig[v].side) then
 					local ch = audio.findFreeChannel()
 					gl.soundsConfig[v].channel = ch
+					
 					audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
+					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "start", 0, v.id, -1)
+
 					audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "chVolume", 0, v.id, -1)
 				end
 			end
 		end
@@ -109,12 +117,14 @@ function ifMelodyInScene(mInfo, sNum)
 end
 
 local function unpressButton(b)
+	local curSInfo = gl.soundsConfig[b.soundId]
 	if b.tween then
 		transition.cancel(b.tween)
 	end
 	b.alpha = 0.5
 	b.pressed = 0
-	audio.setVolume(0, {channel = gl.soundsConfig[b.soundId].channel})
+	audio.setVolume(0, {channel = curSInfo.channel})
+	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), curSInfo.channel, "chVolume", 0, curSInfo.id, -1)
 	if b.type == "melody" then
 
 	elseif b.type == "fx" then
@@ -204,7 +214,10 @@ function nextScene(event)
 				for i, v in pairs(gl.soundsInScenes[gl.currentScene - 1]) do
 					if gl.soundsConfig[v].type == "melody" and gl.soundsConfig[v].sound then
 						--if not ifMelodyInScene(gl.soundsConfig[v], gl.currentScene) then
+							
 							audio.stop(gl.soundsConfig[v].channel)
+							recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), gl.soundsConfig[v].channel, "stop", 0, gl.soundsConfig[v].id, -1)
+							
 							gl.soundsConfig[v].channel = nil
 							--audio.dispose(gl.soundsConfig[v].sound)
 							--gl.soundsConfig[v].sound = nil
@@ -218,8 +231,12 @@ function nextScene(event)
 						if (gl.soundsConfig[v].side and gl.soundsConfig[v].side == gl.choosenSide) or (not gl.soundsConfig[v].side) then
 							local ch = audio.findFreeChannel()
 							gl.soundsConfig[v].channel = ch
+							
 							audio.play(gl.soundsConfig[v].sound, {channel = gl.soundsConfig[v].channel, loops = -1})
+							recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), gl.soundsConfig[v].channel, "start", 0, gl.soundsConfig[v].id, -1)
+
 							audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
+							recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), gl.soundsConfig[v].channel, "chVolume", 0, gl.soundsConfig[v].id, -1)
 						end
 					end
 				end
@@ -294,6 +311,8 @@ function nextScene(event)
 			-- Кнопка шаринга
 			gl.shareBtn.isVisible = true
 			gl.shareBtn.txt.isVisible = true
+
+			recording.printUserActList()
 		end
 	end
 end
@@ -304,22 +323,21 @@ function playMelody(trackInfo,button)
 	if not button.pressed then
 		button.pressed = 1
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, -1)
 		button.alpha = 1
 	elseif button.pressed == 1 then
 		button.pressed = 0
 		audio.setVolume(0, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", 0, trackInfo.id, -1)
 		button.alpha = 0.5
 	elseif button.pressed == 0 then
 		button.pressed = 1
 		button.pressed = 1
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, -1)
 		button.alpha = 1
 	end
 
-  --[[  if (recording.isRecStarted() == true) then
-    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-   	end]]--
 end
 
 function playFX(trackInfo,button)
@@ -334,8 +352,10 @@ function playFX(trackInfo,button)
 	    							index,0,audio.getVolume({channel = index}),4,0)
 	   		end]]--
 		end})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
+		
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
-
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
 		--[[if (recording.isRecStarted() == true) then
     		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
     							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
@@ -349,6 +369,7 @@ function playFX(trackInfo,button)
 			button.alpha = 0.5
 		end
 		audio.stop(trackInfo.channel)
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "stop", trackInfo.defaultVolume, trackInfo.id, 0)
 		local ch = audio.findFreeChannel()
 		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
@@ -358,8 +379,10 @@ function playFX(trackInfo,button)
 	    							index,0,audio.getVolume({channel = index}),4,0)
 	   		end]]--
 		end})
-		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
 		--[[if (recording.isRecStarted() == true) then
     		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
     							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
@@ -378,17 +401,13 @@ function playVoice(trackInfo,button)
 		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
-			--[[if (recording.isRecStarted() == true) then
-	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    							index,0,audio.getVolume({channel = index}),4,0)
-	   		end]]--
+			
 		end})
-		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
-		--[[if (recording.isRecStarted() == true) then
-	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    						index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-	   	end]]--
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
+		
 
 		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
 	else
@@ -402,17 +421,13 @@ function playVoice(trackInfo,button)
 		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
-			--[[if (recording.isRecStarted() == true) then
-		   		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-		   							index,0,audio.getVolume({channel = index}),4,0)
-		  		end]]--
+			
 		end})
-		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
-		--[[if (recording.isRecStarted() == true) then
-	    	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    						index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-	   	end]]--
+		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
+		
 
 		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
 	end
@@ -451,7 +466,7 @@ function playGlitch(event)
 					--end
 				end
 				deltaSumm = 0
- 			end 	
+ 			end
  			
  			if (curMeasure > prevMeasure) then
 				delta = curMeasure - prevMeasure
@@ -479,23 +494,9 @@ function playGlitch(event)
  					end
  				end
  			end
-		
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "startGlitch", 0, 0, 0, activeChannels)
 		prevMeasure = system.getTimer()
 		curMeasure = 0
-		--[[
-		local activeChannel = {["channel"] = nil,["startTime"] = nil,["category"] = nil,["volume"] = nil}
-    	activeChannel.channel = gl.glitchChannel
-    	activeChannel.startTime = system.getTimer() - curLayout.getLayoutAppearTime()
-    	activeChannel.category = 6
-    	activeChannel.volume = 0
-   		activeChannels.glitchChannel = activeChannel
-   		]]--
-		if (recording.isRecStarted()) then
-			--glitchStartTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			--recording.addAction(glitchStartTime,gl.glitchChannel,1,0,6,0)
-		else
-			glitchStartTime = 0
-		end
 		
 		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)
 		display.getCurrentStage():setFocus(event.target, event.id)
@@ -508,89 +509,25 @@ function playGlitch(event)
 		event.target.alpha = 0.5
 		isGlitchStarted = false
 		
-		if (recording.isRecStarted()) then
-			--glitchFinishTime = system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime()
-			--recording.addAction(glitchFinishTime,gl.glitchChannel,0,0,6,0)
-		end
-		
-		--activeChannels.glitchChannel = {-1}
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, 0, 0, activeChannels)
 
 		for idx,val in pairs(activeChannels) do
-			--if (val.channel ~= nil and val.channel > partSumms[3]) then
-			
-				--[[if (val.channel > partSumms[3] and val.channel <= partSumms[4]) then
-				
-					if (volumePanel.scrolls[4] ~= nil) then	
-        				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[4]),{channel = val.channel})  	
-    				else	
-    					audio.setVolume(defaultVolume,{channel = val.channel})  
-   					end
-   					
-   				end]]--
-
-   				audio.setVolume(val.v,{channel = val.ch}) 
-   				--[[
-   				if (val.channel > partSumms[4] and val.channel <= partSumms[5]) then
-   				
-   					if (volumePanel.scrolls[5] ~= nil) then	
-        				audio.setVolume(volumePanel.getVolume(volumePanel.scrolls[5]),{channel = val.channel})  	
-    				else	
-    					audio.setVolume(defaultVolume,{channel = val.channel})  
-   					end
-   					
-   				end
-   				]]--
-				if (recording.isRecStarted()) then
-					if val.ch > 13 then
-						--recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    					--	val.ch,2,val.v,5,system.getTimer() - curLayout.getLayoutAppearTime())
-					else
-						--recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    					--	val.ch,2,val.v,2,system.getTimer() - curLayout.getLayoutAppearTime())
-					end
-				end
-				
-			--end
+   			audio.setVolume(val.v,{channel = val.ch})
 		end
 		display.getCurrentStage():setFocus(nil)
 	end
 end
 
-function play(group,kit,trackCounters,index,numSamples,numFX,numVoices,playParams)
-	if (index <= partSumms[1]) then
-		shutUpIntros(group,playParams[1],partSumms,trackCounters)
-		playIntro(group,index,trackCounters)
-	end
-	
-	if (index > partSumms[1] and index <= partSumms[2]) then
-		shutUpMelodies(group,playParams[2],partSumms,trackCounters)
-		playMelody(group,index,trackCounters)
-	end
-	
-	if (index > partSumms[2] and index <= partSumms[3]) then
-		shutUpDrums(group,playParams[3],partSumms,trackCounters)
-		playDrums(group,index,trackCounters)
-	end
-	
-	if (index > partSumms[3] and index <= partSumms[4]) then
-		shutUpFX(group,playParams[4],numSamples,numFX,numVoices)
-		playFX(group,kit,index)
-	end
-	
-	if (index > partSumms[4] and index <= partSumms[5]) then
-		shutUpVoices(group,playParams[5],numSamples,numFX,numVoices)
-		playVoice(group,kit,index)
-	end
-end
-
 local function playChoosingMelody()
 	local m = audio.loadStream(gl.kitAddress.."chooseSide.mp3" )
-	print(m)
 	local ch = audio.findFreeChannel()
 	audio.play(m, {channel = ch, loops = 0, onComplete = function()
 		audio.dispose(m)
 	end})
+	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), ch, "start", 0, "choosing", 0)
+	
 	audio.setVolume(0.5, {channel = ch})
+	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), ch, "chVolume", 0.5, "choosing", 0)
 end
 
 function playGoodMelody(event)
