@@ -279,7 +279,7 @@ function nextScene(event)
 			end
 		-- Если закончились сцены
 		else
-			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "endRecord", 0, 0, 0)
+			
 			-- Скрываем кнопки
 			for i = 1, gl.mainGroup[2].numChildren, 1 do
 					gl.mainGroup[2][i].isVisible = false
@@ -290,6 +290,9 @@ function nextScene(event)
 						unpressButton(gl.mainGroup[2][i])
 					end
 			end
+
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "endRecord", 0, 0, 0)
+			
 			gl.goodBtn.isVisible = false
 			gl.goodBtn.txt.isVisible = false
 			gl.evilBtn.isVisible = false
@@ -425,6 +428,7 @@ function playVoice(trackInfo,button)
 			button.alpha = 0.5
 		end
 		audio.stop(trackInfo.channel)
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "stop", 0, trackInfo.id, -1)
 		local ch = audio.findFreeChannel()
 		trackInfo.channel = ch
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()

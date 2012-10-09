@@ -1,12 +1,16 @@
 module (...,package.seeall)
 
+local gl = require("globals")
+
 local userActionList = {}
 local startReplayTime = nil
 local prevMeasure = nil
 local curActionIdx = 1
 
+local beginPauseTime = 0
+local timeInPause = 0
+
 function new()
-	local gl = require("globals")
 	audio.stop()
 	for i, v in pairs(gl.soundsConfig) do
 		if v.type == "melody" then
@@ -18,6 +22,10 @@ function new()
 	end
 	local w = gl.w
 	local h = gl.h
+
+	startReplayTime = nil
+	prevMeasure = nil
+	curActionIdx = 1
 	
 	local localGroup = display.newGroup()
 	
@@ -88,17 +96,19 @@ function new()
 			end
 			local curActTime = tonumber(userActionList[curActionIdx].actionTime)
 			while relPlayTime >= curActTime do
-				 
+				
 				makeAction(curActionIdx)
 
 				curActionIdx = curActionIdx + 1
 				curActTime = tonumber(userActionList[curActionIdx].actionTime)
 			end
+		else
+			timeInPause = system.getTimer() - beginPauseTime
 		end
 	end
 
 	local function openUserActList()
-		local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
+		local path = system.pathForFile( "test.json", system.DocumentsDirectory )
   	  	local f = io.open(path,"r")
     
    		if (not f) then
@@ -176,24 +186,25 @@ function new()
 	end
 	
 	local function stopPressed(event)
-		audio.stop()
-		if (scrollTransition) then
-			transition.cancel(scrollTransition)
-			scrollTransition = nil
-		end
+		if event.phase == "ended" then
+			Runtime:removeEventListener("enterFrame", mainPlayingFunction)
+			audio.stop()
+			isPaused = false
+			if (scrollTransition) then
+				transition.cancel(scrollTransition)
+				scrollTransition = nil
+			end
 
-		curPlayPos.x = 10
-		userActionList = {}
-		relPlayTime = 1000000
-		relEndTrackTime = 1
-		txtPlay.text = "Play"
-		playPressCounter = 0
-		currentMeasure = 0
-		prevMeasure = 0
-		
-		if (scrollTransition) then
-			transition.cancel(scrollTransition)
-			scrollTransition = nil
+			curPlayPos.x = 10
+			userActionList = {}
+			relPlayTime = 1000000
+			relEndTrackTime = 1
+			txtPlay.text = "Play"
+			playPressCounter = 0
+			currentMeasure = 0
+			prevMeasure = 0
+			
+			director:changeScene("replayModule")
 		end
 	end
 	
@@ -218,11 +229,11 @@ function new()
 		end
 
 		local curId = userActionList[index].id
-		local curChannel = userActionList[index].channel
-		local curVolume = userActionList[index].volume
+		local curChannel = tonumber(userActionList[index].channel)
+		local curVolume = tonumber(userActionList[index].volume)
 		local curActType = userActionList[index].actType
-		local curActTime = userActionList[index].actionTime
-		local curLoops = userActionList[index].loops
+		local curActTime = tonumber(userActionList[index].actionTime)
+		local curLoops = tonumber(userActionList[index].loops)
 		local curActiveChannels
 		if userActionList[index].activeChannels then
 			activeChannels = userActionList[index].activeChannels
@@ -230,7 +241,7 @@ function new()
 		
 		if curActType == "endRecord" then 
 			audio.stop()
-			return true
+			return 1
 		end
 		
 		if curActType == "chVolume" then
@@ -286,7 +297,7 @@ function new()
 				state = makeAction(actCounter)
 				if (state == true) then
 					txtPlay.text = "Play"
-					stopPressed(nil)
+					stopPressed({name = "touch", phase = "ended"})
 					return
 				else
 					actCounter = actCounter + 1		
@@ -362,7 +373,7 @@ function new()
 		else
 			audio.stop()
 			txtPlay.text = "Play"
-			stopPressed(nil)
+			stopPressed({name = "touch", phase = "ended"})
 			return
 		end
 	end
@@ -545,6 +556,7 @@ function new()
 					--makePreRecordActions()
 					Runtime:addEventListener("enterFrame", mainPlayingFunction)
 				else
+					startReplayTime = startReplayTime + timeInPause
 					audio.resume()
 					isPaused = false
 					prevMeasure = system.getTimer()
@@ -554,19 +566,18 @@ function new()
 					transition.cancel(scrollTransition)
 					scrollTransition = nil
 				end
-				print("here2")
 				scrollTransition = transition.to(curPlayPos,
 				{time=relEndTrackTime - relPlayTime,x=(w-10)})
 				
 				txtPlay.text = "Pause"
-					
-				actCounter = 1
 				
-				--play()
+				actCounter = 1
 			else
-				print("here")
-				audio.pause()
+				timeInPause = 0
 				isPaused = true
+				beginPauseTime = system.getTimer()
+				audio.pause()
+				
 				txtPlay.text = "Play"
 				if (scrollTransition) then
 					transition.cancel(scrollTransition)
@@ -585,7 +596,17 @@ function new()
 			
 			vol.scrolls = {}
 			Runtime:removeEventListener("enterFrame",play)
-			stopPressed(nil)
+			Runtime:removeEventListener("enterFrame", mainPlayingFunction)
+			audio.stop()
+			userActionList = {}
+			for i, v in pairs(gl.soundsConfig) do
+				if v.type == "melody" then
+					if v.sound then
+						audio.rewind(v.sound)
+					end
+					v.channel = nil
+				end
+			end
 			director:changeScene("mainScreen")
 		end
 	end

@@ -71,7 +71,7 @@ local function calcSeekTimeInActiveChannels(activeChannels)
 end
 
 function saveUserActList()
-    local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
+    local path = system.pathForFile( "test.json", system.DocumentsDirectory )
     local f = io.open(path,"w")
     if (not f) then
         print("not ok")
