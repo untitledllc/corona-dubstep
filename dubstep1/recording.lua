@@ -84,7 +84,6 @@ function saveUserActList()
     	if val["activeChannels"] then
     		tmpActiveChannels = {}
     		for i, value in pairs(val["activeChannels"]) do
-
     			tmpActiveChannels[#tmpActiveChannels + 1] = {channel = value.ch, volume = value.v}
     		end
     	else
@@ -92,7 +91,7 @@ function saveUserActList()
     	end
 
     	tempActionsTable[#tempActionsTable + 1] = {actionTime = tostring(val["actionTime"]), channel = tostring(val["channel"]), 
-    		actionType = tostring(val["actType"]), volume = tostring(val["volume"]), id = tostring(val["id"]), loops = tostring(val["loops"]), activeChannels = tmpActiveChannels}
+    		actType = tostring(val["actType"]), volume = tostring(val["volume"]), id = tostring(val["id"]), loops = tostring(val["loops"]), activeChannels = tmpActiveChannels}
 
     end
     local jsonUserActList = gl.jsonModule.encode(tempActionsTable)

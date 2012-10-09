@@ -1,4 +1,5 @@
 module (...,package.seeall)
+local userActionList = {}
 
 function new()
 	local gl = require("globals")
@@ -27,7 +28,6 @@ function new()
 	local isPaused = false
 	
 	local scrollTransition = nil
-	local userActionList = {}
 
 	local actionSize = 6
 
@@ -42,41 +42,9 @@ function new()
 	local toChangeGlitchState = gl.glitchShutUpTime
 	local glitchState = 1
 
-	local function printUserActList()
-	local a = 1
-		--for idx,val in pairs(userActionList) do
-			--print("actionTime = ",val["actionTime"])
-			--print("Channel = ",val["channel"])
-			--print("actionType = ",val["actType"])
-			--print("Volume = ",val["volume"])
-			--print("Category = ",val["category"])
-			--print("channelActiveTime = ",val["channelActiveTime"])
-			--print("\n")
-		--end
-		--print("-----------------------------------------------")
-	end
-
-	local function readAction(file)
-		local action = {}
-
-		action["actionTime"] = file:read("*number")
-	
-		if (action["actionTime"] == nil) then
-			return nil
-		end
-	
-		action["channel"] = file:read("*number")
-		action["actType"] = file:read("*number")
-		action["volume"] = file:read("*number")
-		action["category"] = file:read("*number")
-		action["channelActiveTime"] = file:read("*number")
-
-		return action
-	end
-
 	local function openUserActList()
 		local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
-  	  local f = io.open(path,"r")
+  	  	local f = io.open(path,"r")
     
    		if (not f) then
    	 		local errorTxt = display.newText("No records found", 0, 0, native.systemFont, 32)
@@ -84,16 +52,28 @@ function new()
     		return
    		end
     
-    	local act = 0
-    
-    	toSeekAtBeginTime = f:read("*number")
-    
-    	while (act) do
-    		act = readAction(f)
-    		userActionList[#userActionList+1] = act
+    	local jsonUserActList = f:read("*a")
+  		f:close()
+
+    	jsonUserActList = gl.jsonModule.decode(jsonUserActList)
+    	-- Пробегаем по списку всех действий
+    	for idx, act in pairs(jsonUserActList) do
+    		local action = {}
+    		-- пробегаем по всем полям каждого действия
+    		for fieldName, field in pairs(act) do
+    			if fieldName == "activeChannels" then
+    				-- пробегаем по списку каналов глитча, если он(список) есть
+    				action[fieldName] = {}
+    				for chIdx, ch in pairs(field) do
+    					table.insert(action[fieldName], {["ch"] = ch.channel, ["v"] = ch.volume})
+    				end
+    			else
+    				action[fieldName] = field
+    			end
+    		end
+    		table.insert(userActionList, action)
     	end
-    	f:close()
-	end
+    end
 	
 	local function prepareToReplay()
 		idx = 1
@@ -518,7 +498,7 @@ function new()
 			vol.scrolls = {}
 			Runtime:removeEventListener("enterFrame",play)
 			stopPressed(nil)
-			director:changeScene(gl.currentLayout)
+			director:changeScene("level")
 		end
 	end
 	
