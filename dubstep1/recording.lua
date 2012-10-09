@@ -70,23 +70,33 @@ local function calcSeekTimeInActiveChannels(activeChannels)
 	end
 end
 
-local function saveUserActList()
+function saveUserActList()
     local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
     local f = io.open(path,"w")
     if (not f) then
         print("not ok")
     end
-    
-    f:write(tostring(recPressTime).." ")
+
+	local tempActionsTable = {}
     
     for idx,val in pairs(userActionList) do
-    	f:write(tostring(val["actionTime"]).." ")
-		f:write(tostring(val["channel"]).." ")
-		f:write(tostring(val["actType"]).." ")
-		f:write(tostring(val["volume"]).." ")
-		f:write(tostring(val["category"]).." ")
-		f:write(tostring(val["channelActiveTime"]).." ")
+    	local tmpActiveChannels = {}
+    	if val["activeChannels"] then
+    		tmpActiveChannels = {}
+    		for i, value in pairs(val["activeChannels"]) do
+
+    			tmpActiveChannels[#tmpActiveChannels + 1] = {channel = value.ch, volume = value.v}
+    		end
+    	else
+    		tmpActiveChannels = nil
+    	end
+
+    	tempActionsTable[#tempActionsTable + 1] = {actionTime = tostring(val["actionTime"]), channel = tostring(val["channel"]), 
+    		actionType = tostring(val["actType"]), volume = tostring(val["volume"]), id = tostring(val["id"]), loops = tostring(val["loops"]), activeChannels = tmpActiveChannels}
+
     end
+    local jsonUserActList = gl.jsonModule.encode(tempActionsTable)
+    f:write(jsonUserActList)
     f:close()
 end
 

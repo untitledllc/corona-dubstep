@@ -312,6 +312,11 @@ function nextScene(event)
 			gl.shareBtn.isVisible = true
 			gl.shareBtn.txt.isVisible = true
 
+			gl.repBtn.isVisible = true
+			gl.repBtn.txt.isVisible = true
+
+			recording.saveUserActList()
+
 			recording.printUserActList()
 		end
 	end

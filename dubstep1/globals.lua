@@ -468,6 +468,7 @@ function drawLayoutBtns()
 	function changeScene(event)
 		if (event.phase == "ended") then
 			audio.stop()
+			audio.rewind()
 			loading.isVisible = true
 			recording.cancelTimers(recording.timers)
 			recording.timers = {}
@@ -477,7 +478,7 @@ function drawLayoutBtns()
 			for i, v in pairs(soundsConfig) do
 				if v.sound then
 					if v.type == "melody" then
-						audio.rewind(v.sound)
+						--audio.rewind(v.sound)
 					end
 					v.channel = nil
 				end
