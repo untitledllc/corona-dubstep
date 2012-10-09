@@ -1,10 +1,21 @@
 module (...,package.seeall)
+
 local userActionList = {}
+local startReplayTime = nil
+local prevMeasure = nil
+local curActionIdx = 1
 
 function new()
 	local gl = require("globals")
 	audio.stop()
-	audio.rewind()
+	for i, v in pairs(gl.soundsConfig) do
+		if v.type == "melody" then
+			if v.sound then
+				audio.rewind(v.sound)
+			end
+			v.channel = nil
+		end
+	end
 	local w = gl.w
 	local h = gl.h
 	
@@ -41,6 +52,50 @@ function new()
 	local deltaTSumm = 0
 	local toChangeGlitchState = gl.glitchShutUpTime
 	local glitchState = 1
+
+	local function mainPlayingFunction(event)
+		if not isPaused then
+			relPlayTime = (system.getTimer() - startReplayTime)
+			if relPlayTime >= relEndTrackTime then
+				Runtime:removeEventListener("enterFrame", mainPlayingFunction)
+				playPressCounter = 0
+
+				relPlayTime = 0
+
+				startReplayTime = nil
+
+				prevMeasure = nil
+
+				txtPlay.text = "Play"
+				
+				if (scrollTransition) then
+					transition.cancel(scrollTransition)
+					scrollTransition = nil
+				end
+
+				audio.stop()
+				
+				for i, v in pairs(gl.soundsConfig) do
+					if v.type == "melody" then
+						if v.sound then
+							audio.rewind(v.sound)
+						end
+						v.channel = nil
+					end
+				end
+
+				return -1
+			end
+			local curActTime = tonumber(userActionList[curActionIdx].actionTime)
+			while relPlayTime >= curActTime do
+				 
+				makeAction(curActionIdx)
+
+				curActionIdx = curActionIdx + 1
+				curActTime = tonumber(userActionList[curActionIdx].actionTime)
+			end
+		end
+	end
 
 	local function openUserActList()
 		local path = system.pathForFile( "test.txt", system.DocumentsDirectory )
@@ -142,7 +197,7 @@ function new()
 		end
 	end
 	
-	local function makeAction(index) 
+	function makeAction(index) 
 	
 		print("---------------")
 		print("NEW ACTION")
@@ -153,46 +208,73 @@ function new()
 		print("channel=",userActionList[index].channel)
 		print("actType=",userActionList[index].actType)
 		print("volume=",userActionList[index].volume)
-		print("category=",userActionList[index].category)
-		print("channelActiveTime=",userActionList[index].channelActiveTime)
+		print("id=",userActionList[index].id)
+		print("loops=",userActionList[index].loops)
+		if userActionList[index].activeChannels then
+			print("activeChannels=")
+			for i, val in pairs(userActionList[index].activeChannels) do
+				print("		channel = "..val.ch, " volume = "..val.v)
+			end
+		end
 
-		local track = userActionList[index].channel
-		local actType = userActionList[index].actType
-		local actTime = userActionList[index].actionTime
-		local category = userActionList[index].category
+		local curId = userActionList[index].id
+		local curChannel = userActionList[index].channel
+		local curVolume = userActionList[index].volume
+		local curActType = userActionList[index].actType
+		local curActTime = userActionList[index].actionTime
+		local curLoops = userActionList[index].loops
+		local curActiveChannels
+		if userActionList[index].activeChannels then
+			activeChannels = userActionList[index].activeChannels
+		end
 		
-		if (track == -1) then 
+		if curActType == "endRecord" then 
 			audio.stop()
 			return true
 		end
 		
-		if (actType == 1 and category > 3 and category < 6) then
-			audio.setVolume(userActionList[index].volume,{channel = track})
-			audio.play(gl.currentKit[track][1],{channel = track})
+		if curActType == "chVolume" then
+			audio.setVolume(curVolume, {channel = curChannel})
+			return 1
 		end
-		
-		if (actType == 0 and category > 3 and category < 6) then
-			audio.stop(track)
+
+		if curActType == "pause" then
+			audio.pause(curChannel)
+			return 1
 		end
-		
-		if (actType == 1 and category <=  3) then
-			audio.setVolume(userActionList[index].volume,{channel = track})
+
+		if curActType == "resume" then
+			audio.resume(curChannel)
+			return 1
 		end
-		
-		if (actType == 0 and category <= 3) then
-			audio.setVolume(0,{channel = track})
+
+		if curActType == "start" then
+			if curId == "choosing" then
+				local m = audio.loadStream(gl.kitAddress.."chooseSide.mp3" )
+				audio.play(m, {channel = curChannel, loops = curLoops, onComplete = function()
+					audio.dispose(m)
+				end})
+			elseif gl.soundsConfig[curId].sound then
+				audio.play(gl.soundsConfig[curId].sound, {channel = curChannel, loops = curLoops})
+			else
+				return -1
+			end
+			return 1
 		end
-		
-		if (actType == 2) then
-			audio.setVolume(userActionList[index].volume,{channel = track})
+
+		if curActType == "stop" then
+			audio.stop(curChannel)
+			return 1
 		end
-		
-		if (actType == 1 and category == 6) then
-			isGlitchStarted = true
+
+		if curActType == "startGlitch" then
+
+			return 1
 		end
-		
-		if (actType == 0 and category == 6) then
-			isGlitchStarted = false
+
+		if curActType == "stopGlitch" then
+
+			return 1
 		end
 		
 		return false
@@ -448,14 +530,20 @@ function new()
 		if (event.phase == "ended") then
 			if (playPressCounter % 2 == 0) then
 				if (playPressCounter == 0) then	
-					openUserActList()		
-					prepareToReplay()
+					openUserActList()
+					--prepareToReplay()
+
+					relPlayTime = 0
+
+					startReplayTime = system.getTimer()
+
 					prevMeasure = system.getTimer()
 
 					relEndTrackTime = userActionList[#userActionList].actionTime + 200
-					relPlayTime = 0
+					print(relEndTrackTime)
 					
-					makePreRecordActions()
+					--makePreRecordActions()
+					Runtime:addEventListener("enterFrame", mainPlayingFunction)
 				else
 					audio.resume()
 					isPaused = false
@@ -474,7 +562,7 @@ function new()
 					
 				actCounter = 1
 				
-				play()
+				--play()
 			else
 				print("here")
 				audio.pause()
@@ -498,16 +586,18 @@ function new()
 			vol.scrolls = {}
 			Runtime:removeEventListener("enterFrame",play)
 			stopPressed(nil)
-			director:changeScene("level")
+			director:changeScene("mainScreen")
 		end
 	end
+
+	
 	
 	local function bindListeners()
 		playBtn:addEventListener("touch",playPressed)
 		stopBtn:addEventListener("touch",stopPressed)
 		exitBtn:addEventListener("touch",exitPressed)
 		playLine:addEventListener("touch",onSeek)
-		Runtime:addEventListener("enterFrame",play)
+		--Runtime:addEventListener("enterFrame",play)
 	end
 	
 	playLine:setFillColor(255,0,0)

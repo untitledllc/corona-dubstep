@@ -279,6 +279,7 @@ function nextScene(event)
 			end
 		-- Если закончились сцены
 		else
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "endRecord", 0, 0, 0)
 			-- Скрываем кнопки
 			for i = 1, gl.mainGroup[2].numChildren, 1 do
 					gl.mainGroup[2][i].isVisible = false
@@ -295,6 +296,8 @@ function nextScene(event)
 			gl.evilBtn.txt.isVisible = false
 			gl.nextSceneButton.isVisible = false
 			gl.nextSceneButton.txt.isVisible = false
+
+
 
 			-- включаем музыку экрана с кнопкой шаринга
 			local path = system.pathForFile(gl.kitAddress.."share.mp3")
