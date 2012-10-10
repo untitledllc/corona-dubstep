@@ -2,6 +2,8 @@ system.activate("multitouch")
 
 local director = require("director")
 
+local gl = require("globals")
+
 display.setStatusBar( display.HiddenStatusBar )
 
 local mainGroup = display.newGroup()
@@ -12,7 +14,14 @@ end
 
 local function main()
 	local startSound = audio.loadStream("startSound.mp3")
-	audio.play(startSound, {channel = 30, loops = 0, onComplete = function()
+	audio.play(startSound, {channel = 31, loops = 0, onComplete = function()
+		local hymn = audio.loadStream("hymn.mp3")
+		if not gl.inLevel then
+			audio.play(hymn, {channel = 32, loops = 0, onComplete = function() 
+				audio.dispose(hymn)
+				print("work")
+			end})
+		end
 		audio.dispose(startSound)
 	end})
 	audio.setVolume(0.25, {channel = 30})
@@ -20,7 +29,7 @@ local function main()
 	director:changeScene("splashScreen")
 	timer.performWithDelay(500, function () 
 									-- версия с загрузкой музыки на сплеш скрине
-									local gl = require("globals")
+									
 									gl.currentLayout = "layout2"
 									local kitAddress = gl.currentLayout.."/"
 									gl.kitAddress = kitAddress

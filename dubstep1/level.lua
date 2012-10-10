@@ -14,7 +14,7 @@ end
 
 function new()
 	local gl = require("globals")
-
+	audio.stop(32)
 	local w = gl.w
 	local h = gl.h
 

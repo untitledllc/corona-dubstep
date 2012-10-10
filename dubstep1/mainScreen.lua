@@ -49,6 +49,7 @@ function new()
 			--localGroup[2]:removeEventListener("touch", toLevel1Handler)
 			gl.currentLayout = "layout2"
 			gl.choosenSide = "evil"
+			gl.inLevel = true
 			timer.performWithDelay(20, function () director:changeScene("level") end)
 		end
 	end
