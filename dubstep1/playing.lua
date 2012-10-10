@@ -5,7 +5,8 @@ local recording = require("recording")
 local curLayout = require("level")
 local numSampleTypes = 5
 
-local runtimeGlitchHandler
+--local runtimeGlitchHandler
+local runtimeGlitchHandlers = {}
 
 local defaultVolume = 0.2
 
@@ -445,10 +446,8 @@ function playVoice(trackInfo,button)
 	end
 end
 
-
-
-function playGlitch(event)
- 	local tiks = 0
+function makeGlitchFunc(button)
+	local tiks = 0
  	local glitchStartTime = nil
  	local glitchFinishTime = nil
 	local prevMeasure = 0
@@ -458,6 +457,56 @@ function playGlitch(event)
 	local deltaSumm = 0
 	local activeChannelsCopy = {}
 	--local isGlitchStarted = false
+	local function runtimeGlitchHandler(event)
+		--if (isGlitchStarted == true) then
+ 			if (deltaSumm > gl.glitchShutUpTime) then
+ 				button.alpha = 1
+ 				for idx,val in pairs(activeChannels) do
+					--if (val.channel ~= nil and val.channel > partSumms[3]) then
+						audio.setVolume(0,{channel = val.ch})
+					--end
+				end
+ 			end
+
+ 			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
+ 				button.alpha = 0.5
+ 				for idx,val in pairs(activeChannels) do
+					--if (val.channel ~= nil and val.channel > partSumms[3]) then
+						audio.setVolume(val.v,{channel = val.ch})	
+					--end
+				end
+				deltaSumm = 0
+ 			end
+ 			
+ 			if (curMeasure > prevMeasure) then
+				delta = curMeasure - prevMeasure
+				prevMeasure = curMeasure
+				deltaSumm = deltaSumm + delta
+			end
+ 			
+ 			curMeasure = system.getTimer()
+ 			
+ 			glitchLocalTime = glitchLocalTime + delta
+ 		--else
+ 		--	Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
+ 		--end
+	end
+	return runtimeGlitchHandler
+end
+
+
+
+function playGlitch(event)
+ 	--[[local tiks = 0
+ 	local glitchStartTime = nil
+ 	local glitchFinishTime = nil
+	local prevMeasure = 0
+	local curMeasure = 0
+	local delta = 0
+	local glitchLocalTime = 0
+	local deltaSumm = 0
+	local activeChannelsCopy = {}
+	local isGlitchStarted = false
 	
  	runtimeGlitchHandler = function(e)
  		if (isGlitchStarted == true) then
@@ -493,7 +542,7 @@ function playGlitch(event)
  			Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
  		end
  	end
-	
+	]]--
 	if (event.phase == "began") then
 		isGlitchStarted = true
 		activeChannels = {}
@@ -510,14 +559,17 @@ function playGlitch(event)
 		prevMeasure = system.getTimer()
 		curMeasure = 0
 		
-		Runtime:addEventListener("enterFrame",runtimeGlitchHandler)
+		local glitchHandler = makeGlitchFunc(event.target)
+		runtimeGlitchHandlers[#runtimeGlitchHandlers + 1] = glitchHandler
+		Runtime:addEventListener("enterFrame",runtimeGlitchHandlers[#runtimeGlitchHandlers])
+		event.target.glitchIdx = #runtimeGlitchHandlers
 		display.getCurrentStage():setFocus(event.target, event.id)
 	end
 	
 	if (event.phase == "ended" or (event.phase == "moved"  and 
 		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
 		
-		Runtime:removeEventListener("enterFrame",runtimeGlitchHandler)
+		Runtime:removeEventListener("enterFrame",runtimeGlitchHandlers[event.target.glitchIdx])
 		event.target.alpha = 0.5
 		isGlitchStarted = false
 		

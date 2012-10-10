@@ -2,6 +2,9 @@ module (...,package.seeall)
 
 local gl = require("globals")
 
+local runtimeGlitchHandlers = {}
+local glitchFlags = {}
+
 local userActionList = {}
 local startReplayTime = nil
 local prevMeasure = nil
@@ -207,6 +210,54 @@ function new()
 			director:changeScene("replayModule")
 		end
 	end
+
+	local function makeGlitchFunc( activeChannels )
+		local tiks = 0
+	 	local glitchStartTime = nil
+	 	local glitchFinishTime = nil
+		local prevMeasure = 0
+		local curMeasure = 0
+		local delta = 0
+		local glitchLocalTime = 0
+		local deltaSumm = 0
+		local activeChannelsCopy = {}
+		--local isGlitchStarted = false
+		local function runtimeGlitchHandler(event)
+			--if (isGlitchStarted == true) then
+	 			if (deltaSumm > gl.glitchShutUpTime) then
+	 				--button.alpha = 1
+	 				for idx,val in pairs(activeChannels) do
+						--if (val.channel ~= nil and val.channel > partSumms[3]) then
+							audio.setVolume(0,{channel = val.ch})
+						--end
+					end
+	 			end
+
+	 			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
+	 				--button.alpha = 0.5
+	 				for idx,val in pairs(activeChannels) do
+						--if (val.channel ~= nil and val.channel > partSumms[3]) then
+							audio.setVolume(val.v,{channel = val.ch})	
+						--end
+					end
+					deltaSumm = 0
+	 			end
+	 			
+	 			if (curMeasure > prevMeasure) then
+					delta = curMeasure - prevMeasure
+					prevMeasure = curMeasure
+					deltaSumm = deltaSumm + delta
+				end
+	 			
+	 			curMeasure = system.getTimer()
+	 			
+	 			glitchLocalTime = glitchLocalTime + delta
+	 		--else
+	 		--	Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
+	 		--end
+		end
+		return runtimeGlitchHandler
+	end
 	
 	function makeAction(index) 
 	
@@ -279,12 +330,14 @@ function new()
 		end
 
 		if curActType == "startGlitch" then
-
+			local runtimeGlitchHandler = makeGlitchFunc(activeChannels)
+			runtimeGlitchHandlers[curId] = runtimeGlitchHandler
+			Runtime:addEventListener("enterFrame", runtimeGlitchHandlers[curId])
 			return 1
 		end
 
 		if curActType == "stopGlitch" then
-
+			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[curId])
 			return 1
 		end
 		
