@@ -206,6 +206,10 @@ function new()
 			playPressCounter = 0
 			currentMeasure = 0
 			prevMeasure = 0
+
+			for i, v in pairs(runtimeGlitchHandlers) do
+				Runtime:removeEventListener("enterFrame", v)
+			end
 			
 			director:changeScene("replayModule")
 		end
@@ -256,6 +260,7 @@ function new()
 	 		--	Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
 	 		--end
 		end
+		prevMeasure = system.getTimer()
 		return runtimeGlitchHandler
 	end
 	
@@ -287,11 +292,14 @@ function new()
 		local curLoops = tonumber(userActionList[index].loops)
 		local curActiveChannels
 		if userActionList[index].activeChannels then
-			activeChannels = userActionList[index].activeChannels
+			curActiveChannels = userActionList[index].activeChannels
 		end
 		
 		if curActType == "endRecord" then 
 			audio.stop()
+			for i, v in pairs(runtimeGlitchHandlers) do
+				Runtime:removeEventListener("enterFrame", v)
+			end
 			return 1
 		end
 		
@@ -302,11 +310,17 @@ function new()
 
 		if curActType == "pause" then
 			audio.pause(curChannel)
+			for i, v in pairs(runtimeGlitchHandlers) do
+				Runtime:removeEventListener("enterFrame", v)
+			end
 			return 1
 		end
 
 		if curActType == "resume" then
 			audio.resume(curChannel)
+			for i, v in pairs(runtimeGlitchHandlers) do
+				Runtime:addEventListener("enterFrame", v)
+			end
 			return 1
 		end
 
@@ -330,7 +344,7 @@ function new()
 		end
 
 		if curActType == "startGlitch" then
-			local runtimeGlitchHandler = makeGlitchFunc(activeChannels)
+			local runtimeGlitchHandler = makeGlitchFunc(curActiveChannels)
 			runtimeGlitchHandlers[curId] = runtimeGlitchHandler
 			Runtime:addEventListener("enterFrame", runtimeGlitchHandlers[curId])
 			return 1
@@ -338,6 +352,10 @@ function new()
 
 		if curActType == "stopGlitch" then
 			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[curId])
+			for idx,val in pairs(curActiveChannels) do
+	   			audio.setVolume(val.v,{channel = val.ch})
+			end
+			runtimeGlitchHandlers[curId] = nil
 			return 1
 		end
 		
@@ -660,6 +678,9 @@ function new()
 					v.channel = nil
 				end
 			end
+			for i, v in pairs(runtimeGlitchHandlers) do
+				Runtime:removeEventListener("enterFrame", v)
+			end
 			director:changeScene("mainScreen")
 		end
 	end
@@ -670,7 +691,7 @@ function new()
 		playBtn:addEventListener("touch",playPressed)
 		stopBtn:addEventListener("touch",stopPressed)
 		exitBtn:addEventListener("touch",exitPressed)
-		playLine:addEventListener("touch",onSeek)
+		--playLine:addEventListener("touch",onSeek)
 		--Runtime:addEventListener("enterFrame",play)
 	end
 	

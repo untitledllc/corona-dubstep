@@ -491,6 +491,7 @@ function makeGlitchFunc(button)
  		--	Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
  		--end
 	end
+	prevMeasure = system.getTimer()
 	return runtimeGlitchHandler
 end
 
@@ -555,14 +556,15 @@ function playGlitch(event)
  					end
  				end
  			end
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "startGlitch", 0, 0, 0, activeChannels)
-		prevMeasure = system.getTimer()
-		curMeasure = 0
+ 		event.target.glitchIdx = "gl"..tostring(#runtimeGlitchHandlers + 1)
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "startGlitch", 0, event.target.glitchIdx, 0, activeChannels)
+		--prevMeasure = system.getTimer()
+		--curMeasure = 0
 		
 		local glitchHandler = makeGlitchFunc(event.target)
-		runtimeGlitchHandlers[#runtimeGlitchHandlers + 1] = glitchHandler
-		Runtime:addEventListener("enterFrame",runtimeGlitchHandlers[#runtimeGlitchHandlers])
-		event.target.glitchIdx = #runtimeGlitchHandlers
+		runtimeGlitchHandlers[event.target.glitchIdx] = glitchHandler
+		Runtime:addEventListener("enterFrame",runtimeGlitchHandlers[event.target.glitchIdx])
+		
 		display.getCurrentStage():setFocus(event.target, event.id)
 	end
 	
@@ -573,11 +575,12 @@ function playGlitch(event)
 		event.target.alpha = 0.5
 		isGlitchStarted = false
 		
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, 0, 0, activeChannels)
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, event.target.glitchIdx, 0, activeChannels)
 
 		for idx,val in pairs(activeChannels) do
    			audio.setVolume(val.v,{channel = val.ch})
 		end
+		runtimeGlitchHandlers[event.target.glitchIdx] = nil
 		display.getCurrentStage():setFocus(nil)
 	end
 end

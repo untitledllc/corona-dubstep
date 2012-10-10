@@ -296,7 +296,7 @@ action =
 		channel,	-- Channel number of action
 		actType,	-- "chVolume/pause/resume/start/stop/startGlitch/stopGlitch/endRecord"
 		volume,		-- The value of the volume on the channel
-		sound,		-- Id of the sound
+		id,		-- Id of the sound
 		loops,		-- Number of loops for playing
 	}
 ]]--
