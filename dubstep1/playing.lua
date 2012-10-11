@@ -125,7 +125,7 @@ local function unpressButton(b)
 	if b.tween then
 		transition.cancel(b.tween)
 	end
-	b.alpha = 0.5
+	--b.alpha = 0.5
 	b.pressed = 0
 	audio.setVolume(0, {channel = curSInfo.channel})
 	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), curSInfo.channel, "chVolume", 0, curSInfo.id, -1)
@@ -179,10 +179,11 @@ function nextScene(event)
 					if gl.tracksStartSameTime then 
 						if not ifButtonInScene(curBInfo.button, gl.currentScene) then
 							curBInfo.button.isVisible = false
-							curBInfo.button.txt.isVisible = false
+							--curBInfo.button.txt.isVisible = false
 							-- Если кнопка нажата, то "отжимаем"
 							if curBInfo.button.pressed and curBInfo.button.pressed ~= 0 then
-								unpressButton(curBInfo.button)
+								--unpressButton(curBInfo.button)
+								curBInfo.button:dispatchEvent({name = "emulatePress", phase = "release", target = curBInfo.button})
 							end
 							--gl.configInterface.soundButtons[v[1]].button.txt:removeSelf()
 							--gl.configInterface.soundButtons[v[1]].button.txt = nil
@@ -194,7 +195,8 @@ function nextScene(event)
 						curBInfo.button.txt.isVisible = false
 						-- Если кнопка нажата, то "отжимаем"
 						if curBInfo.button.pressed and curBInfo.button.pressed ~= 0 then
-							unpressButton(curBInfo.button)
+							--unpressButton(curBInfo.button)
+							curBInfo.button:dispatchEvent({name = "emulatePress", phase = "release", target = curBInfo.button})
 						end
 					end
 				end
@@ -277,22 +279,32 @@ function nextScene(event)
 				local curBInfo = gl.configInterface.soundButtons[v[1]]
 				if curBInfo.button and curBInfo.side == gl.choosenSide then
 					if v[2] == true and (not curBInfo.button.pressed  or curBInfo.button.pressed == 0) then
-						gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "touch", phase = "ended"})
+						gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "emulatePress", phase = "release", target = gl.configInterface.soundButtons[v[1]].button})
 					end
 				end
 			end
 		-- Если закончились сцены
 		else
 			
-			-- Скрываем кнопки
+			--[[ Скрываем кнопки
 			for i = 1, gl.mainGroup[2].numChildren, 1 do
 					gl.mainGroup[2][i].isVisible = false
-					gl.mainGroup[2][i].txt.isVisible = false
+					--gl.mainGroup[2][i].txt.isVisible = false
 
 					-- Если кнопка нажата, то "отжимаем"
 					if gl.mainGroup[2][i].pressed and gl.mainGroup[2][i].pressed ~= 0 then
-						unpressButton(gl.mainGroup[2][i])
+						--unpressButton(gl.mainGroup[2][i])
+						gl.mainGroup[2][i]:dispatchEvent({name = "emulatePress", phase = "release", target = gl.mainGroup[2][i]})
 					end
+			end
+			]]--
+
+			for i, v in pairs(gl.configInterface.soundButtons) do
+				v.button.isVisible = false
+
+				if v.button.pressed and v.button.pressed ~= 0 then
+					v.button:dispatchEvent({name = "emulatePress", phase = "release", target = v.button})
+				end
 			end
 
 			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "endRecord", 0, 0, 0)

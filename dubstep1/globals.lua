@@ -218,6 +218,7 @@ function createButton(arg)
 											local _alpha = event.target.alpha
 											local _track = event.target.track
 											local _pressed = event.target.pressed
+											local _isVisible = event.target.isVisible
 
 											display.remove(event.target)
 											event.target = widget.newButton{
@@ -241,6 +242,8 @@ function createButton(arg)
 											event.target.y = y
 											event.target.track = _track
 											event.target.pressed = _pressed
+											event.target.isVisible = _isVisible
+											mainGroup[2]:insert(event.target)
 											configInterface.soundButtons[idx].button = event.target
 										elseif event.target.type == "voice" then
 											require("playing").playVoice(event.target.track, event.target)
