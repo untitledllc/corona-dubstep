@@ -7,9 +7,9 @@ function new()
 	
 	local delta = 3
 	
-	gl.loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
+	--[[gl.loading = display.newText("Loading...", 0, 0, native.systemFont, 32)
 	gl.loading.x,gl.loading.y = gl.w/2,gl.h/4
-	gl.loading.isVisible = false
+	gl.loading.isVisible = false]]--
 	
 	--local level1Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)
 	local level2Btn = display.newRoundedRect(1,1,gl.w/5,gl.h/5,2)

@@ -14,22 +14,18 @@ end
 
 local function main()
 	local startSound = audio.loadStream("startSound.mp3")
-	audio.play(startSound, {channel = 31, loops = 0, onComplete = function()
-		local hymn = audio.loadStream("hymn.mp3")
-		if not gl.inLevel then
-			audio.play(hymn, {channel = 32, loops = 0, onComplete = function() 
-				audio.dispose(hymn)
-				print("work")
-			end})
-		end
+	audio.play(startSound, {channel = 32, loops = 0, onComplete = function()
 		audio.dispose(startSound)
 	end})
-	audio.setVolume(0.25, {channel = 30})
+	audio.setVolume(0.25, {channel = 32})
 	mainGroup:insert(director.directorView)
 	director:changeScene("splashScreen")
 	timer.performWithDelay(500, function () 
 									-- версия с загрузкой музыки на сплеш скрине
-									
+									gl.loading = display.newImageRect("images/elements/loading.png", gl.w/10, gl.h/10)
+									gl.loading.x,gl.loading.y = 7*gl.w/10,2*gl.h/3
+									gl.loading.isVisible = true
+									transition.to(gl.loading, {time = 3000, rotation = 360})
 									gl.currentLayout = "layout2"
 									local kitAddress = gl.currentLayout.."/"
 									gl.kitAddress = kitAddress
@@ -63,7 +59,7 @@ local function main()
 									end
 									
 									timer.performWithDelay(200, function()
-											director:changeScene("mainScreen")
+											director:changeScene("level")
 										end)
 				end )
 	return true

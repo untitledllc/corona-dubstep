@@ -331,35 +331,6 @@ function changeBackGround(object)
 	end)
 end
 
-function mySeek(time,sound,chan,loop)
-	if (loop == nil) then
-		loop = 0
-	end
-	
-	if (time <= 0) then
-		audio.play(sound,{channel = chan,loops = loop})
-		return
-	end
-
-	audio.play(sound,{channel = chan,loops = loop})
-	audio.seek(audio.getDuration(sound) - (time % audio.getDuration(sound)),{channel = chan}) 
-end
-
-function seekGlitch(time) 
-	local state = nil
-	local timeToChangeState = nil
-	noLoopsTime = time % (glitchShutUpTime+glitchPlayTime)
-	if (noLoopsTime > glitchShutUpTime) then
-		state = 1
-		timeToChangeState = (glitchShutUpTime+glitchPlayTime) - noLoopsTime
-	else
-		state = 0 
-		timeToChangeState = glitchShutUpTime - noLoopsTime
-	end
-	
-	return state,timeToChangeState
-end
-
 function drawLayoutBtns()
 	activeChannels = {}
 	partSumms = {}
@@ -386,7 +357,7 @@ function drawLayoutBtns()
 	goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
 	evilBtn = display.newRoundedRect(7*w/16,3*h/12,4*w/16,5*h/15,10)
 	
-	volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
+	--volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
 	timerTxt = display.newText("",0,0,native.systemFont,14)
 	timerTxt.x,timerTxt.y = w/2,6*h/7
@@ -449,19 +420,19 @@ function drawLayoutBtns()
 	repBtn.txt.isVisible = false
 	repBtn.txt:setTextColor(0,255,0)
 	
-	volumeBtn.x,volumeBtn.y = w/16,h/16
-	volumeBtn:setFillColor(140,255,140)
-	volumeBtn.alpha = 0.5
+	--volumeBtn.x,volumeBtn.y = w/16,h/16
+	--volumeBtn:setFillColor(140,255,140)
+	--volumeBtn.alpha = 0.5
 	
-	volumeBtn.txt = display.newText("EQ",0,0,native.systemFont,14)
-	volumeBtn.txt.x,volumeBtn.txt.y = w/16,h/16
-	volumeBtn.isVisible = false
-	volumeBtn.txt.isVisible = false
+	--volumeBtn.txt = display.newText("EQ",0,0,native.systemFont,14)
+	--volumeBtn.txt.x,volumeBtn.txt.y = w/16,h/16
+	--volumeBtn.isVisible = false
+	--volumeBtn.txt.isVisible = false
 	
-	btn1.scene = "mainScreen"
+	btn1.scene = "level"
 	btn2.scene = "level"
 	repBtn.scene = "replayModule"
-	volumeBtn.scene = "volumeRegulator"
+	--volumeBtn.scene = "volumeRegulator"
 	
 	recording.cancelTimers(recording.getTimers())
 	
@@ -488,9 +459,15 @@ function drawLayoutBtns()
 			--configInterface = {}
 			--buttonsInScenes = {}
 			--soundsInScenes = {}
+			if event.target == btn1 then
+				require("level").atOncePlay = false
+			elseif event.target == btn2 then
+				require("level").atOncePlay = true
+			end
 			timer.performWithDelay(200, function()
 				director:changeScene(event.target.scene)
 			end)
+
 		end
 	end
 	
@@ -499,7 +476,7 @@ function drawLayoutBtns()
 	btn1:addEventListener("touch",changeScene)
 	btn2:addEventListener("touch",changeScene)
 	repBtn:addEventListener("touch",changeScene)
-	volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
+	--volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
 	goodBtn:addEventListener("touch",playing.playGoodMelody)
 	evilBtn:addEventListener("touch",playing.playEvilMelody)
 	shareBtn:addEventListener("touch",function()
@@ -510,7 +487,7 @@ function drawLayoutBtns()
 	btns[1] = btn1
 	btns[2] = btn2
 	btns[3] = repBtn
-	btns[4] = volumeBtn
+	--btns[4] = volumeBtn
 	return btns
 end
 

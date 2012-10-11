@@ -544,7 +544,8 @@ function new()
 			for i, v in pairs(runtimeGlitchHandlers) do
 				Runtime:removeEventListener("enterFrame", v)
 			end
-			director:changeScene("mainScreen")
+			require("level").atOncePlay = false
+			director:changeScene("level")
 		end
 	end
 
