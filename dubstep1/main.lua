@@ -8,10 +8,6 @@ display.setStatusBar( display.HiddenStatusBar )
 
 local mainGroup = display.newGroup()
 
-local function toMainScreen(event)
-	director:changeScene("layout1")
-end
-
 local function main()
 	local startSound = audio.loadStream("startSound.mp3")
 	audio.play(startSound, {channel = 32, loops = 0, onComplete = function()
@@ -24,8 +20,8 @@ local function main()
 									-- версия с загрузкой музыки на сплеш скрине
 									gl.loading = display.newImageRect("images/elements/loading.png", gl.w/10, gl.h/10)
 									gl.loading.x,gl.loading.y = 7*gl.w/10,2*gl.h/3
-									gl.loading.isVisible = true
-									transition.to(gl.loading, {time = 3000, rotation = 360})
+									gl.loading.isVisible = false
+									--transition.to(gl.loading, {time = 3000, rotation = 360})
 									gl.currentLayout = "layout2"
 									local kitAddress = gl.currentLayout.."/"
 									gl.kitAddress = kitAddress

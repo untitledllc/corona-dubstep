@@ -2,6 +2,8 @@ module(...,package.seeall)
 
 jsonModule = require "json"
 
+local widget = require "widget"
+
 w = display.contentWidth
 h = display.contentHeight
 
@@ -56,6 +58,7 @@ glitchPlayTime = 70
 currentBacks = nil
 currentHiddenBtns = {}
 
+menuButtonFinal = nil
 repBtn = nil
 btn1 = nil
 btn2 = nil
@@ -63,6 +66,8 @@ volumeBtn = nil
 goodBtn = nil
 evilBtn = nil
 nextSceneButton = nil
+
+navBar = nil
 
 eqTxt = nil
 repTxt = nil
@@ -81,6 +86,11 @@ function readFile(_fname, prefix, base)
 	if not base then base = nil end
 
 	if not prefix then prefix = "" end
+
+	if type(prefix) ~= "string" then
+		base = prefix
+		prefix = ""
+	end
 
 	local fname = prefix.._fname
 
@@ -122,6 +132,8 @@ function createButton(arg)
 	local _width
 	local _height
 	local _label
+	local _default
+	local _over
 
 	if arg.left and type(arg.left) == "number" then
 		_left = arg.left
@@ -169,10 +181,92 @@ function createButton(arg)
 		_label = arg.label
 	end
 
-	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
-	b.txt = display.newText(_label,_left,_top,native.systemFont,14)
-	b.txt.x = b.x
-	b.txt.y = b.y
+	if arg.default then
+		_default = "images/elements/"..arg.default
+	end
+	if arg.over then
+		_over = "images/elements/"..arg.over
+	end
+
+	local function buttonListener (event)
+									if event.phase == "release" then				
+										if event.target.type == "fx" then
+											require("playing").playFX(event.target.track, event.target)
+										elseif event.target.type == "melody" then
+											require("playing").playMelody(event.target.track, event.target)
+
+											--пересоздаем кнопку, чтобы поменять картинку на ней
+											local idx
+											for i, v in pairs(configInterface.soundButtons) do
+												if v.button == event.target then
+													idx = i
+													break
+												end
+											end
+
+											local _id = event.target.id
+											local defaultImage = event.target.defaultImage
+											local overImage = event.target.overImage
+											local ttype = event.target.type
+											local soundId = event.target.soundId
+											local scenes = event.target.scenes
+											local x = event.target.x
+											local y = event.target.y
+											local w = event.target.width											
+											local h = event.target.height
+											print(w, h)
+											local _alpha = event.target.alpha
+											local _track = event.target.track
+											local _pressed = event.target.pressed
+
+											display.remove(event.target)
+											event.target = widget.newButton{
+												id = _id,
+												left = 1,
+												top = 1,
+												default = overImage,
+												over = defaultImage,
+												width = w,
+												height = h,
+												onEvent = buttonListener
+											}
+											event.target.defaultImage = overImage
+											event.target.overImage = defaultImage
+											event.target:addEventListener("emulatePress", buttonListener)
+											event.target.alpha = _alpha
+											event.target.type = ttype
+											event.target.soundId = soundId
+											event.target.scenes = scenes
+											event.target.x = x
+											event.target.y = y
+											event.target.track = _track
+											event.target.pressed = _pressed
+											configInterface.soundButtons[idx].button = event.target
+										elseif event.target.type == "voice" then
+											require("playing").playVoice(event.target.track, event.target)
+										end
+									end
+								end
+
+	local b = widget.newButton{
+		id = "sound"..arg.soundId,
+		left = _left,
+		top = _top,
+		default = _default,
+		over = _over,
+		width = _width,
+		height = _height,
+		onEvent = buttonListener
+	}
+	b.defaultImage = _default
+	b.overImage = _over
+	b.track = arg.track
+	b:addEventListener("emulatePress", buttonListener)
+	if not _default or not _over then
+		b.txt = display.newText(_label,_left,_top,native.systemFont,14)
+		b.txt.x = b.x
+		b.txt.y = b.y
+	end
 
 	if arg.alpha and type(arg.alpha) == "number" then
 		b.alpha = arg.alpha
@@ -180,7 +274,7 @@ function createButton(arg)
 		b.alpha = 0.5
 	end
 	
-	if arg.rgb and type(arg.rgb) == "table" then
+	--[[if arg.rgb and type(arg.rgb) == "table" then
 		if #arg.rgb == 3 then
 			for i, v in pairs(arg.rgb) do
 				if type(v) ~= "number" then
@@ -195,8 +289,9 @@ function createButton(arg)
 	else
 		b:setFillColor(128, 128, 128)
 	end
-
-	b:setFillColor(arg.rgb[1], arg.rgb[2], arg.rgb[3])
+	if not _default or not _over then
+		b:setFillColor(arg.rgb[1], arg.rgb[2], arg.rgb[3])
+	end]]--
 
 	if not arg.scenes or type(arg.scenes) ~= "table" then
 		error("Wrong type of arg \"scenes\" expected table, got "..type(arg.scenes))
@@ -218,7 +313,7 @@ function createButton(arg)
 
 	b.channel = arg.track.channel
 
-	b:addEventListener("touch", function (event)
+	--[[b:addEventListener("touch", function (event)
 									if event.phase == "ended" then
 										if arg.type == "fx" then
 											require("playing").playFX(arg.track, b)
@@ -229,7 +324,7 @@ function createButton(arg)
 										end
 									end
 								end
-	)
+	)]]--
 
 	return b
 end
@@ -335,17 +430,103 @@ function drawLayoutBtns()
 	activeChannels = {}
 	partSumms = {}
 	
-	volumePanel = require("volumeRegulator")
-	volumePanel.regulatorPanel = nil
+	--volumePanel = require("volumeRegulator")
+	--volumePanel.regulatorPanel = nil
 	
 	recording = require("recording")
 	replaying = require("replayModule")
 
 	local btns = {}
+	navBar = display.newGroup()
+	for i = 1, 120 do
+		local navBarPart = display.newImageRect("images/elements/navBar.png", 4, 43)
+		navBarPart.x, navBarPart.y = 2 + 4*(i-1), 21
+		navBar:insert(navBarPart)
+	end
+
+	function changeScene(event)
+		if event.phase == "release" then
+			audio.stop()
+			loading.isVisible = true
+			recording.cancelTimers(recording.timers)
+			recording.timers = {}
+			recording.cancelTimers(recording.goodEvilButtonTimers)
+			recording.goodEvilButtonTimers = {}
+			timer.cancel(sceneChangingTimer)
+			for i, v in pairs(soundsConfig) do
+				if v.sound then
+					if v.type == "melody" then
+						audio.rewind(v.sound)
+					end
+					v.channel = nil
+				end
+			end
+			--local sampleKit = playModule.initSounds(kitAddress)
+			choosenSide = defaultSide
+			--soundsConfig = {}
+			--configInterface = {}
+			--buttonsInScenes = {}
+			--soundsInScenes = {}
+			if event.target == btn1 then
+				require("level").atOncePlay = false
+			elseif event.target == btn2 then
+				require("level").atOncePlay = true
+			end
+			timer.performWithDelay(200, function()
+				director:changeScene(event.target.scene)
+			end)
+
+		end
+	end
 	
-	btn1 = display.newRoundedRect(1,1,w/8,h/8,10)
-	btn2 = display.newRoundedRect(1,1,w/8,h/8,10)
-	repBtn = display.newRoundedRect(1,1,w/10,h/15,4)
+	btn1 = widget.newButton{
+		id = "toMenu",
+		left = 5,
+		top = 3,
+		default = "images/elements/toMenuFromPlayng.png",
+		over = "images/elements/toMenuFromPlayngPressed.png",
+		width = 55,
+		height = 36,
+		onEvent = changeScene
+	}
+	btn1.scene = "level"
+	
+	btn2 = widget.newButton{
+		id = "restart",
+		left = 440,
+		top = 5,
+		default = "images/elements/restart.png",
+		over = "images/elements/restartPressed.png",
+		width = 38,
+		height = 36,
+		onEvent = changeScene
+	}
+	btn2.scene = "level"
+
+	repBtn = widget.newButton{
+		id = "replay",
+		left = 285,
+		top = 195,
+		default = "images/elements/replayButton.png",
+		over = "images/elements/replayButtonPressed.png",
+		width = 77,
+		height = 38,
+		onEvent = changeScene
+	}
+	repBtn.scene = "replayModule"
+
+	menuButtonFinal = widget.newButton{
+		id = "toMenuFinal",
+		left = 385,
+		top = 195,
+		default = "images/elements/toMenuFinal.png",
+		over = "images/elements/toMenuFinalPressed.png",
+		width = 77,
+		height = 38,
+		onEvent = changeScene
+	}
+	menuButtonFinal.scene = "level"
+
 
 	nextSceneButton = display.newRoundedRect(10*w/14, 3*h/12, 2*w/16, 3*h/15, 8)
 	nextSceneButton.txt = display.newText("Next scene", 0, 0, native.systemFont, 16)
@@ -383,11 +564,11 @@ function drawLayoutBtns()
 	shareTxt:setTextColor(255,0,0)
 	shareBtn.txt = shareTxt
 	
-	btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/16,12*h/16
-	btn1:setFillColor(140,255,0)
-	btn2:setFillColor(140,255,0)
-	btn1.alpha = 0.5
-	btn2.alpha = 0.5
+	--btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/16,12*h/16
+	--btn1:setFillColor(140,255,0)
+	--btn2:setFillColor(140,255,0)
+	--btn1.alpha = 0.5
+	--btn2.alpha = 0.5
 	
 	goodBtn:setFillColor(0,100,255)
 	evilBtn:setFillColor(255,100,0)
@@ -405,20 +586,22 @@ function drawLayoutBtns()
 	goodBtn.txt.isVisible = false
 	evilBtn.txt.isVisible = false
 	
-	btn1.txt = display.newText("Back",0,0,native.systemFont,14)
-	btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
-	btn1.txt.x,btn1.txt.y = btn1.x, btn1.y
-	btn2.txt.x,btn2.txt.y = btn2.x, btn2.y
+	--btn1.txt = display.newText("Back",0,0,native.systemFont,14)
+	--btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
+	--btn1.txt.x,btn1.txt.y = btn1.x, btn1.y
+	--btn2.txt.x,btn2.txt.y = btn2.x, btn2.y
 	
-	repBtn.x,repBtn.y = 15*w/16,h/16
-	repBtn:setFillColor(255,140,140)
-	repBtn.alpha = 0.5
+	--repBtn.x,repBtn.y = 15*w/16,h/16
+	--repBtn:setFillColor(255,140,140)
+	--repBtn.alpha = 0.5
 	repBtn.isVisible = false	
+	menuButtonFinal.isVisible = false
+	--repBtn.txt = display.newText("Play",0,0,native.systemFont,14)
+	--repBtn.txt.x,repBtn.txt.y = 15*w/16,h/16
+	--repBtn.txt.isVisible = false
+	--repBtn.txt:setTextColor(0,255,0)
+
 	
-	repBtn.txt = display.newText("Play",0,0,native.systemFont,14)
-	repBtn.txt.x,repBtn.txt.y = 15*w/16,h/16
-	repBtn.txt.isVisible = false
-	repBtn.txt:setTextColor(0,255,0)
 	
 	--volumeBtn.x,volumeBtn.y = w/16,h/16
 	--volumeBtn:setFillColor(140,255,140)
@@ -429,53 +612,17 @@ function drawLayoutBtns()
 	--volumeBtn.isVisible = false
 	--volumeBtn.txt.isVisible = false
 	
-	btn1.scene = "level"
-	btn2.scene = "level"
-	repBtn.scene = "replayModule"
 	--volumeBtn.scene = "volumeRegulator"
 	
 	recording.cancelTimers(recording.getTimers())
 	
-	function changeScene(event)
-		if (event.phase == "ended") then
-			audio.stop()
-			loading.isVisible = true
-			recording.cancelTimers(recording.timers)
-			recording.timers = {}
-			recording.cancelTimers(recording.goodEvilButtonTimers)
-			recording.goodEvilButtonTimers = {}
-			timer.cancel(sceneChangingTimer)
-			for i, v in pairs(soundsConfig) do
-				if v.sound then
-					if v.type == "melody" then
-						audio.rewind(v.sound)
-					end
-					v.channel = nil
-				end
-			end
-			--local sampleKit = playModule.initSounds(kitAddress)
-			choosenSide = defaultSide
-			--soundsConfig = {}
-			--configInterface = {}
-			--buttonsInScenes = {}
-			--soundsInScenes = {}
-			if event.target == btn1 then
-				require("level").atOncePlay = false
-			elseif event.target == btn2 then
-				require("level").atOncePlay = true
-			end
-			timer.performWithDelay(200, function()
-				director:changeScene(event.target.scene)
-			end)
-
-		end
-	end
+	
 	
 	nextSceneButton:addEventListener("touch", require("playing").nextScene)
 
-	btn1:addEventListener("touch",changeScene)
-	btn2:addEventListener("touch",changeScene)
-	repBtn:addEventListener("touch",changeScene)
+	--btn1:addEventListener("touch",changeScene)
+	--btn2:addEventListener("touch",changeScene)
+	--repBtn:addEventListener("touch",changeScene)
 	--volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
 	goodBtn:addEventListener("touch",playing.playGoodMelody)
 	evilBtn:addEventListener("touch",playing.playEvilMelody)
@@ -487,6 +634,7 @@ function drawLayoutBtns()
 	btns[1] = btn1
 	btns[2] = btn2
 	btns[3] = repBtn
+	btns[4] = menuButtonFinal
 	--btns[4] = volumeBtn
 	return btns
 end

@@ -235,6 +235,7 @@ function startRecording()
 		idx = idx + 1
 	end]]--
 
+	--[[
 	goodEvilButtonTimers[#goodEvilButtonTimers + 1] = timer.performWithDelay(gl.showChoiceTime,
 								function ()
 									gl.goodBtn.isVisible = true
@@ -262,7 +263,7 @@ function startRecording()
 									end
 								end )								
 
-	
+	]]--
 	gl.timerTxt.isVisible = true
 	gl.nextSceneTimerTxt.isVisible = true
 	

@@ -38,10 +38,10 @@ function prepareToPlay()
 		local curBInfo = gl.configInterface.soundButtons[v[1]]
 		if curBInfo.side and curBInfo.side == gl.choosenSide then
 			curBInfo.button.isVisible = true
-			curBInfo.button.txt.isVisible = true
+			--curBInfo.button.txt.isVisible = true
 		elseif not curBInfo.side then
 			curBInfo.button.isVisible = true
-			curBInfo.button.txt.isVisible = true
+			--curBInfo.button.txt.isVisible = true
 		end
 	end
 
@@ -84,7 +84,8 @@ function prepareToPlay()
 	-- Нажимаем те кнопки, которые нажаты по умолчанию на первой сцене
 	for i, v in pairs(gl.buttonsInScenes[1]) do
 		if v[2] == true and gl.configInterface.soundButtons[v[1]].button then
-			gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "touch", phase = "ended"})
+			local b = gl.configInterface.soundButtons[v[1]].button
+			b:dispatchEvent({name = "emulatePress", phase = "release", target = b})
 		end
 	end
 
@@ -263,10 +264,10 @@ function nextScene(event)
 				if curBInfo.button then
 					if curBInfo.side and curBInfo.side == gl.choosenSide then
 						curBInfo.button.isVisible = true
-						curBInfo.button.txt.isVisible = true
+						--curBInfo.button.txt.isVisible = true
 					elseif not curBInfo.side then
 						curBInfo.button.isVisible = true
-						curBInfo.button.txt.isVisible = true
+						--curBInfo.button.txt.isVisible = true
 					end
 				end
 			end
@@ -303,7 +304,21 @@ function nextScene(event)
 			gl.nextSceneButton.isVisible = false
 			gl.nextSceneButton.txt.isVisible = false
 
+			-- Меняем бэкграунд
+			local backs = require("level").getLayoutBacks()
 
+			gl.mainGroup:remove(1)
+			gl.mainGroup:insert(1, backs[gl.currentScene])
+
+			-- Плавно
+			transition.to(backs[gl.currentScene - 1], {alpha = 0, time = 500})
+			backs[gl.currentScene].alpha = 0
+			backs[gl.currentScene].isVisible = true
+			transition.to(backs[gl.currentScene], {alpha = 1, time = 500})
+
+			timer.performWithDelay(600, function()
+				backs[gl.currentScene - 1].isVisible = false
+			end)
 
 			-- включаем музыку экрана с кнопкой шаринга
 			local path = system.pathForFile(gl.kitAddress.."share.mp3")
@@ -317,12 +332,19 @@ function nextScene(event)
 			-- Снимаем обработчик перехода между сценами
 			gl.nextSceneButton:removeEventListener("touch", nextScene)
 
+
+
 			-- Кнопка шаринга
-			gl.shareBtn.isVisible = true
-			gl.shareBtn.txt.isVisible = true
+			--gl.shareBtn.isVisible = true
+			--gl.shareBtn.txt.isVisible = true
 
 			gl.repBtn.isVisible = true
-			gl.repBtn.txt.isVisible = true
+			gl.menuButtonFinal.isVisible = true
+
+			gl.btn1.isVisible = false
+			gl.btn2.isVisible = false
+			gl.navBar.isVisible = false
+			--gl.repBtn.txt.isVisible = true
 
 			recording.saveUserActList()
 
@@ -338,18 +360,17 @@ function playMelody(trackInfo,button)
 		button.pressed = 1
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, -1)
-		button.alpha = 1
+		--button.alpha = 1
 	elseif button.pressed == 1 then
 		button.pressed = 0
 		audio.setVolume(0, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", 0, trackInfo.id, -1)
-		button.alpha = 0.5
+		--button.alpha = 0.5
 	elseif button.pressed == 0 then
-		button.pressed = 1
 		button.pressed = 1
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, -1)
-		button.alpha = 1
+		--button.alpha = 1
 	end
 
 end

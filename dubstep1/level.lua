@@ -38,15 +38,13 @@ function new()
 
 			audio.stop(32)
 
+			gl.btns = gl.drawLayoutBtns()
+	
 			for idx,val in pairs(gl.btns) do
-				if idx == 3 then
-					break
-				end
-				val.isVisible = true
-				val.txt.isVisible = true
+				val.alpha = 0.5
+				--val.isVisible = false
+				--val.txt.isVisible = false
 			end
-			gl.nextSceneButton.isVisible = true
-			gl.nextSceneButton.txt.isVisible = true
 
 			layoutAppearTime = system.getTimer()
 
@@ -64,12 +62,12 @@ function new()
 
 	continueButton = widget.newButton{
 		id = "continue",
-		left = 7*w/10,
-		top = 2*h/3,
+		left = 335,
+		top = 220,
 		default = "images/elements/continueButton.png",
 		over = "images/elements/continueButtonPressed.png",
-		width = 80,
-		height = 40,
+		width = 77,
+		height = 38,
 		onEvent = continuePress
 	}
 
@@ -79,9 +77,9 @@ function new()
 	
 
 	for i, v in pairs(gl.configInterface.soundButtons) do
-		local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId, ["label"] = v.label})
+		local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId, ["label"] = v.label, ["default"] = v.default, ["over"] = v.over})
 		b.isVisible = false
-		b.txt.isVisible = false
+		--b.txt.isVisible = false
 		v.button = b
 		localGroup:insert(b)
 	
@@ -94,13 +92,7 @@ function new()
 		localGroup:insert(b)
 	end
 
-	gl.btns = gl.drawLayoutBtns()
 	
-	for idx,val in pairs(gl.btns) do
-		val.alpha = 0.5
-		val.isVisible = false
-		val.txt.isVisible = false
-	end
 
 	for i, v in pairs(gl.configInterface.backGrounds) do
 		backs[i] = display.newImageRect(v.fileName,gl.w,gl.h)
@@ -108,8 +100,7 @@ function new()
 		backs[i].isVisible = false
 	end
 
-	gl.nextSceneButton.isVisible = false
-	gl.nextSceneButton.txt.isVisible = false
+	
 
 	mainGroup:insert(1, backs[1])
 	mainGroup:insert(2, localGroup)

@@ -12,32 +12,36 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "digit1.png",
+			"over" : "digit1Pressed.png",
 			"soundId": "s1",
-			"left": 10,
-			"top": 10,
-			"w": 100,
-			"h": 79,
+			"left": 122,
+			"top": 163,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
 			"scenes": {
 				"3": true
 			},
+			"default" : "digit2.png",
+			"over" : "digit2Pressed.png",
 			"soundId": "s2",
-			"left": 120,
-			"top": 10,
-			"w": 100,
-			"h": 79,
+			"left": 168,
+			"top": 163,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -46,16 +50,18 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "digit3.png",
+			"over" : "digit3Pressed.png",
 			"soundId": "s3",
-			"left": 230,
-			"top": 10,
-			"w": 100,
-			"h": 79,
+			"left": 214,
+			"top": 163,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -65,16 +71,18 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "digit4.png",
+			"over" : "digit4Pressed.png",
 			"soundId": "s4",
-			"left": 340,
-			"top": 10,
-			"w": 100,
-			"h": 79,
+			"left": 260,
+			"top": 163,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -85,16 +93,18 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "digit1.png",
+			"over" : "digit1Pressed.png",
 			"soundId": "s5",
-			"left": 450,
-			"top": 10,
-			"w": 100,
-			"h": 79,
+			"left": 122,
+			"top": 111,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -105,16 +115,18 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "digit2.png",
+			"over" : "digit2Pressed.png",
 			"soundId": "s6",
-			"left": 560,
-			"top": 10,
-			"w": 100,
-			"h": 79,
+			"left": 168,
+			"top": 111,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -123,16 +135,18 @@
 				"3": false,
 				"4": false
 			},
+			"default" : "digit3.png",
+			"over" : "digit3Pressed.png",
 			"soundId": "s7",
-			"left": 10,
-			"top": 100,
-			"w": 100,
-			"h": 79,
+			"left": 214,
+			"top": 111,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -141,16 +155,18 @@
 				"3": false,
 				"4": false
 			},
+			"default" : "digit4.png",
+			"over" : "digit4Pressed.png",
 			"soundId": "s8",
-			"left": 120,
-			"top": 100,
-			"w": 100,
-			"h": 79,
+			"left": 260,
+			"top": 111,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -159,16 +175,18 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "digit1.png",
+			"over" : "digit1Pressed.png",
 			"soundId": "s9",
-			"left": 230,
-			"top": 100,
-			"w": 100,
-			"h": 79,
+			"left": 122,
+			"top": 63,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -179,16 +197,18 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "digit2.png",
+			"over" : "digit2Pressed.png",
 			"soundId": "s10",
-			"left": 340,
-			"top": 100,
-			"w": 100,
-			"h": 79,
+			"left": 168,
+			"top": 63,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -197,16 +217,18 @@
 				"3": true,
 				"4": true
 			},
+			"default" : "digit3.png",
+			"over" : "digit3Pressed.png",
 			"soundId": "s11",
-			"left": 450,
-			"top": 100,
-			"w": 100,
-			"h": 79,
+			"left": 214,
+			"top": 63,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -217,16 +239,18 @@
 				"4": true,
 				"5": true
 			},
+			"default" : "digit4.png",
+			"over" : "digit4Pressed.png",
 			"soundId": "s12",
-			"left": 560,
-			"top": 100,
-			"w": 100,
-			"h": 79,
+			"left": 260,
+			"top": 63,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 0, 0
 			],
 			"side":	"evil",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 
@@ -630,7 +654,11 @@
 		},
 
 		{
-			"fileName": "images/layout2/back6.jpg"
+			"fileName": "images/layout2/back6.png"
+
+		},
+		{
+			"fileName": "images/layout2/back7.jpg"
 
 		}
 

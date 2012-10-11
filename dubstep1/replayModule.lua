@@ -113,17 +113,8 @@ function new()
 	end
 
 	local function openUserActList()
-		local path = system.pathForFile( "test.json", system.DocumentsDirectory )
-  	  	local f = io.open(path,"r")
-    
-   		if (not f) then
-   	 		local errorTxt = display.newText("No records found", 0, 0, native.systemFont, 32)
-    		errorTxt.x,errorTxt.y = w/2,h/2
-    		return
-   		end
-    
-    	local jsonUserActList = f:read("*a")
-  		f:close()
+		
+    	local jsonUserActList = gl.readFile("test.json", system.DocumentsDirectory)
 
     	jsonUserActList = gl.jsonModule.decode(jsonUserActList)
     	-- Пробегаем по списку всех действий
@@ -410,14 +401,14 @@ function new()
 					local wantToSeek = relPlayTime - tonumber(act.actionTime)
 					if act.loops == "-1" then
 						local duration = audio.getDuration(gl.soundsConfig[act.id].sound)
-						while wantToSeek >= duration do
-							wantToSeek = wantToSeek - duration
-						end
+						--while wantToSeek >= duration do
+							wantToSeek = wantToSeek % duration
+						--end
+						audio.seek(wantToSeek, tonumber(act.channel))
 					elseif act.loops == "0" then
 						if gl.soundsConfig[act.id].type ~= "melody" then
 							local duration = audio.getDuration(gl.soundsConfig[act.id].sound)
 							if wantToSeek >= duration then
-								print(tonumber(act.channel))
 								audio.stop(tonumber(act.channel))
 							else
 								audio.seek(wantToSeek, tonumber(act.channel))
