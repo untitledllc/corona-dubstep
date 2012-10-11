@@ -17,6 +17,8 @@ local activeChannels = {["glitchChannel"] = nil}
 local voiceTimer = nil
 local fxTimer = nil
 
+local playingVoicesFxs = {}
+
 local isGlitchStarted = false
 
 function getPartSumms()
@@ -355,94 +357,114 @@ end
 function playFX(trackInfo,button)
 	if not button.pressed then
 		button.pressed = 1
-		local ch = audio.findFreeChannel()
+		local ch = audio.findFreeChannel(13)
 		trackInfo.channel = ch
+
+		playingVoicesFxs[trackInfo.id] = trackInfo
+		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
-			--[[if (recording.isRecStarted() == true) then
-	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    							index,0,audio.getVolume({channel = index}),4,0)
-	   		end]]--
+			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+				playingVoicesFxs[trackInfo.id] = nil
+			end
 		end})
+
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 		
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
-		--[[if (recording.isRecStarted() == true) then
-    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-   		end]]--
-
-		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+		
 	else
 		button.pressed = 1
+		
+		if playingVoicesFxs[trackInfo.id] then
+			audio.stop(trackInfo.channel)
+			playingVoicesFxs[trackInfo.id] = nil
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "stop", trackInfo.defaultVolume, trackInfo.id, 0)
+		end
+
+		local ch = audio.findFreeChannel()
+		trackInfo.channel = ch
+
 		if button.tween then
 			transition.cancel(button.tween)
 			button.alpha = 0.5
 		end
-		audio.stop(trackInfo.channel)
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "stop", trackInfo.defaultVolume, trackInfo.id, 0)
-		local ch = audio.findFreeChannel()
-		trackInfo.channel = ch
+
+		playingVoicesFxs[trackInfo.id] = trackInfo
+		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
-			--[[if (recording.isRecStarted() == true) then
-	    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-	    							index,0,audio.getVolume({channel = index}),4,0)
-	   		end]]--
+			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+				playingVoicesFxs[trackInfo.id] = nil
+			end
 		end})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
-		--[[if (recording.isRecStarted() == true) then
-    		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime() - recording.getRecBeginTime(),
-    							index,startStop,audio.getVolume({channel = index}),2,system.getTimer() - curLayout.getLayoutAppearTime())
-   		end]]--
-
-		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+		
+		
 	end
     
 	
 end
 
 function playVoice(trackInfo,button)
+	
 	if not button.pressed then
 		button.pressed = 1
-		local ch = audio.findFreeChannel()
+		local ch = audio.findFreeChannel(13)
 		trackInfo.channel = ch
+
+		playingVoicesFxs[trackInfo.id] = trackInfo
+		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
-			
+			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+				playingVoicesFxs[trackInfo.id] = nil
+			end
 		end})
+		
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
 		
 
-		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+		
 	else
-		button.pressed = 1
-		if button.tween then
-			transition.cancel(button.tween)
-			button.alpha = 0.5
-		end
-		audio.stop(trackInfo.channel)
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "stop", 0, trackInfo.id, -1)
-		local ch = audio.findFreeChannel()
-		trackInfo.channel = ch
-		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
-			button.pressed = 0
+			button.pressed = 1
+			if playingVoicesFxs[trackInfo.id] then
+				
+				audio.stop(trackInfo.channel)
+				playingVoicesFxs[trackInfo.id] = nil
+				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "stop", 0, trackInfo.id, -1)
+			end
 			
-		end})
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
+			local ch = audio.findFreeChannel(13)
+			trackInfo.channel = ch
 
-		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
-		
+			if button.tween then
+				transition.cancel(button.tween)
+				button.alpha = 0.5
+			end
 
-		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+			playingVoicesFxs[trackInfo.id] = trackInfo
+			button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+			audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
+				button.pressed = 0
+				if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+					playingVoicesFxs[trackInfo.id] = nil
+				end
+			end})
+			
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
+
+			audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, 0)
+			
 	end
 end
 

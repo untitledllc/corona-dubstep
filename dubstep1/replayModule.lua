@@ -218,52 +218,42 @@ function new()
 	end
 
 	local function makeGlitchFunc( activeChannels )
-		local tiks = 0
-	 	local glitchStartTime = nil
-	 	local glitchFinishTime = nil
-		local prevMeasure = 0
-		local curMeasure = 0
-		local delta = 0
-		local glitchLocalTime = 0
-		local deltaSumm = 0
-		local activeChannelsCopy = {}
-		--local isGlitchStarted = false
+		local closion = {
+			tiks = 0,
+		 	glitchStartTime = nil,
+		 	glitchFinishTime = nil,
+			prevMeasure = 0,
+			curMeasure = 0,
+			delta = 0,
+			glitchLocalTime = 0,
+			deltaSumm = 0
+		}
 		local function runtimeGlitchHandler(event)
-			--if (isGlitchStarted == true) then
-	 			if (deltaSumm > gl.glitchShutUpTime) then
-	 				--button.alpha = 1
+	 			if (closion.deltaSumm > gl.glitchShutUpTime) then
 	 				for idx,val in pairs(activeChannels) do
-						--if (val.channel ~= nil and val.channel > partSumms[3]) then
 							audio.setVolume(0,{channel = val.ch})
-						--end
 					end
 	 			end
 
-	 			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
-	 				--button.alpha = 0.5
+	 			if (closion.deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
 	 				for idx,val in pairs(activeChannels) do
-						--if (val.channel ~= nil and val.channel > partSumms[3]) then
-							audio.setVolume(val.v,{channel = val.ch})	
-						--end
+							audio.setVolume(val.v,{channel = val.ch})
 					end
-					deltaSumm = 0
+					closion.deltaSumm = 0
 	 			end
 	 			
-	 			if (curMeasure > prevMeasure) then
-					delta = curMeasure - prevMeasure
-					prevMeasure = curMeasure
-					deltaSumm = deltaSumm + delta
+	 			if (closion.curMeasure > closion.prevMeasure) then
+					closion.delta = closion.curMeasure - closion.prevMeasure
+					closion.prevMeasure = closion.curMeasure
+					closion.deltaSumm = closion.deltaSumm + closion.delta
 				end
 	 			
-	 			curMeasure = system.getTimer()
+	 			closion.curMeasure = system.getTimer()
 	 			
-	 			glitchLocalTime = glitchLocalTime + delta
-	 		--else
-	 		--	Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
-	 		--end
+	 			closion.glitchLocalTime = closion.glitchLocalTime + closion.delta
 		end
-		prevMeasure = system.getTimer()
-		return runtimeGlitchHandler
+		closion.prevMeasure = system.getTimer()
+		return runtimeGlitchHandler, closion
 	end
 	
 	function makeAction(index) 
@@ -346,14 +336,14 @@ function new()
 		end
 
 		if curActType == "startGlitch" then
-			local runtimeGlitchHandler = makeGlitchFunc(curActiveChannels)
-			runtimeGlitchHandlers[curId] = runtimeGlitchHandler
-			Runtime:addEventListener("enterFrame", runtimeGlitchHandlers[curId])
+			local runtimeGlitchHandler, closion = makeGlitchFunc(curActiveChannels)
+			runtimeGlitchHandlers[curId] = {f = runtimeGlitchHandler, cl = closion}
+			Runtime:addEventListener("enterFrame", runtimeGlitchHandlers[curId].f)
 			return 1
 		end
 
 		if curActType == "stopGlitch" then
-			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[curId])
+			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[curId].f)
 			for idx,val in pairs(curActiveChannels) do
 	   			audio.setVolume(val.v,{channel = val.ch})
 			end
@@ -364,188 +354,8 @@ function new()
 		return false
 	end
 	
-	local function play(event)
-		if (relPlayTime <= relEndTrackTime and isPaused == false) then
-			if (relPlayTime > userActionList[actCounter].actionTime) then
-				state = makeAction(actCounter)
-				if (state == true) then
-					txtPlay.text = "Play"
-					stopPressed({name = "touch", phase = "ended"})
-					return
-				else
-					actCounter = actCounter + 1		
-				end
-			end
-			
-			local deltaT
-			
-			currentMeasure = system.getTimer()
-			if (currentMeasure > prevMeasure) then
-				deltaT = currentMeasure - prevMeasure
-				prevMeasure = currentMeasure
-			end
-			
-			if (isGlitchStarted == true) then
-				
-				local function updateGlitchState(time,st) 
-					local resTime
-					local resSt
-					if (time == gl.glitchShutUpTime) then
-						resTime = gl.glitchPlayTime
-					else
-						resTime = gl.glitchShutUpTime
-					end
-					
-					if (st == 1) then
-						resSt = 0
-					else
-						resSt = 1
-					end
-					return resTime, resSt
-				end
-				if (deltaTSumm > toChangeGlitchState) then
-					local idx = ptSumms[3] + 1
-					if (glitchState == 1) then
-						while (idx <= ptSumms[5]) do
-							if (audio.isChannelPlaying(idx) and idx <= ptSumms[4]) then
-							
-								if (volPanel.scrolls[4] ~= nil) then	
-        							audio.setVolume(volPanel.getVolume(volPanel.scrolls[4]),{channel = idx})  	
-    							else	
-    								audio.setVolume(0.5,{channel = idx})  
-        						end  
-        						
-							end
-							if (audio.isChannelPlaying(idx) and idx > ptSumms[4] and idx <= ptSumms[5]) then
-								
-								if (volPanel.scrolls[5] ~= nil) then	
-        							audio.setVolume(volPanel.getVolume(volPanel.scrolls[5]),{channel = idx})  	
-    							else	
-    								audio.setVolume(0.5,{channel = idx})  
-        						end  
-        						
-							end
-							idx = idx + 1
-						end
-					else
-						while (idx <= ptSumms[5]) do
-							if (audio.isChannelPlaying(idx)) then
-								audio.setVolume(0,{channel = idx})
-							end
-							idx = idx + 1
-						end
-					end
-					deltaTSumm = 0
-					toChangeGlitchState,glitchState = updateGlitchState(toChangeGlitchState,glitchState)
-				end
-				deltaTSumm = deltaTSumm + deltaT
-			end
-			
-			relPlayTime = relPlayTime + deltaT
-			--print("relativePlayTime = ",relPlayTime)
-		else
-			audio.stop()
-			txtPlay.text = "Play"
-			stopPressed({name = "touch", phase = "ended"})
-			return
-		end
-	end
 	
-	local function findStartActionForTrack(trackNumber,relativeTime)
-		local idx = #userActionList
-		----print(trackNumber)
-		while(true) do
-			if (userActionList[idx].actType == 1 
-				and 
-			userActionList[idx].channel == trackNumber
-				and 
-			userActionList[idx].actionTime <= relativeTime) then
-				break
-			end
-			idx = idx - 1
-		end
-		return idx
-	end
-
-	local function findActiveTracks(relativeTime)
-		local idx = 1
-		local trActivity = {}
-		while(userActionList[idx].actionTime < relativeTime) do
-			if (userActionList[idx].channel ~= -1) then
-				if (userActionList[idx].actType == 0) then
-					trActivity[userActionList[idx].channel] = nil
-				else
-					trActivity[userActionList[idx].channel] = userActionList[idx].channel
-				end
-			else 
-				trActivity = {}
-			end
-			idx = idx + 1
-		end
-		return trActivity,idx
-	end
-
-	local function findActiveActions(relativeTime)
-		local trActivity,actCount = findActiveTracks(relativeTime)
-		local actActivity = {}
-		for idx,val in pairs(trActivity) do
-			actActivity[#actActivity + 1] = findStartActionForTrack(val,relativeTime)
-		end
-		return actActivity,actCount
-	end
-
-	local function seek(activeActs,relativeTime)
-		local idx = 1
-		
-	--	print("---------------")
-	--	print("SEEK BEGIN")
-	--	print(relativeTime)
-	--	print("---------------")
-	--	for i,val in pairs(activeActs) do
-	--		print("seekTime=",toSeekAtBeginTime - userActionList[val].actionTime + relativeTime)
-	--		print("actionTime=",userActionList[val].actionTime)
-	--		print("channel=",userActionList[val].channel)
-	--		print("actType=",userActionList[val].actType)
-	--		print("volume=",userActionList[val].volume)
-	--		print("category=",userActionList[val].category)
-	--		print("channelActiveTime=",userActionList[val].channelActiveTime)
-	--		print("---------------")
-	--	end
-	--	print("SEEK END")
-		
-		while(idx <= gl.currentNumSamples) do
-			gl.mySeek(toSeekAtBeginTime + relativeTime,gl.currentKit[idx][1],idx,-1)
-			if (activeActs[idx]) then	
-				audio.setVolume(userActionList[activeActs[idx]].volume,
-						{channel = userActionList[activeActs[idx]].channel})
-			end
-			idx = idx + 1
-		end
-		
-		idx = 1
-		while (idx <= #activeActs) do
-			if (userActionList[activeActs[idx]].category > 3 and userActionList[activeActs[idx]].category < 6) then
-				audio.play(gl.currentKit[userActionList[activeActs[idx]].channel][1],
-					{channel = userActionList[activeActs[idx]].channel})
-					
-				audio.seek(relativeTime - userActionList[activeActs[idx]].actionTime + 
-						userActionList[activeActs[idx]].channelActiveTime,
-					{channel = userActionList[activeActs[idx]].channel})
-					
-				audio.setVolume(userActionList[activeActs[idx]].volume,
-					{channel = userActionList[activeActs[idx]].channel})
-			end
-			
-			if (userActionList[activeActs[idx]].category == 6) then
-				isGlitchStarted = true
-				glitchState, toChangeGlitchState = gl.seekGlitch(relativeTime
-															 - userActionList[activeActs[idx]].actionTime
-															 + userActionList[activeActs[idx]].channelActiveTime)
-			end
-			
-			idx = idx + 1
-		end
-	end
+	
 	
 	local function onSeek(event)
 		if (event.phase == "ended") then
@@ -583,7 +393,7 @@ function new()
 			end
 
 			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:removeEventListener("enterFrame", v)
+				Runtime:removeEventListener("enterFrame", v.f)
 			end
 
 			curActionIdx = 1
@@ -617,7 +427,12 @@ function new()
 					
 				-- Тоже самое делаем с глитчем
 				elseif act.actType == "startGlitch" then
-
+					Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[act.id].f)
+					local tmpDeltaSum = relPlayTime - tonumber(act.actionTime)
+					while tmpDeltaSum > (gl.glitchShutUpTime + gl.glitchPlayTime) do
+						tmpDeltaSum = tmpDeltaSum - (gl.glitchShutUpTime + gl.glitchPlayTime)
+					end
+					runtimeGlitchHandlers[act.id].cl.deltaSumm = tmpDeltaSum
 				end
 
 				curActionIdx = curActionIdx + 1
@@ -630,6 +445,11 @@ function new()
 
 			startReplayTime = system.getTimer() - relPlayTime
 
+			for i, v in pairs(runtimeGlitchHandlers) do
+				v.cl.curMeasure = system.getTimer()
+				v.cl.prevMeasure = v.cl.curMeasure - 16
+				Runtime:addEventListener("enterFrame", v.f)
+			end
 			if playPressCounter % 2 == 0 then
 				timeInPause = 0
 				beginPauseTime = system.getTimer()
@@ -687,8 +507,9 @@ function new()
 				actCounter = 1
 			else
 				timeInPause = 0
-				isPaused = true
+				
 				beginPauseTime = system.getTimer()
+				isPaused = true
 				audio.pause()
 				
 				txtPlay.text = "Play"
