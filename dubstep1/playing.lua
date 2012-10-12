@@ -305,6 +305,10 @@ function nextScene(event)
 				end
 			end
 
+			for i, v in pairs(gl.configInterface.glitchButtons) do
+				v.button.isVisible = false
+			end
+
 			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "endRecord", 0, 0, 0)
 			
 			gl.goodBtn.isVisible = false
@@ -634,7 +638,7 @@ function playGlitch(event)
    			audio.setVolume(val.v,{channel = val.ch})
 		end
 		runtimeGlitchHandlers[event.target.glitchIdx] = nil
-		display.getCurrentStage():setFocus(nil)
+		display.getCurrentStage():setFocus(event.target, nil)
 	end
 end
 
