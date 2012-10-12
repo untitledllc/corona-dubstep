@@ -148,9 +148,7 @@ function nextScene(event)
 		gl.currentScene = gl.currentScene + 1
 		timer.cancel(gl.sceneChangingTimer)
 		if gl.currentScene <= gl.scenesNum then
-
-			print("ololo")
-
+			
 			-- Переключаем таймер перехода на следующую сцену
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
 				gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
@@ -421,7 +419,7 @@ function playFX(trackInfo,button)
 
 		if button.tween then
 			transition.cancel(button.tween)
-			button.alpha = 0.5
+			--button.alpha = 0.5
 		end
 
 		playingVoicesFxs[trackInfo.id] = trackInfo
@@ -515,7 +513,7 @@ function makeGlitchFunc(button)
 	local function runtimeGlitchHandler(event)
 		--if (isGlitchStarted == true) then
  			if (deltaSumm > gl.glitchShutUpTime) then
- 				button.alpha = 1
+ 				--button.alpha = 1
  				for idx,val in pairs(activeChannels) do
 					--if (val.channel ~= nil and val.channel > partSumms[3]) then
 						audio.setVolume(0,{channel = val.ch})
@@ -524,7 +522,7 @@ function makeGlitchFunc(button)
  			end
 
  			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
- 				button.alpha = 0.5
+ 				--button.alpha = 0.5
  				for idx,val in pairs(activeChannels) do
 					--if (val.channel ~= nil and val.channel > partSumms[3]) then
 						audio.setVolume(val.v,{channel = val.ch})	
@@ -599,7 +597,7 @@ function playGlitch(event)
  		end
  	end
 	]]--
-	if (event.phase == "began") then
+	if (event.phase == "press") then
 		isGlitchStarted = true
 		activeChannels = {}
  			for i, v in pairs(event.target.soundIds) do
@@ -623,11 +621,11 @@ function playGlitch(event)
 		display.getCurrentStage():setFocus(event.target, event.id)
 	end
 	
-	if (event.phase == "ended" or (event.phase == "moved"  and 
+	if (event.phase == "release" or (event.phase == "moved"  and 
 		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
 		
 		Runtime:removeEventListener("enterFrame",runtimeGlitchHandlers[event.target.glitchIdx])
-		event.target.alpha = 0.5
+		--event.target.alpha = 0.5
 		isGlitchStarted = false
 		
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, event.target.glitchIdx, 0, activeChannels)

@@ -46,6 +46,10 @@ function new()
 				--val.txt.isVisible = false
 			end
 
+			for i, v in pairs(gl.configInterface.glitchButtons) do
+				v.button.isVisible = true
+			end
+
 			layoutAppearTime = system.getTimer()
 
 			playModule.prepareToPlay()
@@ -86,9 +90,10 @@ function new()
 	end
 
 	for i, v in pairs(gl.configInterface.glitchButtons) do
-		local b = gl.createGlitchButton({["soundIds"] = v.soundIds, ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["label"] = v.label})
+		local b = gl.createGlitchButton({["soundIds"] = v.soundIds, ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["label"] = v.label, ["default"] = v.default, ["over"] = v.over, ["id"] = v.id})
 		b.isVisible = false
-		b.txt.isVisible = false
+		--b.txt.isVisible = false
+		v.button = b
 		localGroup:insert(b)
 	end
 

@@ -331,5 +331,16 @@
 		],
 		"defaultVolume": 0.5,
 		"channel": "30"
+	},
+
+	"fx6": {
+		"id": "fx6",
+		"name": "fx/gun-fx.mp3",
+		"type": "fx",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"defaultVolume": 0.5,
+		"channel": "30"
 	}
 }

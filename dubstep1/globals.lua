@@ -117,7 +117,7 @@ end
 -- track = {id, name, scenes = {1, 2, 3,..}, sound = @"sound1/track1.mp3", channel }
 -- buttonStruct = {soundId, scenes = {1, 2, 3,..}, x = 1, y = 1, w = 50, h = 50, rgb = {255, 255, 255}, alpha = 0.5}
 
--- function createButton({track, left, top, width, height, type, rgb, alpha, scenes, soundId})
+-- function createButton({track, left, top, width, height, type, rgb, alpha, scenes, soundId, label, default, over})
 function createButton(arg)
 	if type(arg) ~= "table" then
 		error("wrong type of arg: expected table")
@@ -214,7 +214,6 @@ function createButton(arg)
 											local y = event.target.y
 											local w = event.target.width											
 											local h = event.target.height
-											print(w, h)
 											local _alpha = event.target.alpha
 											local _track = event.target.track
 											local _pressed = event.target.pressed
@@ -332,7 +331,7 @@ function createButton(arg)
 	return b
 end
 
--- function createGlitchButton({soundIds, left, top, width, height, rgb, alpha, label})
+-- function createGlitchButton({soundIds, left, top, width, height, rgb, alpha, label, default, over, id})
 function createGlitchButton(arg)
 	if type(arg) ~= "table" then
 		error("wrong type of arg: expected table")
@@ -380,15 +379,33 @@ function createGlitchButton(arg)
 		_label = "GL"
 	end
 
-	local b = display.newRoundedRect(_left, _top, _width, _height, 3)
-	b.txt = display.newText(_label,_left,_top,native.systemFont,16)
-	b.txt.x = b.x
-	b.txt.y = b.y
+	if arg.default then
+		_default = "images/elements/"..arg.default
+	end
+	if arg.over then
+		_over = "images/elements/"..arg.over
+	end
+
+	local _f = require("playing").playGlitch
+
+	local b = widget.newButton{
+		id = arg.id,
+		left = _left,
+		top = _top,
+		default = _default,
+		over = _over,
+		width = _width,
+		height = _height,
+		onEvent = _f
+	}
+	--b.txt = display.newText(_label,_left,_top,native.systemFont,16)
+	--b.txt.x = b.x
+	--b.txt.y = b.y
 
 	if arg.alpha and type(arg.alpha) == "number" then
 		b.alpha = arg.alpha
 	else
-		b.alpha = 0.5
+		b.alpha = 1
 	end
 	
 	if arg.rgb and type(arg.rgb) == "table" then
@@ -404,14 +421,11 @@ function createGlitchButton(arg)
 	elseif arg.rgb then 
 		error("Wrong type of arg \"rgb\" expected table, got "..type(arg.rgb))
 	else
-		b:setFillColor(128, 128, 128)
+		--b:setFillColor(128, 128, 128)
 	end
 
-	b:setFillColor(arg.rgb[1], arg.rgb[2], arg.rgb[3])
+	--b:setFillColor(arg.rgb[1], arg.rgb[2], arg.rgb[3])
 	b.soundIds = arg.soundIds
-
-	local f = require("playing").playGlitch
-	b:addEventListener("touch", f)
 
 	return b
 end
@@ -642,7 +656,7 @@ function drawLayoutBtns()
 	return btns
 end
 
-function drawLvl1Voices()
+--[[function drawLvl1Voices()
 	local btns = {}
 	local path = "sounds1/voices/"
 
@@ -682,7 +696,7 @@ function drawLvl1Voices()
 	end
 
 	return btns
-end
+end]]--
 
 function bin_search(ar, direct, required)
 	if not answer then

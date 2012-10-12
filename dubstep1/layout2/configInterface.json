@@ -507,51 +507,17 @@
 				"4": false,
 				"5": false
 			},
-			"soundId": "fx1",
-			"left": 914,
-			"top": 10,
-			"w": 100,
-			"h": 80,
-			"rgb": [
-				255, 200, 128
-			],
-			"alpha": 0.5
-		},
-		{
-			"scenes": {
-				"1": false,
-				"2": false,
-				"3": false,
-				"4": false,
-				"5": false
-			},
-			"soundId": "fx2",
-			"left": 914,
-			"top": 100,
-			"w": 100,
-			"h": 80,
-			"rgb": [
-				255, 200, 128
-			],
-			"alpha": 0.5
-		},
-		{
-			"scenes": {
-				"1": false,
-				"2": false,
-				"3": false,
-				"4": false,
-				"5": false
-			},
+			"default" : "nloFX.png",
+			"over" : "nloFXPressed.png",
 			"soundId": "fx3",
-			"left": 914,
-			"top": 190,
-			"w": 100,
-			"h": 80,
+			"left": 5,
+			"top": 63,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 200, 128
 			],
-			"alpha": 0.5
+			"alpha": 1
 		},
 		{
 			"scenes": {
@@ -561,15 +527,17 @@
 				"4": false,
 				"5": false
 			},
+			"default" : "fireFX.png",
+			"over" : "fireFXPressed.png",
 			"soundId": "fx4",
-			"left": 914,
-			"top": 280,
-			"w": 100,
-			"h": 80,
+			"left": 5,
+			"top": 112,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 200, 128
 			],
-			"alpha": 0.5
+			"alpha": 1
 		},
 		{
 			"scenes": {
@@ -579,49 +547,118 @@
 				"4": false,
 				"5": false
 			},
-			"soundId": "fx5",
-			"left": 914,
-			"top": 370,
-			"w": 100,
-			"h": 80,
+			"default" : "gunFX.png",
+			"over" : "gunFXPressed.png",
+			"soundId": "fx6",
+			"left": 5,
+			"top": 163,
+			"w": 41,
+			"h": 41,
 			"rgb": [
 				255, 200, 128
 			],
-			"alpha": 0.5
+			"alpha": 1
+		},
+		{
+			"scenes": {
+				"1": false,
+				"2": false,
+				"3": false,
+				"4": false,
+				"5": false
+			},
+			"default" : "djFX.png",
+			"over" : "djFXPressed.png",
+			"soundId": "fx2",
+			"left": 51,
+			"top": 63,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 1
+		},
+		{
+			"scenes": {
+				"1": false,
+				"2": false,
+				"3": false,
+				"4": false,
+				"5": false
+			},
+			"default" : "sirenaFX.png",
+			"over" : "sirenaFXPressed.png",
+			"soundId": "fx5",
+			"left": 51,
+			"top": 112,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 1
+		},
+		{
+			"scenes": {
+				"1": false,
+				"2": false,
+				"3": false,
+				"4": false,
+				"5": false
+			},
+			"default" : "boobsFX.png",
+			"over" : "boobsFXPressed.png",
+			"soundId": "fx1",
+			"left": 51,
+			"top": 163,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 200, 128
+			],
+			"alpha": 1
+
 		}
 
 	],
 	"glitchButtons": [
 		{
+			"id": "glV",
 			"soundIds": [
 				"v1", "v5", "v6", "v7", "v8", "v10", 
 				"v11", "v12", "v16", "v17", "v18", "v19"
 			],
-			"left": 10,
-			"top": 190,
-			"w": 60,
-			"h": 260,
+			"default" : "glitchVoices.png",
+			"over" : "glitchVoicesPress.png",
+			"left": 5,
+			"top": 237,
+			"w": 41,
+			"h": 81,
 			"rgb": [
 				140,255,140
 			],
-			"alpha": 0.5,
+			"alpha": 1,
 			"label": "GL_V",
 			"id": "gl1"
 		},
 
 		{
+			"id": "glS",
 			"soundIds": [
 				"s1", "s2", "s3", "s4", "s5", "s6", 
 				"s7", "s8", "s9", "s10", "s11", "s12"
 			],
-			"left": 80,
-			"top": 190,
-			"w": 60,
-			"h": 260,
+			"default" : "glitchSounds.png",
+			"over" : "glitchSoundsPress.png",
+			"left": 50,
+			"top": 237,
+			"w": 41,
+			"h": 81,
 			"rgb": [
 				140,255,140
 			],
-			"alpha": 0.5,
+			"alpha": 1,
 			"label": "GL_S",
 			"id": "gl2"
 		}
