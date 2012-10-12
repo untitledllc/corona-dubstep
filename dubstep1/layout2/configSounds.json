@@ -243,17 +243,6 @@
 		"channel": "27"
 	},
 
-	"v17": {
-		"id": "v17",
-		"name": "voices/track17.mp3",
-		"type": "voice",
-		"scenes": [
-			1, 2, 3, 4, 5
-		],
-		"defaultVolume": 1.0,
-		"channel": "28"
-	},
-
 	"v18": {
 		"id": "v18",
 		"name": "voices/im_not_concerned_about_the_very_poor.wav",

@@ -48,7 +48,11 @@ function new()
 
 			for i, v in pairs(gl.configInterface.glitchButtons) do
 				v.button.isVisible = true
+				--v.button:toFront()
 			end
+
+			gl.voicesBack1.isVisible = true
+			gl.voicesBack2.isVisible = true
 
 			layoutAppearTime = system.getTimer()
 
@@ -78,15 +82,29 @@ function new()
 	local mainGroup = display.newGroup()
 	local localGroup = display.newGroup()
 	
-	
+	gl.voicesBack1 = display.newImageRect("images/elements/voicesGroup.png", 159, 128)
+	gl.voicesBack1:setReferencePoint(display.TopLeftReferencePoint)
+	gl.voicesBack1.x, gl.voicesBack1.y = 320, 63
+	gl.voicesBack1.isVisible = false
+
+	gl.voicesBack2 = display.newImageRect("images/elements/voicesGroup.png", 159, 128)
+	gl.voicesBack2:setReferencePoint(display.TopLeftReferencePoint)
+	gl.voicesBack2.x, gl.voicesBack2.y = 320, 191
+	gl.voicesBack2.isVisible = false
 
 	for i, v in pairs(gl.configInterface.soundButtons) do
-		local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId, ["label"] = v.label, ["default"] = v.default, ["over"] = v.over})
+		local b
+		if v.resizable then
+			b = gl.createResizableButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId, ["default"] = v.default, ["over"] = v.over})
+
+		else
+			b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId, ["label"] = v.label, ["default"] = v.default, ["over"] = v.over})
+			
+		end
 		b.isVisible = false
 		--b.txt.isVisible = false
 		v.button = b
 		localGroup:insert(b)
-	
 	end
 
 	for i, v in pairs(gl.configInterface.glitchButtons) do

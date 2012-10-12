@@ -67,6 +67,9 @@ goodBtn = nil
 evilBtn = nil
 nextSceneButton = nil
 
+
+voicesBack1 = nil
+voicesBack2 = nil
 navBar = nil
 
 eqTxt = nil
@@ -430,6 +433,253 @@ function createGlitchButton(arg)
 	return b
 end
 
+function createResizableButton(arg)
+	if type(arg) ~= "table" then
+		error("wrong type of arg: expected table")
+	end
+
+	if not arg.track or type(arg.track) ~= "table" then
+		error("Track corrupted")
+	end
+
+	local _top
+	local _left
+	local _width
+	local _height
+	local _default
+	local _over
+
+	if arg.left and type(arg.left) == "number" then
+		_left = arg.left
+
+		if arg.top and type(arg.top) == "number" then
+			_top = arg.top
+		else
+			error("wrong type of arg \"top\" ".."expected number, got "..type(arg.top))
+		end
+	else
+		_left = 1
+		_top = 1
+	end
+
+	if arg.width and type(arg.width) == "number" then
+		_width = arg.width
+
+		if arg.height and type(arg.height) == "number" then
+			_height = arg.height
+		else
+			error("wrong type of arg \"height\" ".."expected number, got "..type(arg.height))
+		end
+	else
+		_width = w/10
+		_height = h/10
+	end
+
+	if arg.default then
+		_default = "images/elements/"..arg.default
+	end
+	if arg.over then
+		_over = "images/elements/"..arg.over
+	end
+
+	local function buttonListener (event)
+									if event.phase == "began" then
+										if event.target[1].isVisible == true then
+											event.target[1].isVisible = false
+											event.target[2].isVisible = true
+										elseif event.target[3].isVisible == true then
+											event.target[3].isVisible = false
+											event.target[4].isVisible = true
+										end
+										display.getCurrentStage():setFocus(event.target, event.id)
+									elseif event.phase == "ended" or event.phase == "cancelled" then
+										if event.phase == "ended" then
+											print(event.x, event.y)
+											if not ( event.x < (event.target[1].x - event.target[1].x/2) or event.x > (event.target[1].x + event.target[1].x/2) or event.y < (event.target[1].y - event.target[1].y/2) or event.y > (event.target[1].y + event.target[1].y/2)) then
+												if event.target.type == "fx" then
+													require("playing").playFX(event.target.track, event.target)
+												elseif event.target.type == "melody" then
+													require("playing").playMelody(event.target.track, event.target)
+												elseif event.target.type == "voice" then
+													require("playing").playVoice(event.target.track, event.target)
+												end
+											end
+										end
+										if event.target[2].isVisible == true then
+											event.target[2].isVisible = false
+											event.target[1].isVisible = true
+										elseif event.target[4].isVisible == true then
+											event.target[4].isVisible = false
+											event.target[3].isVisible = true
+										end
+										display.getCurrentStage():setFocus(event.target, nil)
+
+
+									end
+								end
+
+	local b = display.newGroup()
+
+	-- Короткая ненажатая кнопка
+	local shortImageGroup = display.newGroup()
+
+	local tmpImg = display.newImageRect(configInterface.longerButtonElements.left.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 5, 5
+	shortImageGroup:insert(tmpImg)
+
+	tmpImg = display.newImageRect(_default, _width, _height)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 10, 5
+	shortImageGroup:insert(tmpImg)
+
+	tmpImg = display.newImageRect(configInterface.longerButtonElements.right.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 10 + _width, 5
+	shortImageGroup:insert(tmpImg)
+
+	shortImageGroup:setReferencePoint(display.TopLeftReferencePoint)
+	shortImageGroup.x, shortImageGroup.y = _left, _top
+
+	b:insert(shortImageGroup)
+	-----
+
+	-- Короткая нажатая кнопка
+	local shortPressedImageGroup = display.newGroup()
+
+	local tmpImg = display.newImageRect(configInterface.longerButtonElements.leftPressed.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 5, 5
+	shortPressedImageGroup:insert(tmpImg)
+
+	tmpImg = display.newImageRect(_over, _width, _height)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 10, 5
+	shortPressedImageGroup:insert(tmpImg)
+
+	tmpImg = display.newImageRect(configInterface.longerButtonElements.rightPressed.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 10 + _width, 5
+	shortPressedImageGroup:insert(tmpImg)
+
+	shortPressedImageGroup:setReferencePoint(display.TopLeftReferencePoint)
+	shortPressedImageGroup.x, shortPressedImageGroup.y = _left, _top
+
+	b:insert(shortPressedImageGroup)
+	-----
+
+	-- Длинная ненажатая кнопка
+	local longImageGroup = display.newGroup()
+
+	local tmpImg = display.newImageRect(configInterface.longerButtonElements.left.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 5, 5
+	longImageGroup:insert(tmpImg)
+
+	for i = 1, 7, 1 do
+		tmpImg = display.newImageRect(configInterface.longerButtonElements.longer.fileName, 5, 33)
+		tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+		tmpImg.x, tmpImg.y = 5 + i*5, 5
+		longImageGroup:insert(tmpImg)
+	end
+
+	tmpImg = display.newImageRect(_default, _width, _height)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 45, 5
+	longImageGroup:insert(tmpImg)
+
+	for i = 1, 7, 1 do
+		tmpImg = display.newImageRect(configInterface.longerButtonElements.longer.fileName, 5, 33)
+		tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+		tmpImg.x, tmpImg.y = 45 + _width + (i-1)*5, 5
+		longImageGroup:insert(tmpImg)
+	end
+
+	tmpImg = display.newImageRect(configInterface.longerButtonElements.right.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 85 + _width, 5
+	longImageGroup:insert(tmpImg)
+
+	longImageGroup:setReferencePoint(display.TopLeftReferencePoint)
+	longImageGroup.x, longImageGroup.y = _left, _top
+
+	b:insert(longImageGroup)
+	-----
+
+	-- Длинная нажатая кнопка
+	local longPressedImageGroup = display.newGroup()
+
+	local tmpImg = display.newImageRect(configInterface.longerButtonElements.leftPressed.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 5, 5
+	longPressedImageGroup:insert(tmpImg)
+
+	for i = 1, 7, 1 do
+		tmpImg = display.newImageRect(configInterface.longerButtonElements.longerPressed.fileName, 5, 33)
+		tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+		tmpImg.x, tmpImg.y = 5 + i*5, 5
+		longPressedImageGroup:insert(tmpImg)
+	end
+
+	tmpImg = display.newImageRect(_over, _width, _height)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 45, 5
+	longPressedImageGroup:insert(tmpImg)
+
+	for i = 1, 7, 1 do
+		tmpImg = display.newImageRect(configInterface.longerButtonElements.longerPressed.fileName, 5, 33)
+		tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+		tmpImg.x, tmpImg.y = 45 + _width + (i-1)*5, 5
+		longPressedImageGroup:insert(tmpImg)
+	end
+
+	tmpImg = display.newImageRect(configInterface.longerButtonElements.rightPressed.fileName, 5, 33)
+	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
+	tmpImg.x, tmpImg.y = 85 + _width, 5
+	longPressedImageGroup:insert(tmpImg)
+
+	longPressedImageGroup:setReferencePoint(display.TopLeftReferencePoint)
+	longPressedImageGroup.x, longPressedImageGroup.y = _left, _top
+
+	b:insert(longPressedImageGroup)
+	-----
+
+	b[1].isVisible = true
+	b[2].isVisible = false
+	b[3].isVisible = false
+	b[4].isVisible = false
+
+	b.track = arg.track
+	
+	if arg.alpha and type(arg.alpha) == "number" then
+		b.alpha = arg.alpha
+	else
+		b.alpha = 0.5
+	end
+
+	if not arg.scenes or type(arg.scenes) ~= "table" then
+		error("Wrong type of arg \"scenes\" expected table, got "..type(arg.scenes))
+	else
+		b.scenes = arg.scenes
+	end
+
+	if not arg.type or type(arg.type) ~= "string" then
+		error("Wrong type of arg \"type\" expected table, got "..type(arg.type))
+	else
+		b.type = arg.type
+	end
+
+	if not arg.soundId or type(arg.soundId) ~= "string" then
+		error("Wrong type of arg \"soundId\" expected table, got "..type(arg.soundId))
+	else
+		b.soundId = arg.soundId
+	end
+
+	b:addEventListener("touch", buttonListener)
+
+	return b
+end
+
 function changeBackGround(object) 
 	object.isVisible = true
 	object.alpha = 0
@@ -454,12 +704,15 @@ function drawLayoutBtns()
 	replaying = require("replayModule")
 
 	local btns = {}
+
 	navBar = display.newGroup()
 	for i = 1, 120 do
 		local navBarPart = display.newImageRect("images/elements/navBar.png", 4, 43)
 		navBarPart.x, navBarPart.y = 2 + 4*(i-1), 21
 		navBar:insert(navBarPart)
 	end
+
+	
 
 	function changeScene(event)
 		if event.phase == "release" then
@@ -545,7 +798,7 @@ function drawLayoutBtns()
 	menuButtonFinal.scene = "level"
 
 
-	nextSceneButton = display.newRoundedRect(10*w/14, 3*h/12, 2*w/16, 3*h/15, 8)
+	nextSceneButton = display.newRoundedRect(168, 236, 2*w/16, 3*h/15, 8)
 	nextSceneButton.txt = display.newText("Next scene", 0, 0, native.systemFont, 16)
 	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
 	nextSceneButton.alpha = 0.5

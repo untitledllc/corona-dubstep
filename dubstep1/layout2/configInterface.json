@@ -266,15 +266,18 @@
 				"5": false
 			},
 			"soundId": "v1",
-			"left": 160,
-			"top": 460,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "10000Bucks.png",
+			"over": "10000BucksPressed.png",
+			"left": 326,
+			"top": 82,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "10.000 bucks",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -286,15 +289,18 @@
 				"5": false
 			},
 			"soundId": "v5",
-			"left": 300,
-			"top": 460,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "coupleOfCadillac.png",
+			"over": "coupleOfCadillacPressed.png",
+			"left": 326,
+			"top": 116,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "Couple of Cadillacs",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -306,15 +312,18 @@
 				"5": false
 			},
 			"soundId": "v6",
-			"left": 440,
-			"top": 460,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "corporationsArePeople.png",
+			"over": "corporationsArePeoplePressed.png",
+			"left": 326,
+			"top": 150,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "Corporations are people",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -326,15 +335,18 @@
 				"5": false
 			},
 			"soundId": "v7",
-			"left": 580,
-			"top": 460,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "firePeople.png",
+			"over": "firePeoplePressed.png",
+			"left": 326,
+			"top": 211,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "Fire people",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -346,15 +358,18 @@
 				"5": false
 			},
 			"soundId": "v8",
-			"left": 720,
-			"top": 460,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "jeMapelle.png",
+			"over": "jeMapellePressed.png",
+			"left": 326,
+			"top": 246,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "Je m'apelle Mitt Romney",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -366,15 +381,18 @@
 				"5": false
 			},
 			"soundId": "v10",
-			"left": 860,
-			"top": 460,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "yall.png",
+			"over": "yallPressed.png",
+			"left": 326,
+			"top": 279,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "Y'all",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -386,15 +404,18 @@
 				"5": false
 			},
 			"soundId": "v11",
-			"left": 160,
-			"top": 600,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "haveIllegals.png",
+			"over": "haveIllegalsPressed.png",
+			"left": 401,
+			"top": 82,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "I can't have illegals",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -406,15 +427,18 @@
 				"5": false
 			},
 			"soundId": "v12",
-			"left": 300,
-			"top": 600,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "lotOfMoney.png",
+			"over": "lotOfMoneyPressed.png",
+			"left": 401,
+			"top": 116,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "I've made a lot of money",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -426,35 +450,18 @@
 				"5": false
 			},
 			"soundId": "v16",
-			"left": 440,
-			"top": 600,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "rightHeight.png",
+			"over": "rightHeightPressed.png",
+			"left": 401,
+			"top": 150,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "Trees are the right height",
-			"alpha": 0.5
-		},
-
-		{
-			"scenes": {
-				"1": false,
-				"2": false,
-				"3": false,
-				"4": false,
-				"5": false
-			},
-			"soundId": "v17",
-			"left": 580,
-			"top": 600,
-			"w": 130,
-			"h": 130,
-			"rgb": [
-				255, 200, 128
-			],
-			"label": "I'm also unemployed",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -466,15 +473,18 @@
 				"5": false
 			},
 			"soundId": "v18",
-			"left": 720,
-			"top": 600,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "aboutPoor.png",
+			"over": "aboutPoorPressed.png",
+			"left": 401,
+			"top": 211,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "Not concerned about the poor",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 		{
@@ -486,15 +496,18 @@
 				"5": false
 			},
 			"soundId": "v19",
-			"left": 860,
-			"top": 600,
-			"w": 130,
-			"h": 130,
+			"resizable" : "true",
+			"default": "whoLetTheDogsOut.png",
+			"over": "whoLetTheDogsOutPressed.png",
+			"left": 401,
+			"top": 246,
+			"w": 61,
+			"h": 33,
 			"rgb": [
 				255, 200, 128
 			],
 			"label": "WHO LET THE DOGS OUT",
-			"alpha": 0.5
+			"alpha": 1
 		},
 
 
@@ -627,7 +640,7 @@
 			"id": "glV",
 			"soundIds": [
 				"v1", "v5", "v6", "v7", "v8", "v10", 
-				"v11", "v12", "v16", "v17", "v18", "v19"
+				"v11", "v12", "v16", "v18", "v19"
 			],
 			"default" : "glitchVoices.png",
 			"over" : "glitchVoicesPress.png",
@@ -640,7 +653,6 @@
 			],
 			"alpha": 1,
 			"label": "GL_V",
-			"id": "gl1"
 		},
 
 		{
@@ -660,7 +672,6 @@
 			],
 			"alpha": 1,
 			"label": "GL_S",
-			"id": "gl2"
 		}
 	],
 
@@ -699,5 +710,26 @@
 
 		}
 
-	]
+	],
+
+	"longerButtonElements":{
+		"left":{
+			"fileName": "images/elements/btnLeftside.png"
+		},
+		"leftPressed":{
+			"fileName": "images/elements/btnLeftsidePressed.png"
+		},
+		"right":{
+			"fileName": "images/elements/btnRightside.png"
+		},
+		"rightPressed":{
+			"fileName": "images/elements/btnRigthsidePressed.png"
+		},
+		"longer":{
+			"fileName": "images/elements/btnLonger.png"
+		},
+		"longerPressed":{
+			"fileName": "images/elements/btnLongerPressed.png"
+		},
+	},
 }

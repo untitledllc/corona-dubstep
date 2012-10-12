@@ -358,6 +358,8 @@ function nextScene(event)
 			gl.btn1.isVisible = false
 			gl.btn2.isVisible = false
 			gl.navBar.isVisible = false
+			gl.voicesBack1.isVisible = false
+			gl.voicesBack2.isVisible = false
 			--gl.repBtn.txt.isVisible = true
 
 			recording.saveUserActList()
@@ -483,7 +485,7 @@ function playVoice(trackInfo,button)
 
 			if button.tween then
 				transition.cancel(button.tween)
-				button.alpha = 0.5
+				--button.alpha = 0.5
 			end
 
 			playingVoicesFxs[trackInfo.id] = trackInfo
@@ -515,10 +517,25 @@ function makeGlitchFunc(button)
 	local activeChannelsCopy = {}
 	--local isGlitchStarted = false
 	local function runtimeGlitchHandler(event)
+		if button[2].isVisible == false then
+			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[button.id])
+			
+			--isGlitchStarted = false
+		
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, button.id, 0, button.activeChannels)
+
+			for idx,val in pairs(button.activeChannels) do
+	   			audio.setVolume(val.v,{channel = val.ch})
+			end
+			runtimeGlitchHandlers[button.id] = nil
+			button.activeChannels = {}
+			--display.getCurrentStage():setFocus(button, nil)
+			return 0
+		end
 		--if (isGlitchStarted == true) then
  			if (deltaSumm > gl.glitchShutUpTime) then
  				--button.alpha = 1
- 				for idx,val in pairs(activeChannels) do
+ 				for idx,val in pairs(button.activeChannels) do
 					--if (val.channel ~= nil and val.channel > partSumms[3]) then
 						audio.setVolume(0,{channel = val.ch})
 					--end
@@ -527,7 +544,7 @@ function makeGlitchFunc(button)
 
  			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
  				--button.alpha = 0.5
- 				for idx,val in pairs(activeChannels) do
+ 				for idx,val in pairs(button.activeChannels) do
 					--if (val.channel ~= nil and val.channel > partSumms[3]) then
 						audio.setVolume(val.v,{channel = val.ch})	
 					--end
@@ -602,8 +619,8 @@ function playGlitch(event)
  	end
 	]]--
 	if (event.phase == "press") then
-		isGlitchStarted = true
-		activeChannels = {}
+		--isGlitchStarted = true
+		local activeChannels = {}
  			for i, v in pairs(event.target.soundIds) do
  				if  gl.soundsConfig[v].channel and audio.isChannelActive( gl.soundsConfig[v].channel ) then
  					local vol = audio.getVolume({channel = gl.soundsConfig[v].channel})
@@ -613,32 +630,25 @@ function playGlitch(event)
  					end
  				end
  			end
- 		event.target.glitchIdx = "gl"..tostring(#runtimeGlitchHandlers + 1)
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "startGlitch", 0, event.target.glitchIdx, 0, activeChannels)
+ 		event.target.activeChannels = activeChannels
+ 		--event.target.glitchIdx = "gl"..tostring(#runtimeGlitchHandlers + 1)
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "startGlitch", 0, event.target.id, 0, event.target.activeChannels)
 		--prevMeasure = system.getTimer()
 		--curMeasure = 0
 		
 		local glitchHandler = makeGlitchFunc(event.target)
-		runtimeGlitchHandlers[event.target.glitchIdx] = glitchHandler
-		Runtime:addEventListener("enterFrame",runtimeGlitchHandlers[event.target.glitchIdx])
+		runtimeGlitchHandlers[event.target.id] = glitchHandler
+		Runtime:addEventListener("enterFrame",runtimeGlitchHandlers[event.target.id])
 		
-		display.getCurrentStage():setFocus(event.target, event.id)
-	end
+		--display.getCurrentStage():setFocus(event.target, event.id)
 	
-	if (event.phase == "release" or (event.phase == "moved"  and 
+	
+	--[[elseif (event.phase == "release" or (event.phase == "moved"  and 
 		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
 		
-		Runtime:removeEventListener("enterFrame",runtimeGlitchHandlers[event.target.glitchIdx])
+		Runtime:removeEventListener("enterFrame",runtimeGlitchHandlers[event.target.id])
 		--event.target.alpha = 0.5
-		isGlitchStarted = false
-		
-		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, event.target.glitchIdx, 0, activeChannels)
-
-		for idx,val in pairs(activeChannels) do
-   			audio.setVolume(val.v,{channel = val.ch})
-		end
-		runtimeGlitchHandlers[event.target.glitchIdx] = nil
-		display.getCurrentStage():setFocus(event.target, nil)
+		]]--
 	end
 end
 
