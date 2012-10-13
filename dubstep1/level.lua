@@ -48,7 +48,6 @@ function new()
 
 			for i, v in pairs(gl.configInterface.glitchButtons) do
 				v.button.isVisible = true
-				--v.button:toFront()
 			end
 
 			gl.voicesBack1.isVisible = true
@@ -92,6 +91,9 @@ function new()
 	gl.voicesBack2.x, gl.voicesBack2.y = 320, 191
 	gl.voicesBack2.isVisible = false
 
+	localGroup:insert(gl.voicesBack1)
+	localGroup:insert(gl.voicesBack2)
+
 	for i, v in pairs(gl.configInterface.soundButtons) do
 		local b
 		if v.resizable then
@@ -125,10 +127,10 @@ function new()
 
 	
 
-	mainGroup:insert(1, backs[1])
-	mainGroup:insert(2, localGroup)
-	mainGroup:insert(3, firstScreenBackground)
-	mainGroup:insert(4, continueButton)
+	mainGroup:insert(backs[1])
+	mainGroup:insert(localGroup)
+	mainGroup:insert(firstScreenBackground)
+	mainGroup:insert(continueButton)
 
 	gl.mainGroup = mainGroup
 	gl.localGroup = localGroup 
