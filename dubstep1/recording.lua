@@ -1,6 +1,6 @@
 module (...,package.seeall)
 
-local userActionList = {}
+userActionList = {}
 local defaultVolume = 0.3
 
 local recPressTime = nil
@@ -72,10 +72,21 @@ end
 
 function saveUserActList()
     local path = system.pathForFile( "test.json", system.DocumentsDirectory )
+
+    local results, reason = os.remove( path )
+ 
+	if results then
+	   print( "file removed" )
+	else
+	   print( "file does not exist", reason )
+	end
+
     local f = io.open(path,"w")
     if (not f) then
         print("not ok")
     end
+
+    
 
 	local tempActionsTable = {}
     
@@ -209,16 +220,14 @@ function stopRecording(e)
 											 end )
 end
 
-function startRecording()	
-	
+function startRecording()
 	currentSceneAppearTime = layout.getLayoutAppearTime()
-	gl.nextSceneAppearTime = 0
+	gl.nextSceneAppearTime = currentSceneAppearTime + gl.sceneLength
 	
-	gl.sceneNumber.isVisible = false
+	gl.sceneNumber.isVisible = true
 	
-	gl.nextSceneAppearTime = gl.fullRecordLength/(#gl.currentBacks - 1)
-	
-	gl.currentSceneAppearTime = system.getTimer()
+	gl.currentSceneAppearTime = currentSceneAppearTime
+	print(gl.currentSceneAppearTime, gl.nextSceneAppearTime)
 	
 	--hideBtns()
 	
@@ -266,28 +275,25 @@ function startRecording()
 	]]--
 	gl.timerTxt.isVisible = true
 	gl.nextSceneTimerTxt.isVisible = true
+
+	gl.toEndTimerFunc = function ()
+		gl.timerTxt.text = "Time left: "..tostring(math.round((gl.fullRecordLength - system.getTimer() + layout.getLayoutAppearTime() - gl.deltaTime)/1000 ))	
+		gl.timerTxt:setReferencePoint(display.TopLeftReferencePoint)
+		gl.timerTxt.x, gl.timerTxt.y = 140,240	
+	end
+
+	gl.toNextSceneTimerFunc = function ()
+		gl.currentSceneLocalTime = system.getTimer() - gl.currentSceneAppearTime
+		--print(gl.nextSceneAppearTime)
+		gl.nextSceneTimerTxt.text = "Scene will change in: "..tostring(math.round((gl.nextSceneAppearTime - gl.currentSceneLocalTime - layout.getLayoutAppearTime())/1000))
+		gl.nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
+		gl.nextSceneTimerTxt.x, gl.nextSceneTimerTxt.y = 140,280
+	end
 	
-	--[[Runtime:addEventListener("enterFrame",function ()
-												if (isRecSwitchedOn == true) then
-													gl.timerTxt.text = "Time left: "..tostring(
-														math.round((gl.fullRecordLength - 
-															system.getTimer() + 
-																layout.getLayoutAppearTime() + 
-																	recPressTime)/1000 )
-																		)
-												end
-											 end )
-											 
-	Runtime:addEventListener("enterFrame",function ()
-										      if (isRecSwitchedOn == true) then
-										      		gl.currentSceneLocalTime = system.getTimer() - 
-																gl.currentSceneAppearTime
-										      	    gl.nextSceneTimerTxt.text = "Scene will change in: "
-										      			..tostring(math.round((gl.nextSceneAppearTime - 
-										      				gl.currentSceneLocalTime)/1000))
-											  end
-										   end )
-	]]--						
+	Runtime:addEventListener("enterFrame", gl.toEndTimerFunc)
+	
+	Runtime:addEventListener("enterFrame", gl.toNextSceneTimerFunc)
+
 end
 
 --[[ 

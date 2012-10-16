@@ -8,52 +8,16 @@
 	"soundButtons": [
 		{
 			"scenes": {
+				"1": false,
+				"2": false,
 				"3": false,
 				"4": false,
 				"5": false
 			},
-			"default" : "digit1.png",
-			"over" : "digit1Pressed.png",
-			"soundId": "s1",
+			"default" : "melody.png",
+			"over" : "melodyPressed.png",
+			"soundId": "s6",
 			"left": 122,
-			"top": 163,
-			"w": 41,
-			"h": 41,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"evil",
-			"alpha": 1
-		},
-
-		{
-			"scenes": {
-				"3": true
-			},
-			"default" : "digit2.png",
-			"over" : "digit2Pressed.png",
-			"soundId": "s2",
-			"left": 168,
-			"top": 163,
-			"w": 41,
-			"h": 41,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"evil",
-			"alpha": 1
-		},
-
-		{
-			"scenes": {
-				"3": false,
-				"4": false,
-				"5": false
-			},
-			"default" : "digit3.png",
-			"over" : "digit3Pressed.png",
-			"soundId": "s3",
-			"left": 214,
 			"top": 163,
 			"w": 41,
 			"h": 41,
@@ -71,9 +35,49 @@
 				"4": false,
 				"5": false
 			},
-			"default" : "digit4.png",
-			"over" : "digit4Pressed.png",
+			"default" : "beat.png",
+			"over" : "beatPressed.png",
 			"soundId": "s4",
+			"left": 168,
+			"top": 163,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 0, 0
+			],
+			"side":	"evil",
+			"alpha": 1
+		},
+
+		{
+			"scenes": {
+				"2": false,
+				"3": false,
+				"4": false
+			},
+			"default" : "vobl.png",
+			"over" : "voblPressed.png",
+			"soundId": "s7",
+			"left": 214,
+			"top": 163,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 0, 0
+			],
+			"side":	"evil",
+			"alpha": 1
+		},
+
+		{
+			"scenes": {
+				"3": false,
+				"4": false,
+				"5": false
+			},
+			"default" : "melody.png",
+			"over" : "melodyPressed.png",
+			"soundId": "s3",
 			"left": 260,
 			"top": 163,
 			"w": 41,
@@ -93,8 +97,8 @@
 				"4": false,
 				"5": false
 			},
-			"default" : "digit1.png",
-			"over" : "digit1Pressed.png",
+			"default" : "melody.png",
+			"over" : "melodyPressed.png",
 			"soundId": "s5",
 			"left": 122,
 			"top": 111,
@@ -109,15 +113,13 @@
 
 		{
 			"scenes": {
-				"1": false,
-				"2": false,
 				"3": false,
 				"4": false,
 				"5": false
 			},
-			"default" : "digit2.png",
-			"over" : "digit2Pressed.png",
-			"soundId": "s6",
+			"default" : "beat.png",
+			"over" : "beatPressed.png",
+			"soundId": "s1",
 			"left": 168,
 			"top": 111,
 			"w": 41,
@@ -135,51 +137,11 @@
 				"3": false,
 				"4": false
 			},
-			"default" : "digit3.png",
-			"over" : "digit3Pressed.png",
-			"soundId": "s7",
+			"default" : "vobl.png",
+			"over" : "voblPressed.png",
+			"soundId": "s8",
 			"left": 214,
 			"top": 111,
-			"w": 41,
-			"h": 41,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"evil",
-			"alpha": 1
-		},
-
-		{
-			"scenes": {
-				"2": false,
-				"3": false,
-				"4": false
-			},
-			"default" : "digit4.png",
-			"over" : "digit4Pressed.png",
-			"soundId": "s8",
-			"left": 260,
-			"top": 111,
-			"w": 41,
-			"h": 41,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"evil",
-			"alpha": 1
-		},
-
-		{
-			"scenes": {
-				"3": false,
-				"4": false,
-				"5": false
-			},
-			"default" : "digit1.png",
-			"over" : "digit1Pressed.png",
-			"soundId": "s9",
-			"left": 122,
-			"top": 63,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -197,31 +159,11 @@
 				"4": false,
 				"5": false
 			},
-			"default" : "digit2.png",
-			"over" : "digit2Pressed.png",
+			"default" : "melody.png",
+			"over" : "melodyPressed.png",
 			"soundId": "s10",
-			"left": 168,
-			"top": 63,
-			"w": 41,
-			"h": 41,
-			"rgb": [
-				255, 0, 0
-			],
-			"side":	"evil",
-			"alpha": 1
-		},
-
-		{
-			"scenes": {
-				"2": true,
-				"3": true,
-				"4": true
-			},
-			"default" : "digit3.png",
-			"over" : "digit3Pressed.png",
-			"soundId": "s11",
-			"left": 214,
-			"top": 63,
+			"left": 260,
+			"top": 111,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -239,9 +181,67 @@
 				"4": true,
 				"5": true
 			},
-			"default" : "digit4.png",
-			"over" : "digit4Pressed.png",
+			"default" : "melody.png",
+			"over" : "melodyPressed.png",
 			"soundId": "s12",
+			"left": 122,
+			"top": 63,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 0, 0
+			],
+			"side":	"evil",
+			"alpha": 1
+		},
+
+		{
+			"scenes": {				
+				"2": true,
+				"3": true,
+				"4": true
+			},
+			"default" : "beat.png",
+			"over" : "beatPressed.png",
+			"soundId": "s11",
+			"left": 168,
+			"top": 63,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 0, 0
+			],
+			"side":	"evil",
+			"alpha": 1
+		},
+
+		{
+			"scenes": {
+				"3": true
+			},
+			"default" : "vobl.png",
+			"over" : "voblPressed.png",
+			"soundId": "s2",
+			"left": 214,
+			"top": 63,
+			"w": 41,
+			"h": 41,
+			"rgb": [
+				255, 0, 0
+			],
+			"side":	"evil",
+			"alpha": 1
+		},
+
+		{
+			"scenes": {
+				"3": false,
+				"4": false,
+				"5": false
+			},
+			"default" : "melody.png",
+			"over" : "melodyPressed.png",
+			"soundId": "s9",
 			"left": 260,
 			"top": 63,
 			"w": 41,

@@ -4,8 +4,13 @@ jsonModule = require "json"
 
 local widget = require "widget"
 
+toEndTimerFunc = nil
+toNextSceneTimerFunc = nil
+
 w = display.contentWidth
 h = display.contentHeight
+
+deltaTime = 0
 
 sceneChangingTimer = nil
 
@@ -705,15 +710,6 @@ function drawLayoutBtns()
 
 	local btns = {}
 
-	navBar = display.newGroup()
-	for i = 1, 120 do
-		local navBarPart = display.newImageRect("images/elements/navBar.png", 4, 43)
-		navBarPart.x, navBarPart.y = 2 + 4*(i-1), 21
-		navBar:insert(navBarPart)
-	end
-
-	
-
 	function changeScene(event)
 		if event.phase == "release" then
 			audio.stop()
@@ -798,7 +794,7 @@ function drawLayoutBtns()
 	menuButtonFinal.scene = "level"
 
 
-	nextSceneButton = display.newRoundedRect(168, 236, 2*w/16, 3*h/15, 8)
+	nextSceneButton = display.newRoundedRect(200, 3, 55, 38, 8)
 	nextSceneButton.txt = display.newText("Next scene", 0, 0, native.systemFont, 16)
 	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
 	nextSceneButton.alpha = 0.5
@@ -810,16 +806,19 @@ function drawLayoutBtns()
 	
 	--volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 	
-	timerTxt = display.newText("",0,0,native.systemFont,14)
-	timerTxt.x,timerTxt.y = w/2,6*h/7
+	timerTxt = display.newText("Time left: ",0,0,native.systemFont,14)
+	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
+	timerTxt.x,timerTxt.y = 140,240
 	timerTxt.isVisible = false
 	
-	nextSceneTimerTxt = display.newText("",0,0,native.systemFont,14)
-	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 2*w/3,8*h/9
+	nextSceneTimerTxt = display.newText("Scene will change in: ",0,0,native.systemFont,14)
+	nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
+	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 140,280
 	nextSceneTimerTxt.isVisible = false
 	
 	sceneNumber = display.newText("Next scene: 2",0,0,native.systemFont,14)
-	sceneNumber.x,sceneNumber.y = 3*w/4,6*h/7
+	sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
+	sceneNumber.x,sceneNumber.y = 140,260
 	sceneNumber.isVisible = false
 		
 	shareTxt = display.newText("Share!!!",0,0,native.systemFont,32)

@@ -18,7 +18,17 @@ function getLayoutAppearTime()
 end
 
 function new()
+
 	local gl = require("globals")
+
+	if gl.toEndTimerFunc then
+		Runtime:removeEventListener("enterFrame", gl.toEndTimerFunc)
+	end
+	
+	if gl.toNextSceneTimerFunc then
+		Runtime:removeEventListener("enterFrame", gl.toNextSceneTimerFunc)
+	end
+
 	local w = gl.w
 	local h = gl.h
 
@@ -29,6 +39,17 @@ function new()
 
 	function continuePress(event)
 		if event.phase == "release" then
+
+			audio.stop()
+			for i, v in pairs(gl.soundsConfig) do
+				if v.type == "melody" then
+					if v.sound then
+						audio.rewind(v.sound)
+					end
+					v.channel = nil
+				end
+			end
+
 			firstScreenBackground.isVisible = false
 			continueButton.isVisible = false
 
@@ -41,7 +62,7 @@ function new()
 			gl.btns = gl.drawLayoutBtns()
 	
 			for idx,val in pairs(gl.btns) do
-				val.alpha = 0.5
+				val.alpha = 1
 				--val.isVisible = false
 				--val.txt.isVisible = false
 			end
@@ -66,7 +87,7 @@ function new()
 			gl.loading.isVisible = false
 		end
 	end
-
+	require("recording").userActionList = {}
 	continueButton = widget.newButton{
 		id = "continue",
 		left = 335,
@@ -91,8 +112,16 @@ function new()
 	gl.voicesBack2.x, gl.voicesBack2.y = 320, 191
 	gl.voicesBack2.isVisible = false
 
+	gl.navBar = display.newGroup()
+	for i = 1, 120 do
+		local navBarPart = display.newImageRect("images/elements/navBar.png", 4, 43)
+		navBarPart.x, navBarPart.y = 2 + 4*(i-1), 21
+		gl.navBar:insert(navBarPart)
+	end
+
 	localGroup:insert(gl.voicesBack1)
 	localGroup:insert(gl.voicesBack2)
+	localGroup:insert(gl.navBar)
 
 	for i, v in pairs(gl.configInterface.soundButtons) do
 		local b
@@ -136,8 +165,12 @@ function new()
 	gl.localGroup = localGroup 
 	gl.currentBacks = backs
 
+	gl.deltaTime = 0
+
 	if atOncePlay then
-		continuePress({name = "buttonEvent", phase = "release"})
+		timer.performWithDelay(200, function()
+			continuePress({name = "buttonEvent", phase = "release"})
+		end)
 	end
 	return mainGroup
 end

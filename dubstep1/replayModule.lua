@@ -515,11 +515,11 @@ function new()
 	
 	local function exitPressed(event)
 		if (event.phase == "ended") then
-			local vol = require("volumeRegulator")
-			local rc = require("recording")
-			rc.recPressCounter = 0
+			--local vol = require("volumeRegulator")
+			--local rc = require("recording")
+			--rc.recPressCounter = 0
 			
-			vol.scrolls = {}
+			--vol.scrolls = {}
 			Runtime:removeEventListener("enterFrame",play)
 			Runtime:removeEventListener("enterFrame", mainPlayingFunction)
 			audio.stop()

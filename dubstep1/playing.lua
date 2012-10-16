@@ -148,7 +148,12 @@ function nextScene(event)
 		gl.currentScene = gl.currentScene + 1
 		timer.cancel(gl.sceneChangingTimer)
 		if gl.currentScene <= gl.scenesNum then
-			
+			gl.currentSceneAppearTime = system.getTimer()
+			--gl.nextSceneAppearTime = gl.currentSceneAppearTime + gl.sceneLength
+			gl.deltaTime = gl.deltaTime + (gl.nextSceneAppearTime - gl.currentSceneLocalTime - curLayout.getLayoutAppearTime())
+			gl.sceneNumber.text = "Next scene: "..tostring(gl.currentScene + 1)
+			gl.sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
+			gl.sceneNumber.x, gl.sceneNumber.y = 140,260
 			-- Переключаем таймер перехода на следующую сцену
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
 				gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
@@ -283,6 +288,13 @@ function nextScene(event)
 			end
 		-- Если закончились сцены
 		else
+
+			Runtime:removeEventListener("enterFrame", gl.toEndTimerFunc)
+			Runtime:removeEventListener("enterFrame", gl.toNextSceneTimerFunc)
+
+			gl.sceneNumber.isVisible = false
+			gl.timerTxt.isVisible = false
+			gl.nextSceneTimerTxt.isVisible = false
 			
 			--[[ Скрываем кнопки
 			for i = 1, gl.mainGroup[2].numChildren, 1 do
@@ -403,7 +415,9 @@ function playFX(trackInfo,button)
 			button.pressed = 0
 			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
 				playingVoicesFxs[trackInfo.id] = nil
+				trackInfo.channel = nil
 			end
+			
 		end})
 
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
@@ -435,7 +449,9 @@ function playFX(trackInfo,button)
 			button.pressed = 0
 			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
 				playingVoicesFxs[trackInfo.id] = nil
+				trackInfo.channel = nil
 			end
+			
 		end})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
@@ -461,6 +477,7 @@ function playVoice(trackInfo,button)
 			button.pressed = 0
 			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
 				playingVoicesFxs[trackInfo.id] = nil
+				trackInfo.channel = nil
 			end
 		end})
 		
@@ -494,7 +511,9 @@ function playVoice(trackInfo,button)
 				button.pressed = 0
 				if system.getTimer() >= button.tween._timeStart + button.tween._duration then
 					playingVoicesFxs[trackInfo.id] = nil
+					trackInfo.channel = nil
 				end
+				
 			end})
 			
 			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
@@ -805,9 +824,9 @@ function initSounds(kitAddress)
 		for i, v in pairs(soundsConfig) do
 			if v.type == "melody" then
 				if v.side then --and v.side == gl.choosenSide then
-					v.sound = audio.loadStream(kitAddress..v.side.."/"..v.name)
+					v.sound = audio.loadStream(kitAddress..v.side.."/"..v.name, {bufferSize=4096, maxQueueBuffers=16, startupBuffers=8, buffersQueuedPerUpdate=2})
 				elseif not v.side then
-					v.sound = audio.loadStream(kitAddress..v.name)
+					v.sound = audio.loadStream(kitAddress..v.name, {bufferSize=4096, maxQueueBuffers=16, startupBuffers=8, buffersQueuedPerUpdate=2})
 				end
 			else
 				if v.side then --and v.side == gl.choosenSide then
