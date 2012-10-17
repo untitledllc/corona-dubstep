@@ -3,10 +3,28 @@ settings =
 	orientation = 
 	{
 		default = "landscapeRight",
-		content = "landscapeRight"
+        supported =
+        {
+               "landscapeRight",
+               "landscapeLeft",
+        },
 	},
 	androidPermissions =
     {
        
+    },
+    iphone =
+    {
+        plist =
+        {
+            
+            UIAppFonts = 
+            {
+                "PT-Sans.ttf",
+                "PT-Sans-Bold.ttf",
+                "PT-Sans-Caption-Bold.ttf",
+                "PT-Sans-Narrow-Bold.ttf",
+            }
+        },
     },
 }

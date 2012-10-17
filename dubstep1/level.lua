@@ -73,6 +73,8 @@ function new()
 
 			gl.voicesBack1.isVisible = true
 			gl.voicesBack2.isVisible = true
+			gl.glitchTxt.isVisible = true
+			gl.glitchTxtShadow.isVisible = true
 
 			layoutAppearTime = system.getTimer()
 
@@ -81,6 +83,9 @@ function new()
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
 				gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
 			end)
+
+			gl.toNextSceneTime = 9999
+			gl.toFinalTime = 9999
 
 			require("recording").startRecording()
 			
@@ -168,7 +173,7 @@ function new()
 	gl.deltaTime = 0
 
 	if atOncePlay then
-		timer.performWithDelay(200, function()
+		timer.performWithDelay(50, function()
 			continuePress({name = "buttonEvent", phase = "release"})
 		end)
 	end

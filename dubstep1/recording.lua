@@ -224,7 +224,7 @@ function startRecording()
 	currentSceneAppearTime = layout.getLayoutAppearTime()
 	gl.nextSceneAppearTime = currentSceneAppearTime + gl.sceneLength
 	
-	gl.sceneNumber.isVisible = true
+	gl.sceneNumber.isVisible = false
 	
 	gl.currentSceneAppearTime = currentSceneAppearTime
 	print(gl.currentSceneAppearTime, gl.nextSceneAppearTime)
@@ -274,20 +274,38 @@ function startRecording()
 
 	]]--
 	gl.timerTxt.isVisible = true
+	gl.timerTxtShadow.isVisible = true
 	gl.nextSceneTimerTxt.isVisible = true
+	gl.nextSceneTimerTxtShadow.isVisible = true
 
 	gl.toEndTimerFunc = function ()
-		gl.timerTxt.text = "Time left: "..tostring(math.round((gl.fullRecordLength - system.getTimer() + layout.getLayoutAppearTime() - gl.deltaTime)/1000 ))	
-		gl.timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-		gl.timerTxt.x, gl.timerTxt.y = 140,240	
+		local toFinalTime = math.round((gl.fullRecordLength - system.getTimer() + layout.getLayoutAppearTime() - gl.deltaTime)/1000 )
+		if toFinalTime < gl.toFinalTime then
+			gl.toFinalTime = toFinalTime
+			gl.timerTxt.text = "Time left: "..tostring(toFinalTime)	
+			gl.timerTxt:setReferencePoint(display.TopLeftReferencePoint)
+			gl.timerTxt.x, gl.timerTxt.y = 180,11
+
+			gl.timerTxtShadow.text = gl.timerTxt.text
+			gl.timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+			gl.timerTxtShadow.x, gl.timerTxtShadow.y = 179,10
+		end
 	end
 
 	gl.toNextSceneTimerFunc = function ()
 		gl.currentSceneLocalTime = system.getTimer() - gl.currentSceneAppearTime
-		--print(gl.nextSceneAppearTime)
-		gl.nextSceneTimerTxt.text = "Scene will change in: "..tostring(math.round((gl.nextSceneAppearTime - gl.currentSceneLocalTime - layout.getLayoutAppearTime())/1000))
-		gl.nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
-		gl.nextSceneTimerTxt.x, gl.nextSceneTimerTxt.y = 140,280
+		local toNextSceneTime = math.round((gl.nextSceneAppearTime - gl.currentSceneLocalTime - layout.getLayoutAppearTime())/1000)
+		if toNextSceneTime < gl.toNextSceneTime then
+			gl.toNextSceneTime = toNextSceneTime
+			--print(gl.nextSceneAppearTime)
+			gl.nextSceneTimerTxt.text = "Scene will change in: "..tostring(toNextSceneTime)
+			gl.nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
+			gl.nextSceneTimerTxt.x, gl.nextSceneTimerTxt.y = 110,280
+
+			gl.nextSceneTimerTxtShadow.text = gl.nextSceneTimerTxt.text
+			gl.nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+			gl.nextSceneTimerTxtShadow.x, gl.nextSceneTimerTxtShadow.y = 109,279
+		end
 	end
 	
 	Runtime:addEventListener("enterFrame", gl.toEndTimerFunc)

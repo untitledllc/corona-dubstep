@@ -265,6 +265,17 @@
 		"channel": "30"
 	},
 
+	"v20": {
+		"id": "v20",
+		"name": "voices/no_one_ever_asked.mp3",
+		"type": "voice",
+		"scenes": [
+			1, 2, 3, 4, 5
+		],
+		"defaultVolume": 1.0,
+		"channel": "30"
+	},
+
 
 
 	"fx1": {
@@ -274,7 +285,7 @@
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.5,
+		"defaultVolume": 1.0,
 		"channel": "30"
 	},
 
@@ -324,7 +335,7 @@
 
 	"fx6": {
 		"id": "fx6",
-		"name": "fx/gun-fx.mp3",
+		"name": "fx/fx_6.mp3",
 		"type": "fx",
 		"scenes": [
 			1, 2, 3, 4, 5

@@ -2,7 +2,7 @@ module(...,package.seeall)
 
 jsonModule = require "json"
 
-local widget = require "widget"
+widget = require "widget"
 
 toEndTimerFunc = nil
 toNextSceneTimerFunc = nil
@@ -11,6 +11,9 @@ w = display.contentWidth
 h = display.contentHeight
 
 deltaTime = 0
+
+toNextSceneTime = 9999
+toFinalTime = 9999
 
 sceneChangingTimer = nil
 
@@ -46,13 +49,17 @@ mainGroup = nil
 localGroup = nil
 isRecordingTimeRestricted = true
 
+timerTxtShadow = nil
 timerTxt = nil
+
+nextSceneTimerTxt = nil
+nextSceneTimerTxtShadow = nil
 
 changeLayoutTime = 30000
 fullRecordLength = 170000 / 1
 showChoiceTime = 30000 / 1
 choiceShownDurationTime = 8000
-currentSceneLocalTime = nil
+currentSceneLocalTime = 0
 currentSceneAppearTime = nil
 nextSceneAppearTime = 0
 
@@ -79,6 +86,9 @@ navBar = nil
 
 eqTxt = nil
 repTxt = nil
+
+glitchTxt = nil
+glitchTxtShadow = nil
 
 loading = nil
 
@@ -794,32 +804,57 @@ function drawLayoutBtns()
 	menuButtonFinal.scene = "level"
 
 
-	nextSceneButton = display.newRoundedRect(200, 3, 55, 38, 8)
+	nextSceneButton = display.newRoundedRect(180, 230, 55, 38, 8)
 	nextSceneButton.txt = display.newText("Next scene", 0, 0, native.systemFont, 16)
 	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
 	nextSceneButton.alpha = 0.5
 	nextSceneButton:setFillColor(128, 128, 128)
+	--nextSceneButton.isVisible = false
+	--nextSceneButton.txt.isVisible = false
 
 	
 	goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
 	evilBtn = display.newRoundedRect(7*w/16,3*h/12,4*w/16,5*h/15,10)
 	
 	--volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
+
+	timerTxtShadow = display.newText("Time left: ",0,0,native.systemFontBold,16)
+	timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+	timerTxtShadow.x,timerTxtShadow.y = 179,10
+	timerTxtShadow.isVisible = false
+	timerTxtShadow:setTextColor(100, 100, 100, 255)
 	
-	timerTxt = display.newText("Time left: ",0,0,native.systemFont,14)
+	timerTxt = display.newText("Time left: ",0,0,native.systemFontBold,16)
 	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-	timerTxt.x,timerTxt.y = 140,240
+	timerTxt.x,timerTxt.y = 180,10
 	timerTxt.isVisible = false
 	
-	nextSceneTimerTxt = display.newText("Scene will change in: ",0,0,native.systemFont,14)
+	nextSceneTimerTxtShadow = display.newText("Scene will change in: ",0,0,native.systemFontBold,16)
+	nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+	nextSceneTimerTxtShadow.x,nextSceneTimerTxtShadow.y = 139,279
+	nextSceneTimerTxtShadow.isVisible = false
+	nextSceneTimerTxtShadow:setTextColor(100, 100, 100, 255)
+
+	nextSceneTimerTxt = display.newText("Scene will change in: ",0,0,native.systemFontBold,16)
 	nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
 	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 140,280
 	nextSceneTimerTxt.isVisible = false
 	
-	sceneNumber = display.newText("Next scene: 2",0,0,native.systemFont,14)
+	sceneNumber = display.newText("Next scene: 2",0,0,native.systemFontBold,14)
 	sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
 	sceneNumber.x,sceneNumber.y = 140,260
 	sceneNumber.isVisible = false
+
+	glitchTxtShadow = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
+	glitchTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+	glitchTxtShadow.x,glitchTxtShadow.y = 29,216
+	glitchTxtShadow.isVisible = false
+	glitchTxtShadow:setTextColor(100, 100, 100, 255)
+
+	glitchTxt = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
+	glitchTxt:setReferencePoint(display.TopLeftReferencePoint)
+	glitchTxt.x,glitchTxt.y = 30,217
+	glitchTxt.isVisible = false
 		
 	shareTxt = display.newText("Share!!!",0,0,native.systemFont,32)
 	shareBtn = display.newRoundedRect(0,0,w/2,h/2,12)

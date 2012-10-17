@@ -17,8 +17,8 @@
 			"default" : "melody.png",
 			"over" : "melodyPressed.png",
 			"soundId": "s6",
-			"left": 122,
-			"top": 163,
+			"left": 214,
+			"top": 63,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -39,7 +39,7 @@
 			"over" : "beatPressed.png",
 			"soundId": "s4",
 			"left": 168,
-			"top": 163,
+			"top": 111,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -59,7 +59,7 @@
 			"over" : "voblPressed.png",
 			"soundId": "s7",
 			"left": 214,
-			"top": 163,
+			"top": 111,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -100,8 +100,8 @@
 			"default" : "melody.png",
 			"over" : "melodyPressed.png",
 			"soundId": "s5",
-			"left": 122,
-			"top": 111,
+			"left": 168,
+			"top": 63,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -121,7 +121,7 @@
 			"over" : "beatPressed.png",
 			"soundId": "s1",
 			"left": 168,
-			"top": 111,
+			"top": 163,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -140,7 +140,7 @@
 			"default" : "vobl.png",
 			"over" : "voblPressed.png",
 			"soundId": "s8",
-			"left": 214,
+			"left": 260,
 			"top": 111,
 			"w": 41,
 			"h": 41,
@@ -163,7 +163,7 @@
 			"over" : "melodyPressed.png",
 			"soundId": "s10",
 			"left": 260,
-			"top": 111,
+			"top": 63,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -204,8 +204,8 @@
 			"default" : "beat.png",
 			"over" : "beatPressed.png",
 			"soundId": "s11",
-			"left": 168,
-			"top": 63,
+			"left": 122,
+			"top": 111,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -222,8 +222,8 @@
 			"default" : "vobl.png",
 			"over" : "voblPressed.png",
 			"soundId": "s2",
-			"left": 214,
-			"top": 63,
+			"left": 122,
+			"top": 163,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -242,8 +242,8 @@
 			"default" : "melody.png",
 			"over" : "melodyPressed.png",
 			"soundId": "s9",
-			"left": 260,
-			"top": 63,
+			"left": 214,
+			"top": 163,
 			"w": 41,
 			"h": 41,
 			"rgb": [
@@ -510,6 +510,29 @@
 			"alpha": 1
 		},
 
+		{
+			"scenes": {
+				"1": false,
+				"2": false,
+				"3": false,
+				"4": false,
+				"5": false
+			},
+			"soundId": "v20",
+			"resizable" : "true",
+			"default": "noOnes.png",
+			"over": "noOnesPressed.png",
+			"left": 401,
+			"top": 279,
+			"w": 61,
+			"h": 33,
+			"rgb": [
+				255, 200, 128
+			],
+			"label": "WHO LET THE DOGS OUT",
+			"alpha": 1
+		},
+
 
 
 		{
@@ -522,7 +545,7 @@
 			},
 			"default" : "nloFX.png",
 			"over" : "nloFXPressed.png",
-			"soundId": "fx3",
+			"soundId": "fx1",
 			"left": 5,
 			"top": 63,
 			"w": 41,
@@ -542,7 +565,7 @@
 			},
 			"default" : "fireFX.png",
 			"over" : "fireFXPressed.png",
-			"soundId": "fx4",
+			"soundId": "fx3",
 			"left": 5,
 			"top": 112,
 			"w": 41,
@@ -562,7 +585,7 @@
 			},
 			"default" : "gunFX.png",
 			"over" : "gunFXPressed.png",
-			"soundId": "fx6",
+			"soundId": "fx5",
 			"left": 5,
 			"top": 163,
 			"w": 41,
@@ -602,7 +625,7 @@
 			},
 			"default" : "sirenaFX.png",
 			"over" : "sirenaFXPressed.png",
-			"soundId": "fx5",
+			"soundId": "fx4",
 			"left": 51,
 			"top": 112,
 			"w": 41,
@@ -622,7 +645,7 @@
 			},
 			"default" : "boobsFX.png",
 			"over" : "boobsFXPressed.png",
-			"soundId": "fx1",
+			"soundId": "fx6",
 			"left": 51,
 			"top": 163,
 			"w": 41,
@@ -640,7 +663,7 @@
 			"id": "glV",
 			"soundIds": [
 				"v1", "v5", "v6", "v7", "v8", "v10", 
-				"v11", "v12", "v16", "v18", "v19"
+				"v11", "v12", "v16", "v18", "v19", "v20"
 			],
 			"default" : "glitchVoices.png",
 			"over" : "glitchVoicesPress.png",

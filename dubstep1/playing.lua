@@ -148,8 +148,9 @@ function nextScene(event)
 		gl.currentScene = gl.currentScene + 1
 		timer.cancel(gl.sceneChangingTimer)
 		if gl.currentScene <= gl.scenesNum then
+			gl.toNextSceneTime = 9999
 			gl.currentSceneAppearTime = system.getTimer()
-			--gl.nextSceneAppearTime = gl.currentSceneAppearTime + gl.sceneLength
+			
 			gl.deltaTime = gl.deltaTime + (gl.nextSceneAppearTime - gl.currentSceneLocalTime - curLayout.getLayoutAppearTime())
 			gl.sceneNumber.text = "Next scene: "..tostring(gl.currentScene + 1)
 			gl.sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
@@ -372,6 +373,10 @@ function nextScene(event)
 			gl.navBar.isVisible = false
 			gl.voicesBack1.isVisible = false
 			gl.voicesBack2.isVisible = false
+			gl.glitchTxt.isVisible = false
+			gl.glitchTxtShadow.isVisible = false
+			gl.timerTxtShadow.isVisible = false
+			gl.nextSceneTimerTxtShadow.isVisible = false
 			--gl.repBtn.txt.isVisible = true
 
 			recording.saveUserActList()
@@ -824,9 +829,9 @@ function initSounds(kitAddress)
 		for i, v in pairs(soundsConfig) do
 			if v.type == "melody" then
 				if v.side then --and v.side == gl.choosenSide then
-					v.sound = audio.loadStream(kitAddress..v.side.."/"..v.name, {bufferSize=4096, maxQueueBuffers=16, startupBuffers=8, buffersQueuedPerUpdate=2})
+					v.sound = audio.loadStream(kitAddress..v.side.."/"..v.name, {bufferSize=16384, maxQueueBuffers=8, startupBuffers=1, buffersQueuedPerUpdate=2})
 				elseif not v.side then
-					v.sound = audio.loadStream(kitAddress..v.name, {bufferSize=4096, maxQueueBuffers=16, startupBuffers=8, buffersQueuedPerUpdate=2})
+					v.sound = audio.loadStream(kitAddress..v.name, {bufferSize=16384, maxQueueBuffers=8, startupBuffers=1, buffersQueuedPerUpdate=2})
 				end
 			else
 				if v.side then --and v.side == gl.choosenSide then

@@ -5,6 +5,7 @@ local director = require("director")
 local gl = require("globals")
 
 display.setStatusBar( display.HiddenStatusBar )
+system.setIdleTimer( false )
 
 local mainGroup = display.newGroup()
 

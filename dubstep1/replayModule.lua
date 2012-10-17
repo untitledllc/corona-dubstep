@@ -16,6 +16,7 @@ local timeInPause = 0
 local playPressCounter = 0
 
 function new()
+
 	audio.stop()
 	for i, v in pairs(gl.soundsConfig) do
 		if v.type == "melody" then
@@ -33,15 +34,23 @@ function new()
 	curActionIdx = 1
 	
 	local localGroup = display.newGroup()
+
+	local backGround = display.newImageRect("player/backGround.png", gl.w,gl.h)
+	backGround.x, backGround.y = gl.w/2, gl.h/2
+	localGroup:insert(backGround)
 	
-	local playBtn = display.newRoundedRect(1,1,w/3,h/12,12)
+	local playBtn = display.newImageRect("player/play.png", 73, 73)
+	local pauseBtn = display.newImageRect("player/pause.png", 73, 73)
 	local stopBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
-	local playLine = display.newRect(1,1,w-10,10)
-	local curPlayPos = display.newRect(1,1,15,20)
-	local exitBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
-	local txtExit = display.newText("Exit", 0, 0, native.systemFont, 24)
-	local txtPlay = display.newText("Play", 0, 0, native.systemFont, 24)
-	local txtStop= display.newText("Stop", 0, 0, native.systemFont, 24)
+	local playLine = display.newImageRect("player/progressBar.png", 278, 12)
+	local curPlayPos = display.newImageRect("player/playingBuble.png", 24, 24)
+	--local exitBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
+	--local txtExit = display.newText("Exit", 0, 0, native.systemFont, 24)
+	--local txtPlay = display.newText("Play", 0, 0, native.systemFont, 24)
+	local txtStop = display.newText("Stop", 0, 0, native.systemFont, 24)
+	txtStop.isVisible = false
+	stopBtn.isVisible = false
+	pauseBtn.isVisible = false
 	
 	playPressCounter = 0
 	local relEndTrackTime = 1
@@ -71,6 +80,9 @@ function new()
 			relPlayTime = (system.getTimer() - startReplayTime)
 			if relPlayTime >= relEndTrackTime then
 				Runtime:removeEventListener("enterFrame", mainPlayingFunction)
+
+				stopBtn:dispatchEvent({name = "touch", phase = "ended"})
+
 				playPressCounter = 0
 
 				relPlayTime = 0
@@ -79,7 +91,7 @@ function new()
 
 				prevMeasure = nil
 
-				txtPlay.text = "Play"
+				--txtPlay.text = "Play"
 				
 				if (scrollTransition) then
 					transition.cancel(scrollTransition)
@@ -99,13 +111,20 @@ function new()
 
 				return -1
 			end
-			local curActTime = tonumber(userActionList[curActionIdx].actionTime)
-			while relPlayTime >= curActTime do
-				
-				makeAction(curActionIdx)
+			if curActionIdx <= #userActionList then 
+				local curActTime = tonumber(userActionList[curActionIdx].actionTime)
+				while relPlayTime >= curActTime do
+					
+					makeAction(curActionIdx)
 
-				curActionIdx = curActionIdx + 1
-				curActTime = tonumber(userActionList[curActionIdx].actionTime)
+					curActionIdx = curActionIdx + 1
+					if curActionIdx > #userActionList then
+						break
+					end
+					curActTime = tonumber(userActionList[curActionIdx].actionTime)
+				end
+			else
+
 			end
 		else
 			timeInPause = system.getTimer() - beginPauseTime
@@ -191,17 +210,17 @@ function new()
 				scrollTransition = nil
 			end
 
-			curPlayPos.x = 10
+			curPlayPos.x = 101
 			userActionList = {}
 			relPlayTime = 1000000
 			relEndTrackTime = 1
-			txtPlay.text = "Play"
+			--txtPlay.text = "Play"
 			playPressCounter = 0
 			currentMeasure = 0
 			prevMeasure = 0
 
 			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:removeEventListener("enterFrame", v)
+				Runtime:removeEventListener("enterFrame", v.f)
 			end
 			
 			director:changeScene("replayModule")
@@ -281,7 +300,7 @@ function new()
 		if curActType == "endRecord" then 
 			audio.stop()
 			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:removeEventListener("enterFrame", v)
+				Runtime:removeEventListener("enterFrame", v.f)
 			end
 			return 1
 		end
@@ -294,7 +313,7 @@ function new()
 		if curActType == "pause" then
 			audio.pause(curChannel)
 			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:removeEventListener("enterFrame", v)
+				Runtime:removeEventListener("enterFrame", v.f)
 			end
 			return 1
 		end
@@ -302,7 +321,7 @@ function new()
 		if curActType == "resume" then
 			audio.resume(curChannel)
 			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:addEventListener("enterFrame", v)
+				Runtime:addEventListener("enterFrame", v.f)
 			end
 			return 1
 		end
@@ -351,6 +370,11 @@ function new()
 	local function onSeek(event)
 		if (event.phase == "ended") then
 
+			if (scrollTransition) then
+				transition.cancel(scrollTransition)
+				scrollTransition = nil
+			end
+
 			if playPressCounter == 0 then
 				openUserActList()
 	
@@ -378,17 +402,12 @@ function new()
 			end
 			isPaused = false
 
-			if (scrollTransition) then
-				transition.cancel(scrollTransition)
-				scrollTransition = nil
-			end
-
 			for i, v in pairs(runtimeGlitchHandlers) do
 				Runtime:removeEventListener("enterFrame", v.f)
 			end
 
 			curActionIdx = 1
-			relPlayTime = (event.x - 10)/(w-20)*relEndTrackTime
+			relPlayTime = (event.x - event.target.x)/(event.target.width - 6)*relEndTrackTime
 			print(relPlayTime)
 
 			-- Последовательно выполняем все действия, до момента, на который мы перемотали
@@ -448,14 +467,14 @@ function new()
 				Runtime:addEventListener("enterFrame", mainPlayingFunction)
 				audio.pause()
 				playPressCounter = playPressCounter + 2
-				txtPlay.text = "Play"
+				--txtPlay.text = "Play"
 			else
 				scrollTransition = transition.to(curPlayPos,
-				{time=relEndTrackTime - relPlayTime,x=(w-10)})
+				{time=relEndTrackTime - relPlayTime,x=374})
 				audio.resume()
 				isPaused = false
 				Runtime:addEventListener("enterFrame", mainPlayingFunction)
-				txtPlay.text = "Pause"
+				--txtPlay.text = "Pause"
 			end
 
 				
@@ -464,8 +483,8 @@ function new()
 	
 	local function playPressed(event)
 		if (event.phase == "ended") then
-			if (playPressCounter % 2 == 0) then
-				if (playPressCounter == 0) then	
+			if event.target == playBtn then
+				if playPressCounter == 0 then	
 					
 					--prepareToReplay()
 
@@ -491,36 +510,41 @@ function new()
 					scrollTransition = nil
 				end
 				scrollTransition = transition.to(curPlayPos,
-				{time=relEndTrackTime - relPlayTime,x=(w-10)})
+				{time=relEndTrackTime - relPlayTime,x=374})
 				
-				txtPlay.text = "Pause"
+				--txtPlay.text = "Pause"
+				playBtn.isVisible = false
+				pauseBtn.isVisible = true
 				
 				actCounter = 1
-			else
+			elseif event.target == pauseBtn then
 				timeInPause = 0
 				
 				beginPauseTime = system.getTimer()
 				isPaused = true
 				audio.pause()
 				
-				txtPlay.text = "Play"
+				--txtPlay.text = "Play"
 				if (scrollTransition) then
 					transition.cancel(scrollTransition)
 					scrollTransition = nil
 				end
+
+				playBtn.isVisible = true
+				pauseBtn.isVisible = false
 			end
 			playPressCounter = playPressCounter + 1
 		end
 	end
 	
 	local function exitPressed(event)
-		if (event.phase == "ended") then
+		if (event.phase == "release") then
 			--local vol = require("volumeRegulator")
 			--local rc = require("recording")
 			--rc.recPressCounter = 0
 			
 			--vol.scrolls = {}
-			Runtime:removeEventListener("enterFrame",play)
+			--Runtime:removeEventListener("enterFrame",play)
 			Runtime:removeEventListener("enterFrame", mainPlayingFunction)
 			audio.stop()
 			userActionList = {}
@@ -533,46 +557,52 @@ function new()
 				end
 			end
 			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:removeEventListener("enterFrame", v)
+				Runtime:removeEventListener("enterFrame", v.f)
 			end
-			require("level").atOncePlay = false
+			if event.target == gl.btn1 then
+				require("level").atOncePlay = false
+			elseif event.target == gl.btn2 then
+				require("level").atOncePlay = true
+			end
 			director:changeScene("level")
 		end
-	end
-
-	
+	end	
 	
 	local function bindListeners()
 		playBtn:addEventListener("touch",playPressed)
+		pauseBtn:addEventListener("touch", playPressed)
 		stopBtn:addEventListener("touch",stopPressed)
-		exitBtn:addEventListener("touch",exitPressed)
 		playLine:addEventListener("touch",onSeek)
-		--Runtime:addEventListener("enterFrame",play)
 	end
 	
-	playLine:setFillColor(255,0,0)
+	--playLine:setFillColor(255,0,0)
 
-	playLine.x,playLine.y = w/2,h/2
-	curPlayPos.x,curPlayPos.y = 10,h/2
-	exitBtn.x, exitBtn.y = w/2, 5*h/6
-	playBtn.x, playBtn.y = w/3-5, 2*h/3
+	playLine:setReferencePoint(display.TopLeftReferencePoint)
+	playLine.x,playLine.y = 99, 292
+	curPlayPos.x,curPlayPos.y = 101,298
+	--exitBtn.x, exitBtn.y = w/2, 5*h/6
+	playBtn:setReferencePoint(display.TopLeftReferencePoint)
+	playBtn.x, playBtn.y = 204, 143
+	pauseBtn:setReferencePoint(display.TopLeftReferencePoint)
+	pauseBtn.x, pauseBtn.y = 204, 143
 	stopBtn.x, stopBtn.y = 2*w/3-5, 2*h/3
 
-	txtExit.x,txtExit.y = w/2, 5*h/6
-	txtPlay.x,txtPlay.y = w/3, 2*h/3
+	--txtExit.x,txtExit.y = w/2, 5*h/6
+	--txtPlay.x,txtPlay.y = w/3, 2*h/3
 	txtStop.x,txtStop.y = 2*w/3-5, 2*h/3
 
-	txtExit:setTextColor(0,0,0)
-	txtPlay:setTextColor(0,0,0)
+	--txtExit:setTextColor(0,0,0)
+	--txtPlay:setTextColor(0,0,0)
 	txtStop:setTextColor(0,0,0)
 
 	localGroup:insert(playBtn)
+	localGroup:insert(pauseBtn)
 	localGroup:insert(stopBtn)
 	localGroup:insert(playLine)
 	localGroup:insert(curPlayPos)
-	localGroup:insert(exitBtn)
-	localGroup:insert(txtExit)
-	localGroup:insert(txtPlay)
+	--localGroup:insert(exitBtn)
+	--localGroup:insert(txtExit)
+	--localGroup:insert(txtPlay)
 	localGroup:insert(txtStop)
 
 	bindListeners()	
@@ -580,5 +610,42 @@ function new()
 	playerAppearTime = system.getTimer()
 
 
+	
+
+	gl.btn1:removeSelf()
+	gl.btn2:removeSelf()
+
+	gl.btn1 = gl.widget.newButton{
+		id = "toMenu",
+		left = 5,
+		top = 3,
+		default = "images/elements/toMenuFromPlayng.png",
+		over = "images/elements/toMenuFromPlayngPressed.png",
+		width = 55,
+		height = 36,
+		onEvent = exitPressed
+	}
+	gl.btn1.atOncePlay = false
+
+	gl.btn2 = gl.widget.newButton{
+		id = "restart",
+		left = 440,
+		top = 5,
+		default = "images/elements/restart.png",
+		over = "images/elements/restartPressed.png",
+		width = 38,
+		height = 36,
+		onEvent = exitPressed
+	}
+	gl.btn2.atOncePlay = true
+	
+	gl.btn1.isVisible = true
+	gl.btn2.isVisible = true
+	gl.navBar.isVisible = true
+
+	localGroup:insert(gl.navBar)
+	localGroup:insert(gl.btn1)
+	localGroup:insert(gl.btn2)
+	
 	return localGroup
 end
