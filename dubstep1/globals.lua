@@ -723,6 +723,12 @@ function drawLayoutBtns()
 
 	function changeScene(event)
 		if event.phase == "release" then
+			if toEndTimerFunc then
+				Runtime:removeEventListener("enterFrame", toEndTimerFunc)
+			end
+			if toNextSceneTimerFunc then
+				Runtime:removeEventListener("enterFrame", toNextSceneTimerFunc)
+			end
 			audio.stop()
 			loading.isVisible = true
 			recording.cancelTimers(recording.timers)
@@ -750,9 +756,16 @@ function drawLayoutBtns()
 				require("level").atOncePlay = true
 			end
 
-			loading = display.newImageRect("images/iphone/splashScreenImage.png", w, h)
-			loading.x,loading.y = w/2, h/2
-			loading.isVisible = true
+			if mainGroup then
+				while mainGroup.numChildren > 0 do
+					mainGroup:remove(1)
+				end
+
+				local loading = display.newImageRect("images/iphone/splashScreenImage.png", w, h)
+				loading.x, loading.y = w/2, h/2
+				loading.isVisible = true
+				mainGroup:insert(loading)
+			end
 			timer.performWithDelay(100, function()
 				director:changeScene(event.target.scene)
 			end)

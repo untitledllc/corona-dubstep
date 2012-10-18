@@ -563,10 +563,16 @@ function new()
 			elseif event.target == gl.btn2 then
 				require("level").atOncePlay = true
 			end
-			gl.loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.w, gl.h)
-			gl.loading.x,gl.loading.y = gl.w/2, gl.h/2
-			gl.loading.isVisible = true
-			localGroup.isVisible = false
+			while localGroup.numChildren > 0 do
+				localGroup:remove(1)
+			end
+
+			local loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.w, gl.h)
+			loading.x, loading.y = gl.w/2, gl.h/2
+			loading.isVisible = true
+			loading:toFront()
+			localGroup:insert(loading)
+			--localGroup.isVisible = false
 			timer.performWithDelay(100, function()
 				director:changeScene("level")
 			end)

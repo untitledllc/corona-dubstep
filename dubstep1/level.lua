@@ -37,6 +37,9 @@ function new()
 	 
 	local playModule = require("playing")
 
+	local mainGroup = display.newGroup()
+	local localGroup = display.newGroup()
+
 	function continuePress(event)
 		if event.phase == "release" then
 
@@ -87,6 +90,16 @@ function new()
 			gl.toNextSceneTime = 9999
 			gl.toFinalTime = 9999
 
+			localGroup:insert(gl.btn1)
+			localGroup:insert(gl.btn2)
+			localGroup:insert(gl.glitchTxt)
+			localGroup:insert(gl.nextSceneButton)
+			localGroup:insert(gl.nextSceneButton.txt)
+			localGroup:insert(gl.sceneNumberShadow)
+			localGroup:insert(gl.sceneNumber)
+			localGroup:insert(gl.timerTxt)
+			localGroup:insert(gl.nextSceneTimerTxt)
+
 			require("recording").startRecording()
 			
 			
@@ -104,8 +117,7 @@ function new()
 		onEvent = continuePress
 	}
 
-	local mainGroup = display.newGroup()
-	local localGroup = display.newGroup()
+	
 	
 	gl.voicesBack1 = display.newImageRect("images/elements/voicesGroup.png", 159, 128)
 	gl.voicesBack1:setReferencePoint(display.TopLeftReferencePoint)
@@ -175,6 +187,6 @@ function new()
 			continuePress({name = "buttonEvent", phase = "release"})
 		end)
 	end
-	gl.loading.isVisible = false
+	--gl.loading:removeSelf()
 	return mainGroup
 end
