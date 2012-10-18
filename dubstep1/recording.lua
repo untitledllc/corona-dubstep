@@ -224,7 +224,7 @@ function startRecording()
 	currentSceneAppearTime = layout.getLayoutAppearTime()
 	gl.nextSceneAppearTime = currentSceneAppearTime + gl.sceneLength
 	
-	gl.sceneNumber.isVisible = false
+	gl.sceneNumber.isVisible = true
 	
 	gl.currentSceneAppearTime = currentSceneAppearTime
 	print(gl.currentSceneAppearTime, gl.nextSceneAppearTime)
@@ -274,21 +274,29 @@ function startRecording()
 
 	]]--
 	gl.timerTxt.isVisible = true
-	gl.timerTxtShadow.isVisible = true
+	--gl.timerTxtShadow.isVisible = true
 	gl.nextSceneTimerTxt.isVisible = true
-	gl.nextSceneTimerTxtShadow.isVisible = true
+	--gl.nextSceneTimerTxtShadow.isVisible = true
 
 	gl.toEndTimerFunc = function ()
 		local toFinalTime = math.round((gl.fullRecordLength - system.getTimer() + layout.getLayoutAppearTime() - gl.deltaTime)/1000 )
 		if toFinalTime < gl.toFinalTime then
 			gl.toFinalTime = toFinalTime
-			gl.timerTxt.text = "Time left: "..tostring(toFinalTime)	
+			local minutes = math.floor(toFinalTime / 60)
+			if minutes < 10 then
+				minutes = "0"..tostring(minutes)
+			end
+			local secondes = toFinalTime % 60
+			if secondes < 10 then
+				secondes = "0"..tostring(secondes)
+			end
+			gl.timerTxt.text = "("..minutes..":"..secondes..")"
 			gl.timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-			gl.timerTxt.x, gl.timerTxt.y = 180,11
+			gl.timerTxt.x, gl.timerTxt.y = 248,10
 
-			gl.timerTxtShadow.text = gl.timerTxt.text
-			gl.timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-			gl.timerTxtShadow.x, gl.timerTxtShadow.y = 179,10
+			--gl.timerTxtShadow.text = gl.timerTxt.text
+			--gl.timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+			--gl.timerTxtShadow.x, gl.timerTxtShadow.y = 179,10
 		end
 	end
 
@@ -298,13 +306,21 @@ function startRecording()
 		if toNextSceneTime < gl.toNextSceneTime then
 			gl.toNextSceneTime = toNextSceneTime
 			--print(gl.nextSceneAppearTime)
-			gl.nextSceneTimerTxt.text = "Scene will change in: "..tostring(toNextSceneTime)
+			local minutes = math.floor(toNextSceneTime / 60)
+			if minutes < 10 then
+				minutes = "0"..tostring(minutes)
+			end
+			local secondes = toNextSceneTime % 60
+			if secondes < 10 then
+				secondes = "0"..tostring(secondes)
+			end
+			gl.nextSceneTimerTxt.text = "Next scene: "..minutes..":"..secondes
 			gl.nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
-			gl.nextSceneTimerTxt.x, gl.nextSceneTimerTxt.y = 110,280
+			gl.nextSceneTimerTxt.x, gl.nextSceneTimerTxt.y = 171,300
 
-			gl.nextSceneTimerTxtShadow.text = gl.nextSceneTimerTxt.text
-			gl.nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-			gl.nextSceneTimerTxtShadow.x, gl.nextSceneTimerTxtShadow.y = 109,279
+			--gl.nextSceneTimerTxtShadow.text = gl.nextSceneTimerTxt.text
+			--gl.nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+			--gl.nextSceneTimerTxtShadow.x, gl.nextSceneTimerTxtShadow.y = 170,301
 		end
 	end
 	

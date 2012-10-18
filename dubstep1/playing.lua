@@ -150,11 +150,25 @@ function nextScene(event)
 		if gl.currentScene <= gl.scenesNum then
 			gl.toNextSceneTime = 9999
 			gl.currentSceneAppearTime = system.getTimer()
-			
+			local newNum
+			if gl.currentScene == 1 then
+				newNum = "I"
+			elseif gl.currentScene == 2 then
+				newNum = "II"
+			elseif gl.currentScene == 3 then
+				newNum = "III"
+			elseif gl.currentScene == 4 then
+				newNum = "IV"
+			elseif gl.currentScene == 5 then
+				newNum = "V"
+			end
 			gl.deltaTime = gl.deltaTime + (gl.nextSceneAppearTime - gl.currentSceneLocalTime - curLayout.getLayoutAppearTime())
-			gl.sceneNumber.text = "Next scene: "..tostring(gl.currentScene + 1)
+			gl.sceneNumber.text = "Scene: "..newNum
+			gl.sceneNumberShadow.text = gl.sceneNumber.text
 			gl.sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-			gl.sceneNumber.x, gl.sceneNumber.y = 140,260
+			gl.sceneNumber.x,gl.sceneNumber.y = 168,8
+			gl.sceneNumberShadow.x,gl.sceneNumberShadow.y = 167,7
+			
 			-- Переключаем таймер перехода на следующую сцену
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
 				gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
@@ -374,9 +388,10 @@ function nextScene(event)
 			gl.voicesBack1.isVisible = false
 			gl.voicesBack2.isVisible = false
 			gl.glitchTxt.isVisible = false
-			gl.glitchTxtShadow.isVisible = false
-			gl.timerTxtShadow.isVisible = false
-			gl.nextSceneTimerTxtShadow.isVisible = false
+			--gl.glitchTxtShadow.isVisible = false
+			--gl.timerTxtShadow.isVisible = false
+			--gl.nextSceneTimerTxtShadow.isVisible = false
+			gl.sceneNumberShadow.isVisible = false
 			--gl.repBtn.txt.isVisible = true
 
 			recording.saveUserActList()
@@ -557,10 +572,12 @@ function makeGlitchFunc(button)
 			return 0
 		end
 		--if (isGlitchStarted == true) then
+		--[[
  			if (deltaSumm > gl.glitchShutUpTime) then
  				--button.alpha = 1
  				for idx,val in pairs(button.activeChannels) do
 					--if (val.channel ~= nil and val.channel > partSumms[3]) then
+
 						audio.setVolume(0,{channel = val.ch})
 					--end
 				end
@@ -575,7 +592,14 @@ function makeGlitchFunc(button)
 				end
 				deltaSumm = 0
  			end
- 			
+ 		]]--
+ 			for idx,val in pairs(button.activeChannels) do
+				--if (val.channel ~= nil and val.channel > partSumms[3]) then
+					local volume = val.v * 0.5 * (1.0 + math.cos(6.28*deltaSumm/180.0) )
+					audio.setVolume(volume,{channel = val.ch})
+				--end
+			end
+
  			if (curMeasure > prevMeasure) then
 				delta = curMeasure - prevMeasure
 				prevMeasure = curMeasure

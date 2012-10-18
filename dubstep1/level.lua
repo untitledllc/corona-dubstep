@@ -74,7 +74,7 @@ function new()
 			gl.voicesBack1.isVisible = true
 			gl.voicesBack2.isVisible = true
 			gl.glitchTxt.isVisible = true
-			gl.glitchTxtShadow.isVisible = true
+			--gl.glitchTxtShadow.isVisible = true
 
 			layoutAppearTime = system.getTimer()
 
@@ -89,7 +89,7 @@ function new()
 
 			require("recording").startRecording()
 			
-			gl.loading.isVisible = false
+			
 		end
 	end
 	require("recording").userActionList = {}
@@ -151,14 +151,12 @@ function new()
 		localGroup:insert(b)
 	end
 
-	
 
 	for i, v in pairs(gl.configInterface.backGrounds) do
 		backs[i] = display.newImageRect(v.fileName,gl.w,gl.h)
 		backs[i].x, backs[i].y = gl.w/2,gl.h/2
 		backs[i].isVisible = false
 	end
-
 	
 
 	mainGroup:insert(backs[1])
@@ -177,5 +175,6 @@ function new()
 			continuePress({name = "buttonEvent", phase = "release"})
 		end)
 	end
+	gl.loading.isVisible = false
 	return mainGroup
 end

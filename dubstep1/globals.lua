@@ -93,6 +93,7 @@ glitchTxtShadow = nil
 loading = nil
 
 sceneNumber = nil
+sceneNumberShadow = nil
 
 shareBtn = nil
 
@@ -748,7 +749,11 @@ function drawLayoutBtns()
 			elseif event.target == btn2 then
 				require("level").atOncePlay = true
 			end
-			timer.performWithDelay(200, function()
+
+			loading = display.newImageRect("images/iphone/splashScreenImage.png", w, h)
+			loading.x,loading.y = w/2, h/2
+			loading.isVisible = true
+			timer.performWithDelay(100, function()
 				director:changeScene(event.target.scene)
 			end)
 
@@ -818,42 +823,49 @@ function drawLayoutBtns()
 	
 	--volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 
-	timerTxtShadow = display.newText("Time left: ",0,0,native.systemFontBold,16)
-	timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-	timerTxtShadow.x,timerTxtShadow.y = 179,10
-	timerTxtShadow.isVisible = false
-	timerTxtShadow:setTextColor(100, 100, 100, 255)
+	--timerTxtShadow = display.newText("(00:00)",0,0,native.systemFont,16)
+	--timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+	--timerTxtShadow.x,timerTxtShadow.y = 179,30
+	--timerTxtShadow.isVisible = false
+	--timerTxtShadow:setTextColor(100, 100, 100, 127)
 	
-	timerTxt = display.newText("Time left: ",0,0,native.systemFontBold,16)
+	timerTxt = display.newText("(00:00)",0,0,native.systemFont,16)
 	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-	timerTxt.x,timerTxt.y = 180,10
+	timerTxt.x,timerTxt.y = 180,30
 	timerTxt.isVisible = false
+	timerTxt.alpha = 0.5
 	
-	nextSceneTimerTxtShadow = display.newText("Scene will change in: ",0,0,native.systemFontBold,16)
-	nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-	nextSceneTimerTxtShadow.x,nextSceneTimerTxtShadow.y = 139,279
-	nextSceneTimerTxtShadow.isVisible = false
-	nextSceneTimerTxtShadow:setTextColor(100, 100, 100, 255)
+	--nextSceneTimerTxtShadow = display.newText("Next scene: ",0,0,native.systemFontBold,12)
+	--nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+	--nextSceneTimerTxtShadow.x,nextSceneTimerTxtShadow.y = 170,300
+	--nextSceneTimerTxtShadow.isVisible = false
+	--nextSceneTimerTxtShadow:setTextColor(100, 100, 100, 255)
 
-	nextSceneTimerTxt = display.newText("Scene will change in: ",0,0,native.systemFontBold,16)
+	nextSceneTimerTxt = display.newText("Next scene: ",0,0,native.systemFontBold,12)
 	nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
-	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 140,280
+	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 171,301
 	nextSceneTimerTxt.isVisible = false
 	
-	sceneNumber = display.newText("Next scene: 2",0,0,native.systemFontBold,14)
+	sceneNumberShadow = display.newText("Scene: I",0,0,native.systemFont,18)
+	sceneNumberShadow:setReferencePoint(display.TopLeftReferencePoint)
+	sceneNumberShadow.x,sceneNumberShadow.y = 167,7
+	sceneNumberShadow.isVisible = false
+	sceneNumberShadow:setTextColor(100, 100, 100, 255)
+
+	sceneNumber = display.newText("Scene: I",0,0,native.systemFont,18)
 	sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumber.x,sceneNumber.y = 140,260
+	sceneNumber.x,sceneNumber.y = 168,8
 	sceneNumber.isVisible = false
 
-	glitchTxtShadow = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
-	glitchTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-	glitchTxtShadow.x,glitchTxtShadow.y = 29,216
-	glitchTxtShadow.isVisible = false
-	glitchTxtShadow:setTextColor(100, 100, 100, 255)
+	--glitchTxtShadow = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
+	--glitchTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
+	--glitchTxtShadow.x,glitchTxtShadow.y = 29,216
+	--glitchTxtShadow.isVisible = false
+	--glitchTxtShadow:setTextColor(100, 100, 100, 255)
 
 	glitchTxt = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
 	glitchTxt:setReferencePoint(display.TopLeftReferencePoint)
-	glitchTxt.x,glitchTxt.y = 30,217
+	glitchTxt.x,glitchTxt.y = 30,215
 	glitchTxt.isVisible = false
 		
 	shareTxt = display.newText("Share!!!",0,0,native.systemFont,32)

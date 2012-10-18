@@ -239,18 +239,10 @@ function new()
 			deltaSumm = 0
 		}
 		local function runtimeGlitchHandler(event)
-	 			if (closion.deltaSumm > gl.glitchShutUpTime) then
-	 				for idx,val in pairs(activeChannels) do
-							audio.setVolume(0,{channel = val.ch})
-					end
-	 			end
-
-	 			if (closion.deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
-	 				for idx,val in pairs(activeChannels) do
-							audio.setVolume(val.v,{channel = val.ch})
-					end
-					closion.deltaSumm = 0
-	 			end
+	 			for idx,val in pairs(activeChannels) do
+					local volume = val.v * 0.5 * (1.0 + math.cos(6.28*closion.deltaSumm/180.0) )
+					audio.setVolume(volume,{channel = val.ch})
+				end
 	 			
 	 			if (closion.curMeasure > closion.prevMeasure) then
 					closion.delta = closion.curMeasure - closion.prevMeasure
@@ -439,9 +431,9 @@ function new()
 				elseif act.actType == "startGlitch" then
 					Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[act.id].f)
 					local tmpDeltaSum = relPlayTime - tonumber(act.actionTime)
-					while tmpDeltaSum > (gl.glitchShutUpTime + gl.glitchPlayTime) do
-						tmpDeltaSum = tmpDeltaSum - (gl.glitchShutUpTime + gl.glitchPlayTime)
-					end
+					--while tmpDeltaSum > (gl.glitchShutUpTime + gl.glitchPlayTime) do
+					--	tmpDeltaSum = tmpDeltaSum - (gl.glitchShutUpTime + gl.glitchPlayTime)
+					--end
 					runtimeGlitchHandlers[act.id].cl.deltaSumm = tmpDeltaSum
 				end
 
@@ -503,6 +495,9 @@ function new()
 					audio.resume()
 					isPaused = false
 					prevMeasure = system.getTimer()
+					--[[for i, v in pairs(runtimeGlitchHandlers) do
+						Runtime:removeEventListener("enterFrame", v.f)
+					end]]--
 				end 
 				
 				if (scrollTransition) then
@@ -524,6 +519,10 @@ function new()
 				isPaused = true
 				audio.pause()
 				
+				--[[for i, v in pairs(runtimeGlitchHandlers) do
+					Runtime:removeEventListener("enterFrame", v.f)
+				end]]--
+
 				--txtPlay.text = "Play"
 				if (scrollTransition) then
 					transition.cancel(scrollTransition)
@@ -564,7 +563,15 @@ function new()
 			elseif event.target == gl.btn2 then
 				require("level").atOncePlay = true
 			end
-			director:changeScene("level")
+			gl.loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.w, gl.h)
+			gl.loading.x,gl.loading.y = gl.w/2, gl.h/2
+			gl.loading.isVisible = true
+			localGroup.isVisible = false
+			timer.performWithDelay(100, function()
+				director:changeScene("level")
+			end)
+			
+
 		end
 	end	
 	
@@ -646,6 +653,6 @@ function new()
 	localGroup:insert(gl.navBar)
 	localGroup:insert(gl.btn1)
 	localGroup:insert(gl.btn2)
-	
+	--director.loadingScreen:removeSelf()
 	return localGroup
 end

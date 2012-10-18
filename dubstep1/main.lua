@@ -19,8 +19,8 @@ local function main()
 	director:changeScene("splashScreen")
 	timer.performWithDelay(500, function () 
 									-- версия с загрузкой музыки на сплеш скрине
-									gl.loading = display.newImageRect("images/elements/loading.png", gl.w/10, gl.h/10)
-									gl.loading.x,gl.loading.y = 7*gl.w/10,2*gl.h/3
+									gl.loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.w, gl.h)
+									gl.loading.x,gl.loading.y = gl.w/2, gl.h/2
 									gl.loading.isVisible = false
 									--transition.to(gl.loading, {time = 3000, rotation = 360})
 									gl.currentLayout = "layout2"
