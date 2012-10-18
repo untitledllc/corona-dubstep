@@ -654,6 +654,15 @@ function new()
 	
 	gl.btn1.isVisible = true
 	gl.btn2.isVisible = true
+	
+	gl.navBar:removeSelf()	
+	gl.navBar = display.newGroup()
+	for i = 1, 120 do
+		local navBarPart = display.newImageRect("images/elements/navBar.png", 4, 43)
+		navBarPart.x, navBarPart.y = 2 + 4*(i-1), 21
+		gl.navBar:insert(navBarPart)
+	end
+	
 	gl.navBar.isVisible = true
 
 	localGroup:insert(gl.navBar)

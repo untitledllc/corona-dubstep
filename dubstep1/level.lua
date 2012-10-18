@@ -92,6 +92,8 @@ function new()
 
 			localGroup:insert(gl.btn1)
 			localGroup:insert(gl.btn2)
+			localGroup:insert(gl.repBtn)
+			localGroup:insert(gl.menuButtonFinal)
 			localGroup:insert(gl.glitchTxt)
 			localGroup:insert(gl.nextSceneButton)
 			localGroup:insert(gl.nextSceneButton.txt)
