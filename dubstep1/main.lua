@@ -7,6 +7,8 @@ local gl = require("globals")
 display.setStatusBar( display.HiddenStatusBar )
 system.setIdleTimer( false )
 
+audio.setVolume(3)
+print("defV: "..audio.getVolume())
 local mainGroup = display.newGroup()
 
 local function main()

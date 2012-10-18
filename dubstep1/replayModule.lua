@@ -236,10 +236,11 @@ function new()
 			curMeasure = 0,
 			delta = 0,
 			glitchLocalTime = 0,
-			deltaSumm = 0
+			deltaSumm = 0,
+			actChannels = activeChannels
 		}
 		local function runtimeGlitchHandler(event)
-	 			for idx,val in pairs(activeChannels) do
+	 			for idx,val in pairs(closion.actChannels) do
 					local volume = val.v * 0.5 * (1.0 + math.cos(6.28*closion.deltaSumm/180.0) )
 					audio.setVolume(volume,{channel = val.ch})
 				end
@@ -346,11 +347,43 @@ function new()
 
 		if curActType == "stopGlitch" then
 			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[curId].f)
-			for idx,val in pairs(curActiveChannels) do
+			for idx,val in pairs(runtimeGlitchHandlers[curId].cl.actChannels) do
 	   			audio.setVolume(val.v,{channel = val.ch})
 			end
 			runtimeGlitchHandlers[curId] = nil
 			return 1
+		end
+
+		if curActType == "addVoiceGlitchChannel" then
+			if runtimeGlitchHandlers.glV then
+				table.insert(runtimeGlitchHandlers.glV.cl.actChannels, {ch = curChannel, v = curVolume})
+			end
+		end
+
+		if curActType == "removeVoiceGlitchChannel" then
+			if runtimeGlitchHandlers.glV then
+				for i, v in pairs(runtimeGlitchHandlers.glV.cl.actChannels) do
+					if v.ch == curChannel then
+						runtimeGlitchHandlers.glV.cl.actChannels[i] = nil
+					end
+				end
+			end
+		end
+
+		if curActType == "addSoundGlitchChannel" then
+			if runtimeGlitchHandlers.glS then
+				table.insert(runtimeGlitchHandlers.glS.cl.actChannels, {ch = curChannel, v = curVolume})
+			end
+		end
+
+		if curActType == "removeSoundGlitchChannel" then
+			if runtimeGlitchHandlers.glS then
+				for i, v in pairs(runtimeGlitchHandlers.glS.cl.actChannels) do
+					if v.ch == curChannel then
+						runtimeGlitchHandlers.glS.cl.actChannels[i] = nil
+					end
+				end
+			end
 		end
 		
 		return false
@@ -573,7 +606,7 @@ function new()
 			loading:toFront()
 			localGroup:insert(loading)
 			--localGroup.isVisible = false
-			timer.performWithDelay(100, function()
+			timer.performWithDelay(200, function()
 				director:changeScene("level")
 			end)
 			

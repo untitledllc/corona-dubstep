@@ -181,9 +181,9 @@ function new()
 	gl.mainGroup = mainGroup
 	gl.localGroup = localGroup 
 	gl.currentBacks = backs
-
+	
 	gl.deltaTime = 0
-
+	
 	if atOncePlay then
 		timer.performWithDelay(50, function()
 			continuePress({name = "buttonEvent", phase = "release"})

@@ -417,6 +417,7 @@ function createGlitchButton(arg)
 		height = _height,
 		onEvent = _f
 	}
+	b:addEventListener("emulatePress", _f)
 	--b.txt = display.newText(_label,_left,_top,native.systemFont,16)
 	--b.txt.x = b.x
 	--b.txt.y = b.y
@@ -750,10 +751,11 @@ function drawLayoutBtns()
 			--configInterface = {}
 			--buttonsInScenes = {}
 			--soundsInScenes = {}
-			if event.target == btn1 then
-				require("level").atOncePlay = false
-			elseif event.target == btn2 then
+				
+			if event.target == btn2 then
 				require("level").atOncePlay = true
+			else
+				require("level").atOncePlay = false
 			end
 
 			if mainGroup then
@@ -766,7 +768,7 @@ function drawLayoutBtns()
 				loading.isVisible = true
 				mainGroup:insert(loading)
 			end
-			timer.performWithDelay(100, function()
+			timer.performWithDelay(200, function()
 				director:changeScene(event.target.scene)
 			end)
 
@@ -827,8 +829,8 @@ function drawLayoutBtns()
 	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
 	nextSceneButton.alpha = 0.5
 	nextSceneButton:setFillColor(128, 128, 128)
-	--nextSceneButton.isVisible = false
-	--nextSceneButton.txt.isVisible = false
+	nextSceneButton.isVisible = false
+	nextSceneButton.txt.isVisible = false
 
 	
 	goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)

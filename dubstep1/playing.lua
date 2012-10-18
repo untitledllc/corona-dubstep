@@ -46,8 +46,9 @@ function prepareToPlay()
 	end
 
 	gl.startRecordTime = system.getTimer()
-
-	if gl.tracksStartSameTime then 
+	local masterVolume = audio.getVolume()
+	audio.setVolume(0)
+	if gl.tracksStartSameTime then
 		-- запускаем все мелодии на воспроизведение
 		for i, v in pairs(gl.soundsConfig) do
 			if v.type == "melody" and v.sound then
@@ -80,7 +81,7 @@ function prepareToPlay()
 			end
 		end
 	end
-
+	audio.setVolume(masterVolume)
 	-- Нажимаем те кнопки, которые нажаты по умолчанию на первой сцене
 	for i, v in pairs(gl.buttonsInScenes[1]) do
 		if v[2] == true and gl.configInterface.soundButtons[v[1]].button then
@@ -88,6 +89,12 @@ function prepareToPlay()
 			b:dispatchEvent({name = "emulatePress", phase = "release", target = b})
 		end
 	end
+
+	-- DEBUG //зажатый глитч
+	--[[gl.configInterface.glitchButtons[1].button[1].isVisible = false
+	gl.configInterface.glitchButtons[1].button[2].isVisible = true
+	gl.configInterface.glitchButtons[1].button:dispatchEvent({name = "emulatePress", phase = "press", target = gl.configInterface.glitchButtons[1].button})
+	]]--
 
 	-- Ставим первый бэкграунд
 	gl.mainGroup[1].isVisible = true
@@ -307,6 +314,24 @@ function nextScene(event)
 			Runtime:removeEventListener("enterFrame", gl.toEndTimerFunc)
 			Runtime:removeEventListener("enterFrame", gl.toNextSceneTimerFunc)
 
+			--for i, v in pairs(runtimeGlitchHandlers) do
+			--	Runtime:removeEventListener("enterFrame", v)
+			--end
+			for i, b in pairs(gl.configInterface.glitchButtons) do
+				if b.button and b.button[2].isVisible ~= false then
+					Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[b.button.id])
+					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, b.button.id, 0, b.button.activeChannels)
+
+					for idx,val in pairs(b.button.activeChannels) do
+			   			audio.setVolume(val.v,{channel = val.ch})
+					end
+
+					
+					runtimeGlitchHandlers[b.button.id] = nil
+					b.button.activeChannels = {}
+				end
+			end
+
 			gl.sceneNumber.isVisible = false
 			gl.timerTxt.isVisible = false
 			gl.nextSceneTimerTxt.isVisible = false
@@ -408,9 +433,51 @@ function playMelody(trackInfo,button)
 		button.pressed = 1
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, -1)
+		
+		-- Добавляем трек в список глитча
+		
+			local flag = 0
+			for i, b in pairs(gl.configInterface.glitchButtons) do
+				if b.button and b.button[2].isVisible ~= false then
+					if b.button.activeChannels then
+						for idx, val in pairs(b.button.soundIds) do
+							if trackInfo.id == val then
+								table.insert(b.button.activeChannels, {ch = trackInfo.channel, v = trackInfo.defaultVolume} )
+								flag = 1
+								recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "addSoundGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+								break
+							end
+						end
+						if flag == 1 then
+							break
+						end
+					end
+					break
+				end
+			end
+		
 		--button.alpha = 1
 	elseif button.pressed == 1 then
 		button.pressed = 0
+		local flag = 0
+		-- Удаляем трек из списка глитча
+		for i, v in pairs(gl.configInterface.glitchButtons) do
+			if v.button then
+				if v.button.activeChannels then
+					for idx, val in pairs(v.button.activeChannels) do
+						if trackInfo.channel == val.ch then
+							v.button.activeChannels[idx] = nil
+							recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "removeSoundGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+							flag = 1
+							break
+						end
+					end
+					if flag == 1 then
+						break
+					end
+				end
+			end
+		end
 		audio.setVolume(0, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", 0, trackInfo.id, -1)
 		--button.alpha = 0.5
@@ -418,8 +485,32 @@ function playMelody(trackInfo,button)
 		button.pressed = 1
 		audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "chVolume", trackInfo.defaultVolume, trackInfo.id, -1)
+		
+		-- Добавляем трек в список глитча
+		
+			local flag = 0
+			for i, b in pairs(gl.configInterface.glitchButtons) do
+				if b.button and b.button[2].isVisible ~= false then
+					if b.button.activeChannels then
+						for idx, val in pairs(b.button.soundIds) do
+							if trackInfo.id == val then
+								table.insert(b.button.activeChannels, {ch = trackInfo.channel, v = trackInfo.defaultVolume} )
+								flag = 1
+								recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "addSoundGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+								break
+							end
+						end
+						if flag == 1 then
+							break
+						end
+					end
+					break
+				end
+			end
+		
 		--button.alpha = 1
 	end
+	
 
 end
 
@@ -500,6 +591,28 @@ function playVoice(trackInfo,button)
 				trackInfo.channel = nil
 			end
 		end})
+
+		-- Добавляем трек в список глитча
+		
+			local flag = 0
+			for i, b in pairs(gl.configInterface.glitchButtons) do
+				if b.button and b.button[2].isVisible ~= false then
+					if b.button.activeChannels then
+						for idx, val in pairs(b.button.soundIds) do
+							if trackInfo.id == val then
+								table.insert(b.button.activeChannels, {ch = trackInfo.channel, v = trackInfo.defaultVolume} )
+								flag = 1
+								recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "addVoiceGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+								break
+							end
+						end
+						if flag == 1 then
+							break
+						end
+					end
+					break
+				end
+			end
 		
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
@@ -513,6 +626,24 @@ function playVoice(trackInfo,button)
 			if playingVoicesFxs[trackInfo.id] then
 				
 				audio.stop(trackInfo.channel)
+				-- Удаляем трек из списка глитча
+				for i, v in pairs(gl.configInterface.glitchButtons) do
+					if v.button then
+						if v.button.activeChannels then
+							for idx, val in pairs(v.button.activeChannels) do
+								if trackInfo.channel == val.ch then
+									v.button.activeChannels[idx] = nil
+									recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "removeVoiceGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+									flag = 1
+									break
+								end
+							end
+							if flag == 1 then
+								break
+							end
+						end
+					end
+				end
 				playingVoicesFxs[trackInfo.id] = nil
 				recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "stop", 0, trackInfo.id, -1)
 			end
@@ -536,6 +667,28 @@ function playVoice(trackInfo,button)
 				
 			end})
 			
+			-- Добавляем трек в список глитча
+		
+			local flag = 0
+			for i, b in pairs(gl.configInterface.glitchButtons) do
+				if b.button and b.button[2].isVisible ~= false then
+					if b.button.activeChannels then
+						for idx, val in pairs(b.button.soundIds) do
+							if trackInfo.id == val then
+								table.insert(b.button.activeChannels, {ch = trackInfo.channel, v = trackInfo.defaultVolume} )
+								flag = 1
+								recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "addVoiceGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+								break
+							end
+						end
+						if flag == 1 then
+							break
+						end
+					end
+					break
+				end
+			end
+
 			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "start", trackInfo.defaultVolume, trackInfo.id, 0)
 
 			audio.setVolume(trackInfo.defaultVolume, {channel = trackInfo.channel})
@@ -560,7 +713,7 @@ function makeGlitchFunc(button)
 			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[button.id])
 			
 			--isGlitchStarted = false
-		
+			
 			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, button.id, 0, button.activeChannels)
 
 			for idx,val in pairs(button.activeChannels) do

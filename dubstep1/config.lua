@@ -12,6 +12,6 @@ application =
         {
             ["@2x"] = 2,
         },
-        audioPlayFrequency = 22050,
+        audioPlayFrequency = 44100,
 	},
 }
