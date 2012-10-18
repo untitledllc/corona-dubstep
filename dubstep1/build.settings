@@ -17,14 +17,25 @@ settings =
     {
         plist =
         {
+            CFBundleVersion = "1.0.0",
+            CFBundleIconFile = "Icon.png",
+            CFBundleIconFiles = {
+                    "Icon.png" , 
+                    "Icon@2x.png" , 
+                    "Icon-72.png" , 
+            },
             UIPrerenderedIcon = true,
-            UIAppFonts = 
+            UIApplicationExitsOnSuspend = false,
+            CFBundleURLTypes =
             {
-                "PT-Sans.ttf",
-                "PT-Sans-Bold.ttf",
-                "PT-Sans-Caption-Bold.ttf",
-                "PT-Sans-Narrow-Bold.ttf",
-            }
+                {
+                    CFBundleURLSchemes =
+                    {
+                        "fb164813646952566",
+                    }
+                }
+            },
+            CFBundleIdentifier = "ru.hintsolutions.romneydub"
         },
     },
 }
