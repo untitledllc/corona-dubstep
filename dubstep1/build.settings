@@ -1,22 +1,27 @@
 settings =
 {
-	orientation = 
-	{
-		default = "landscapeRight",
+    orientation = 
+    {
+        default = "landscapeRight",
         supported =
         {
                "landscapeRight",
                "landscapeLeft",
         },
-	},
-	androidPermissions =
-    {
-       
     },
     iphone =
     {
         plist =
         {
+            CFBundleDisplayName = "Romney Dub",
+            UISupportedInterfaceOrientations =
+            {
+                "UIInterfaceOrientationLandscapeLeft",
+                "UIInterfaceOrientationLandscapeRight"
+            },
+            CFBundleLocalizations = {
+                "en",
+            },
             CFBundleVersion = "1.0.0",
             CFBundleIconFile = "Icon.png",
             CFBundleIconFiles = {
@@ -26,16 +31,7 @@ settings =
             },
             UIPrerenderedIcon = true,
             UIApplicationExitsOnSuspend = false,
-            CFBundleURLTypes =
-            {
-                {
-                    CFBundleURLSchemes =
-                    {
-                        "fb164813646952566",
-                    }
-                }
-            },
-            CFBundleIdentifier = "ru.hintsolutions.romneydub"
+            CFBundleIdentifier = "ru.hintsolutions.romneydub",
         },
     },
 }
