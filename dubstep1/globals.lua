@@ -4,6 +4,12 @@ jsonModule = require "json"
 
 widget = require "widget"
 
+-- DEBUG
+--glIndicator = nil
+
+--------
+
+
 toEndTimerFunc = nil
 toNextSceneTimerFunc = nil
 
@@ -511,7 +517,6 @@ function createResizableButton(arg)
 										display.getCurrentStage():setFocus(event.target, event.id)
 									elseif event.phase == "ended" or event.phase == "cancelled" then
 										if event.phase == "ended" then
-											print(event.x, event.y)
 											if not ( event.x < (event.target[1].x - event.target[1].x/2) or event.x > (event.target[1].x + event.target[1].x/2) or event.y < (event.target[1].y - event.target[1].y/2) or event.y > (event.target[1].y + event.target[1].y/2)) then
 												if event.target.type == "fx" then
 													require("playing").playFX(event.target.track, event.target)

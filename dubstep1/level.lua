@@ -102,6 +102,13 @@ function new()
 			localGroup:insert(gl.timerTxt)
 			localGroup:insert(gl.nextSceneTimerTxt)
 
+			-- DEBUG 
+			--gl.glIndicator = display.newRect(170 ,245, 40, 40)
+			--gl.glIndicator:setFillColor(190, 40, 80)
+			--gl.glIndicator.isVisible = true
+
+			-----
+
 			require("recording").startRecording()
 			
 			

@@ -586,10 +586,30 @@ function playVoice(trackInfo,button)
 		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
+
 			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+				-- Удаляем трек из списка глитча
+				for i, v in pairs(gl.configInterface.glitchButtons) do
+					if v.button then
+						if v.button.activeChannels then
+							for idx, val in pairs(v.button.activeChannels) do
+								if trackInfo.channel == val.ch then
+									v.button.activeChannels[idx] = nil
+									recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "removeVoiceGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+									flag = 1
+									break
+								end
+							end
+							if flag == 1 then
+								break
+							end
+						end
+					end
+				end
 				playingVoicesFxs[trackInfo.id] = nil
 				trackInfo.channel = nil
 			end
+				
 		end})
 
 		-- Добавляем трек в список глитча
@@ -660,11 +680,32 @@ function playVoice(trackInfo,button)
 			button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
 			audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 				button.pressed = 0
+				
 				if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+					-- Удаляем трек из списка глитча
+					for i, v in pairs(gl.configInterface.glitchButtons) do
+						if v.button then
+							if v.button.activeChannels then
+								for idx, val in pairs(v.button.activeChannels) do
+									if trackInfo.channel == val.ch then
+										v.button.activeChannels[idx] = nil
+										recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), trackInfo.channel, "removeVoiceGlitchChannel", trackInfo.defaultVolume, trackInfo.id, -1)
+										flag = 1
+										break
+									end
+								end
+								if flag == 1 then
+									break
+								end
+							end
+						end
+					end
 					playingVoicesFxs[trackInfo.id] = nil
 					trackInfo.channel = nil
+					
 				end
 				
+					
 			end})
 			
 			-- Добавляем трек в список глитча
@@ -707,50 +748,27 @@ function makeGlitchFunc(button)
 	local glitchLocalTime = 0
 	local deltaSumm = 0
 	local activeChannelsCopy = {}
-	--local isGlitchStarted = false
+	local btn = button
 	local function runtimeGlitchHandler(event)
-		if button[2].isVisible == false then
-			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[button.id])
+		if btn[2].isVisible == false then
+			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[btn.id])
 			
-			--isGlitchStarted = false
 			
-			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, button.id, 0, button.activeChannels)
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, btn.id, 0, btn.activeChannels)
 
-			for idx,val in pairs(button.activeChannels) do
+			for idx,val in pairs(btn.activeChannels) do
 	   			audio.setVolume(val.v,{channel = val.ch})
 			end
-			runtimeGlitchHandlers[button.id] = nil
-			button.activeChannels = {}
-			--display.getCurrentStage():setFocus(button, nil)
+			runtimeGlitchHandlers[btn.id] = nil
+			btn.activeChannels = {}
+			
 			return 0
 		end
-		--if (isGlitchStarted == true) then
-		--[[
- 			if (deltaSumm > gl.glitchShutUpTime) then
- 				--button.alpha = 1
- 				for idx,val in pairs(button.activeChannels) do
-					--if (val.channel ~= nil and val.channel > partSumms[3]) then
-
-						audio.setVolume(0,{channel = val.ch})
-					--end
-				end
- 			end
-
- 			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
- 				--button.alpha = 0.5
- 				for idx,val in pairs(button.activeChannels) do
-					--if (val.channel ~= nil and val.channel > partSumms[3]) then
-						audio.setVolume(val.v,{channel = val.ch})	
-					--end
-				end
-				deltaSumm = 0
- 			end
- 		]]--
- 			for idx,val in pairs(button.activeChannels) do
-				--if (val.channel ~= nil and val.channel > partSumms[3]) then
+ 			for idx,val in pairs(btn.activeChannels) do
+				
 					local volume = val.v * 0.5 * (1.0 + math.cos(6.28*deltaSumm/180.0) )
 					audio.setVolume(volume,{channel = val.ch})
-				--end
+				
 			end
 
  			if (curMeasure > prevMeasure) then
@@ -762,9 +780,10 @@ function makeGlitchFunc(button)
  			curMeasure = system.getTimer()
  			
  			glitchLocalTime = glitchLocalTime + delta
- 		--else
- 		--	Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
- 		--end
+ 		
+ 		-- DEBUG 
+ 		--gl.glIndicator.isVisible = not gl.glIndicator.isVisible
+ 		-----
 	end
 	prevMeasure = system.getTimer()
 	return runtimeGlitchHandler
@@ -773,83 +792,56 @@ end
 
 
 function playGlitch(event)
- 	--[[local tiks = 0
- 	local glitchStartTime = nil
- 	local glitchFinishTime = nil
-	local prevMeasure = 0
-	local curMeasure = 0
-	local delta = 0
-	local glitchLocalTime = 0
-	local deltaSumm = 0
-	local activeChannelsCopy = {}
-	local isGlitchStarted = false
-	
- 	runtimeGlitchHandler = function(e)
- 		if (isGlitchStarted == true) then
- 			if (deltaSumm > gl.glitchShutUpTime) then
- 				event.target.alpha = 1
- 				for idx,val in pairs(activeChannels) do
-					--if (val.channel ~= nil and val.channel > partSumms[3]) then
-						audio.setVolume(0,{channel = val.ch})
-					--end
-				end
- 			end
-
- 			if (deltaSumm > gl.glitchShutUpTime + gl.glitchPlayTime) then
- 				event.target.alpha = 0.5
- 				for idx,val in pairs(activeChannels) do
-					--if (val.channel ~= nil and val.channel > partSumms[3]) then
-						audio.setVolume(val.v,{channel = val.ch})	
-					--end
-				end
-				deltaSumm = 0
- 			end
- 			
- 			if (curMeasure > prevMeasure) then
-				delta = curMeasure - prevMeasure
-				prevMeasure = curMeasure
-				deltaSumm = deltaSumm + delta
-			end
- 			
- 			curMeasure = system.getTimer()
- 			
- 			glitchLocalTime = glitchLocalTime + delta
- 		else
- 			Runtime:removeEventListener("enterFrame", runtimeGlitchHandler)
- 		end
- 	end
-	]]--
+ 	
 	if (event.phase == "press") then
-		--isGlitchStarted = true
+
+		-- Если по какой-то причине оставался не удаленный глитч на текущей кнопке, то удаляем его
+		if runtimeGlitchHandlers[event.target.id] then
+			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[event.target.id])
+			runtimeGlitchHandlers[event.target.id] = nil
+
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, event.target.id, 0, event.target.activeChannels)
+			
+			for idx,val in pairs(event.target.activeChannels) do
+	   			audio.setVolume(val.v,{channel = val.ch})
+			end
+			event.target.activeChannels = {}
+			
+		end
+
 		local activeChannels = {}
  			for i, v in pairs(event.target.soundIds) do
  				if  gl.soundsConfig[v].channel and audio.isChannelActive( gl.soundsConfig[v].channel ) then
  					local vol = audio.getVolume({channel = gl.soundsConfig[v].channel})
  					if vol > 0 then
  						activeChannels[#activeChannels + 1] = {ch = gl.soundsConfig[v].channel, v = vol}
- 						--print(activeChannels[#activeChannels].ch, activeChannels[#activeChannels].v)
  					end
  				end
  			end
  		event.target.activeChannels = activeChannels
- 		--event.target.glitchIdx = "gl"..tostring(#runtimeGlitchHandlers + 1)
 		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "startGlitch", 0, event.target.id, 0, event.target.activeChannels)
-		--prevMeasure = system.getTimer()
-		--curMeasure = 0
 		
 		local glitchHandler = makeGlitchFunc(event.target)
 		runtimeGlitchHandlers[event.target.id] = glitchHandler
 		Runtime:addEventListener("enterFrame",runtimeGlitchHandlers[event.target.id])
 		
-		--display.getCurrentStage():setFocus(event.target, event.id)
-	
-	
-	--[[elseif (event.phase == "release" or (event.phase == "moved"  and 
-		( event.x < (event.target.x - event.target.x/2) or event.x > (event.target.x + event.target.x/2) or event.y < (event.target.y - event.target.y/2) or event.y > (event.target.y + event.target.y/2) ) ) ) then
 		
-		Runtime:removeEventListener("enterFrame",runtimeGlitchHandlers[event.target.id])
-		--event.target.alpha = 0.5
-		]]--
+	
+	
+	elseif event.phase == "release" then
+		if runtimeGlitchHandlers[event.target.id] then
+			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[event.target.id])
+			runtimeGlitchHandlers[event.target.id] = nil
+
+			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "stopGlitch", 0, event.target.id, 0, event.target.activeChannels)
+			
+			for idx,val in pairs(event.target.activeChannels) do
+	   			audio.setVolume(val.v,{channel = val.ch})
+			end
+			event.target.activeChannels = {}
+			
+		end
+
 	end
 end
 
