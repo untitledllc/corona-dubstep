@@ -15,6 +15,11 @@ toNextSceneTimerFunc = nil
 
 w = display.contentWidth
 h = display.contentHeight
+vW = display.viewableContentWidth
+vH = display.viewableContentHeight
+
+coefW = vW/w
+coefH = vH/h
 
 deltaTime = 0
 
@@ -739,7 +744,7 @@ function drawLayoutBtns()
 			loading.isVisible = true
 			recording.cancelTimers(recording.timers)
 			recording.timers = {}
-			recording.cancelTimers(recording.goodEvilButtonTimers)
+			--recording.cancelTimers(recording.goodEvilButtonTimers)
 			recording.goodEvilButtonTimers = {}
 			timer.cancel(sceneChangingTimer)
 			for i, v in pairs(soundsConfig) do
@@ -973,88 +978,4 @@ function drawLayoutBtns()
 	btns[4] = menuButtonFinal
 	--btns[4] = volumeBtn
 	return btns
-end
-
---[[function drawLvl1Voices()
-	local btns = {}
-	local path = "sounds1/voices/"
-
-	local track = {}
-	local j = 1
-	local oldSampleKitLength = #sampleKit
-	for i = oldSampleKitLength + 1, oldSampleKitLength + 19, 1 do
-		local str = path.."track"..i-oldSampleKitLength..".mp3"
-		track[1] = audio.loadStream(str)
-		track[2] = str
-		sampleKit[i] = track
-		track = {}
-
-		btns[#btns + 1] = display.newRoundedRect(1,1,w/12,h/12,8)
-		btns[#btns].txt = display.newText("track"..i-oldSampleKitLength..".mp3",0,0,native.systemFont,7)
-		if j <= 10 then
-			btns[#btns].x, btns[#btns].y =  w/10*j - w/20,12*h/17
-			btns[#btns].txt.x, btns[#btns].txt.y = w/10*j - w/20,12*h/17
-		else
-			btns[#btns].x, btns[#btns].y =  w/10*(j - 10) - w/20,13*h/16
-			btns[#btns].txt.x, btns[#btns].txt.y = w/10*(j - 10) - w/20,13*h/16
-		end
-		btns[#btns]:setFillColor(255, 200, 128)
-		btns[#btns].alpha = 0.5
-		btns[#btns].txt:setTextColor(0, 100, 0)
-
-		j = j + 1
-	end
-	local pl = require("playing")
-	for i = 1, 19, 1 do
-		btns[i]:addEventListener("touch",	function(e)
-												if e.phase == "ended" then
-													pl.playFX(display.newGroup(), sampleKit, i + oldSampleKitLength, true)
-												end
-											end
-		)
-	end
-
-	return btns
-end]]--
-
-function bin_search(ar, direct, required)
-	if not answer then
-		answer = 0
-	end
-	local center = math.ceil(#ar/2)
-	if direct == "left" then
-		answer = answer - (#ar - center)
-	else
-		answer = answer + center
-	end
-
-	if required == ar[center] then
-		
-		return answer
-	end
-
-	if #ar == 1 and ar[1] ~= required then
-		
-		return -1
-	end
-
-	if ar[center] > required then
-		local tmpArr = {}
-		for i = 1, center, 1 do
-			tmpArr[#tmpArr+1] = ar[i]
-		end
-		if #tmpArr == 0 then
-			return -1
-		end
-		return bin_search(tmpArr, "left", required)
-	elseif ar[center] < required then
-		local tmpArr = {}
-		for i = center+1, #ar, 1 do
-			tmpArr[#tmpArr+1] = ar[i]
-		end
-		if #tmpArr == 0 then
-			return -1
-		end
-		return bin_search(tmpArr, "right" ,required)
-	end 
 end

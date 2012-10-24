@@ -65,7 +65,7 @@ function new()
 	local actionSize = 6
 
 	local pl = require("playing")
-	local volPanel = require("volumeRegulator")
+	--local volPanel = require("volumeRegulator")
 
 	local ptSumms = pl.getPartSumms()
 	
@@ -445,9 +445,8 @@ function new()
 					local wantToSeek = relPlayTime - tonumber(act.actionTime)
 					if act.loops == "-1" then
 						local duration = audio.getDuration(gl.soundsConfig[act.id].sound)
-						--while wantToSeek >= duration do
-							wantToSeek = wantToSeek % duration
-						--end
+						wantToSeek = wantToSeek % duration
+						
 						audio.seek(wantToSeek, tonumber(act.channel))
 					elseif act.loops == "0" then
 						if gl.soundsConfig[act.id].type ~= "melody" then
