@@ -6,7 +6,7 @@ local gl = require("globals")
 
 function new()
 	local localGroup = display.newGroup()
-	local splashImage = display.newImageRect("images/iphone/splashScreenImage.png",gl.w, gl.h)
+	local splashImage = display.newImageRect("images/iphone/splashScreenImage.png",gl.myW, gl.myH)
 	
 	splashImage.x,splashImage.y = gl.w/2, gl.h/2
 
@@ -20,7 +20,7 @@ function new()
 	
 	timer.performWithDelay(500, function () 
 									-- версия с загрузкой музыки на сплеш скрине
-									gl.loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.w, gl.h)
+									gl.loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.myW, gl.myH)
 									gl.loading.isVisible = false
 									gl.loading.x,gl.loading.y = gl.w/2, gl.h/2
 									

@@ -173,8 +173,8 @@ function nextScene(event)
 			gl.sceneNumber.text = "Scene: "..newNum
 			gl.sceneNumberShadow.text = gl.sceneNumber.text
 			gl.sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-			gl.sceneNumber.x,gl.sceneNumber.y = 168,8
-			gl.sceneNumberShadow.x,gl.sceneNumberShadow.y = 167,7
+			gl.sceneNumber.x,gl.sceneNumber.y = 168*gl.coefW + display.screenOriginX,8*gl.coefH
+			gl.sceneNumberShadow.x,gl.sceneNumberShadow.y = 167*gl.coefW + display.screenOriginX,7*gl.coefH
 			
 			-- Переключаем таймер перехода на следующую сцену
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()

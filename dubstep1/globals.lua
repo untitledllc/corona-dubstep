@@ -18,8 +18,13 @@ h = display.contentHeight
 vW = display.viewableContentWidth
 vH = display.viewableContentHeight
 
-coefW = vW/w
-coefH = vH/h
+myW = display.viewableContentWidth - 2*display.screenOriginX
+myH = display.viewableContentHeight - 2*display.screenOriginY
+
+coefW = myW/w
+coefH = myH/h
+
+print(display.screenOriginX, display.screenOriginY)
 
 deltaTime = 0
 
@@ -282,8 +287,8 @@ function createButton(arg)
 
 	local b = widget.newButton{
 		id = "sound"..arg.soundId,
-		left = _left,
-		top = _top,
+		left = _left*coefW + display.screenOriginX,
+		top = _top*coefH,
 		default = _default,
 		over = _over,
 		width = _width,
@@ -420,8 +425,8 @@ function createGlitchButton(arg)
 
 	local b = widget.newButton{
 		id = arg.id,
-		left = _left,
-		top = _top,
+		left = _left*coefW + display.screenOriginX,
+		top = _top*coefH,
 		default = _default,
 		over = _over,
 		width = _width,
@@ -490,6 +495,9 @@ function createResizableButton(arg)
 		_top = 1
 	end
 
+	_left = _left*coefW + display.screenOriginX
+	_top = _top*coefH
+
 	if arg.width and type(arg.width) == "number" then
 		_width = arg.width
 
@@ -502,6 +510,9 @@ function createResizableButton(arg)
 		_width = w/10
 		_height = h/10
 	end
+
+	_width = _width * coefW
+	_height = _height * coefH
 
 	if arg.default then
 		_default = "images/elements/"..arg.default
@@ -773,7 +784,7 @@ function drawLayoutBtns()
 					mainGroup:remove(1)
 				end
 
-				local loading = display.newImageRect("images/iphone/splashScreenImage.png", w, h)
+				local loading = display.newImageRect("images/iphone/splashScreenImage.png", myW, myH)
 				loading.x, loading.y = w/2, h/2
 				loading.isVisible = true
 				mainGroup:insert(loading)
@@ -787,8 +798,8 @@ function drawLayoutBtns()
 	
 	btn1 = widget.newButton{
 		id = "toMenu",
-		left = 5,
-		top = 3,
+		left = 5*coefW + display.screenOriginX,
+		top = 3*coefH,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
 		width = 55,
@@ -799,8 +810,8 @@ function drawLayoutBtns()
 	
 	btn2 = widget.newButton{
 		id = "restart",
-		left = 440,
-		top = 5,
+		left = 440*coefW + display.screenOriginX,
+		top = 5*coefH,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",
 		width = 38,
@@ -811,8 +822,8 @@ function drawLayoutBtns()
 
 	repBtn = widget.newButton{
 		id = "replay",
-		left = 285,
-		top = 195,
+		left = 285*coefW + display.screenOriginX,
+		top = 195*coefH,
 		default = "images/elements/replayButton.png",
 		over = "images/elements/replayButtonPressed.png",
 		width = 77,
@@ -823,8 +834,8 @@ function drawLayoutBtns()
 
 	menuButtonFinal = widget.newButton{
 		id = "toMenuFinal",
-		left = 385,
-		top = 195,
+		left = 385*coefW + display.screenOriginX,
+		top = 195*coefH,
 		default = "images/elements/toMenuFinal.png",
 		over = "images/elements/toMenuFinalPressed.png",
 		width = 77,
@@ -839,8 +850,8 @@ function drawLayoutBtns()
 	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
 	nextSceneButton.alpha = 0.5
 	nextSceneButton:setFillColor(128, 128, 128)
-	nextSceneButton.isVisible = false
-	nextSceneButton.txt.isVisible = false
+	--nextSceneButton.isVisible = false
+	--nextSceneButton.txt.isVisible = false
 
 	
 	goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
@@ -856,7 +867,7 @@ function drawLayoutBtns()
 	
 	timerTxt = display.newText("(00:00)",0,0,native.systemFont,16)
 	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-	timerTxt.x,timerTxt.y = 180,30
+	timerTxt.x,timerTxt.y = 180*coefW + display.screenOriginX,30*coefH
 	timerTxt.isVisible = false
 	timerTxt.alpha = 0.5
 	
@@ -868,18 +879,18 @@ function drawLayoutBtns()
 
 	nextSceneTimerTxt = display.newText("Next scene: ",0,0,native.systemFontBold,12)
 	nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
-	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 171,301
+	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 171*coefW + display.screenOriginX,301*coefH
 	nextSceneTimerTxt.isVisible = false
 	
 	sceneNumberShadow = display.newText("Scene: I",0,0,native.systemFont,18)
 	sceneNumberShadow:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumberShadow.x,sceneNumberShadow.y = 167,7
+	sceneNumberShadow.x,sceneNumberShadow.y = 167*coefW + display.screenOriginX,7*coefH
 	sceneNumberShadow.isVisible = false
 	sceneNumberShadow:setTextColor(100, 100, 100, 255)
 
 	sceneNumber = display.newText("Scene: I",0,0,native.systemFont,18)
 	sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumber.x,sceneNumber.y = 168,8
+	sceneNumber.x,sceneNumber.y = 168*coefW + display.screenOriginX,8*coefH
 	sceneNumber.isVisible = false
 
 	--glitchTxtShadow = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
@@ -890,7 +901,7 @@ function drawLayoutBtns()
 
 	glitchTxt = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
 	glitchTxt:setReferencePoint(display.TopLeftReferencePoint)
-	glitchTxt.x,glitchTxt.y = 30,215
+	glitchTxt.x,glitchTxt.y = 30*coefW + display.screenOriginX,215*coefH
 	glitchTxt.isVisible = false
 		
 	shareTxt = display.newText("Share!!!",0,0,native.systemFont,32)

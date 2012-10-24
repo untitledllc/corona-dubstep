@@ -35,7 +35,7 @@ function new()
 	
 	local localGroup = display.newGroup()
 
-	local backGround = display.newImageRect("player/backGround.png", gl.w,gl.h)
+	local backGround = display.newImageRect("player/backGround.png", gl.myW,gl.myH)
 	backGround.x, backGround.y = gl.w/2, gl.h/2
 	localGroup:insert(backGround)
 	
@@ -599,7 +599,7 @@ function new()
 				localGroup:remove(1)
 			end
 
-			local loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.w, gl.h)
+			local loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.myW, gl.myH)
 			loading.x, loading.y = gl.w/2, gl.h/2
 			loading.isVisible = true
 			loading:toFront()
@@ -627,9 +627,9 @@ function new()
 	curPlayPos.x,curPlayPos.y = 101,298
 	--exitBtn.x, exitBtn.y = w/2, 5*h/6
 	playBtn:setReferencePoint(display.TopLeftReferencePoint)
-	playBtn.x, playBtn.y = 204, 143
+	playBtn.x, playBtn.y = 204*gl.coefW + display.screenOriginX, 143*gl.coefH
 	pauseBtn:setReferencePoint(display.TopLeftReferencePoint)
-	pauseBtn.x, pauseBtn.y = 204, 143
+	pauseBtn.x, pauseBtn.y = 204*gl.coefW + display.screenOriginX, 143*gl.coefH
 	stopBtn.x, stopBtn.y = 2*w/3-5, 2*h/3
 
 	--txtExit.x,txtExit.y = w/2, 5*h/6
@@ -662,8 +662,8 @@ function new()
 
 	gl.btn1 = gl.widget.newButton{
 		id = "toMenu",
-		left = 5,
-		top = 3,
+		left = 5*gl.coefW + display.screenOriginX,
+		top = 3*gl.coefH,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
 		width = 55,
@@ -674,8 +674,8 @@ function new()
 
 	gl.btn2 = gl.widget.newButton{
 		id = "restart",
-		left = 440,
-		top = 5,
+		left = 440*gl.coefW + display.screenOriginX,
+		top = 5*gl.coefH,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",
 		width = 38,
@@ -690,8 +690,8 @@ function new()
 	gl.navBar:removeSelf()	
 	gl.navBar = display.newGroup()
 	for i = 1, 120 do
-		local navBarPart = display.newImageRect("images/elements/navBar.png", 4, 43)
-		navBarPart.x, navBarPart.y = 2 + 4*(i-1), 21
+		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 43*gl.coefH)
+		navBarPart.x, navBarPart.y = (2 + 4*(i-1))*gl.coefW + display.screenOriginX, 21*gl.coefH
 		gl.navBar:insert(navBarPart)
 	end
 	
