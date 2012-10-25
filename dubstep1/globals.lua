@@ -18,13 +18,15 @@ h = display.contentHeight
 vW = display.viewableContentWidth
 vH = display.viewableContentHeight
 
-myW = display.viewableContentWidth - 2*display.screenOriginX
-myH = display.viewableContentHeight - 2*display.screenOriginY
+myW = display.viewableContentWidth
+myH = display.viewableContentHeight
 
-coefW = myW/w
-coefH = myH/h
+coefW = vW/w
+coefH = vH/h
 
-print(display.screenOriginX, display.screenOriginY)
+sizeCoef = math.min(coefW, coefH)
+
+print(display.screenOriginX, display.screenOriginY, vW, vH, w, h,sizeCoef)
 
 deltaTime = 0
 
@@ -288,11 +290,11 @@ function createButton(arg)
 	local b = widget.newButton{
 		id = "sound"..arg.soundId,
 		left = _left*coefW + display.screenOriginX,
-		top = _top*coefH,
+		top = _top*coefH + display.screenOriginY,
 		default = _default,
 		over = _over,
-		width = _width,
-		height = _height,
+		width = _width*sizeCoef,
+		height = _height*sizeCoef,
 		onEvent = buttonListener
 	}
 	b.defaultImage = _default
@@ -426,11 +428,11 @@ function createGlitchButton(arg)
 	local b = widget.newButton{
 		id = arg.id,
 		left = _left*coefW + display.screenOriginX,
-		top = _top*coefH,
+		top = _top*coefH + display.screenOriginY,
 		default = _default,
 		over = _over,
-		width = _width,
-		height = _height,
+		width = _width*sizeCoef,
+		height = _height*sizeCoef,
 		onEvent = _f
 	}
 	b:addEventListener("emulatePress", _f)
@@ -496,7 +498,7 @@ function createResizableButton(arg)
 	end
 
 	_left = _left*coefW + display.screenOriginX
-	_top = _top*coefH
+	_top = _top*coefH + display.screenOriginY
 
 	if arg.width and type(arg.width) == "number" then
 		_width = arg.width
@@ -561,19 +563,19 @@ function createResizableButton(arg)
 	-- Короткая ненажатая кнопка
 	local shortImageGroup = display.newGroup()
 
-	local tmpImg = display.newImageRect(configInterface.longerButtonElements.left.fileName, 5, 33)
+	local tmpImg = display.newImageRect(configInterface.longerButtonElements.left.fileName, 5*sizeCoef, 33*sizeCoef)
 	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
 	tmpImg.x, tmpImg.y = 5, 5
 	shortImageGroup:insert(tmpImg)
 
 	tmpImg = display.newImageRect(_default, _width, _height)
 	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
-	tmpImg.x, tmpImg.y = 10, 5
+	tmpImg.x, tmpImg.y = 5 + 5*sizeCoef, 5
 	shortImageGroup:insert(tmpImg)
 
-	tmpImg = display.newImageRect(configInterface.longerButtonElements.right.fileName, 5, 33)
+	tmpImg = display.newImageRect(configInterface.longerButtonElements.right.fileName, 5*sizeCoef, 33*sizeCoef)
 	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
-	tmpImg.x, tmpImg.y = 10 + _width, 5
+	tmpImg.x, tmpImg.y = 5 + 5*sizeCoef + _width, 5
 	shortImageGroup:insert(tmpImg)
 
 	shortImageGroup:setReferencePoint(display.TopLeftReferencePoint)
@@ -585,19 +587,19 @@ function createResizableButton(arg)
 	-- Короткая нажатая кнопка
 	local shortPressedImageGroup = display.newGroup()
 
-	local tmpImg = display.newImageRect(configInterface.longerButtonElements.leftPressed.fileName, 5, 33)
+	local tmpImg = display.newImageRect(configInterface.longerButtonElements.leftPressed.fileName, 5*sizeCoef, 33*sizeCoef)
 	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
 	tmpImg.x, tmpImg.y = 5, 5
 	shortPressedImageGroup:insert(tmpImg)
 
 	tmpImg = display.newImageRect(_over, _width, _height)
 	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
-	tmpImg.x, tmpImg.y = 10, 5
+	tmpImg.x, tmpImg.y = 5 + 5*sizeCoef, 5
 	shortPressedImageGroup:insert(tmpImg)
 
-	tmpImg = display.newImageRect(configInterface.longerButtonElements.rightPressed.fileName, 5, 33)
+	tmpImg = display.newImageRect(configInterface.longerButtonElements.rightPressed.fileName, 5*sizeCoef, 33*sizeCoef)
 	tmpImg:setReferencePoint(display.TopLeftReferencePoint)
-	tmpImg.x, tmpImg.y = 10 + _width, 5
+	tmpImg.x, tmpImg.y = 5 + 5*sizeCoef + _width, 5
 	shortPressedImageGroup:insert(tmpImg)
 
 	shortPressedImageGroup:setReferencePoint(display.TopLeftReferencePoint)
@@ -799,11 +801,11 @@ function drawLayoutBtns()
 	btn1 = widget.newButton{
 		id = "toMenu",
 		left = 5*coefW + display.screenOriginX,
-		top = 3*coefH,
+		top = 3*coefH + display.screenOriginY,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
-		width = 55,
-		height = 36,
+		width = 55*sizeCoef,
+		height = 36*sizeCoef,
 		onEvent = changeScene
 	}
 	btn1.scene = "level"
@@ -811,11 +813,11 @@ function drawLayoutBtns()
 	btn2 = widget.newButton{
 		id = "restart",
 		left = 440*coefW + display.screenOriginX,
-		top = 5*coefH,
+		top = 5*coefH + display.screenOriginY,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",
-		width = 38,
-		height = 36,
+		width = 38*sizeCoef,
+		height = 36*sizeCoef,
 		onEvent = changeScene
 	}
 	btn2.scene = "level"
@@ -823,11 +825,11 @@ function drawLayoutBtns()
 	repBtn = widget.newButton{
 		id = "replay",
 		left = 285*coefW + display.screenOriginX,
-		top = 195*coefH,
+		top = 195*coefH + display.screenOriginY,
 		default = "images/elements/replayButton.png",
 		over = "images/elements/replayButtonPressed.png",
-		width = 77,
-		height = 38,
+		width = 77*sizeCoef,
+		height = 38*sizeCoef,
 		onEvent = changeScene
 	}
 	repBtn.scene = "replayModule"
@@ -835,11 +837,11 @@ function drawLayoutBtns()
 	menuButtonFinal = widget.newButton{
 		id = "toMenuFinal",
 		left = 385*coefW + display.screenOriginX,
-		top = 195*coefH,
+		top = 195*coefH + display.screenOriginY,
 		default = "images/elements/toMenuFinal.png",
 		over = "images/elements/toMenuFinalPressed.png",
-		width = 77,
-		height = 38,
+		width = 77*sizeCoef,
+		height = 38*sizeCoef,
 		onEvent = changeScene
 	}
 	menuButtonFinal.scene = "level"
@@ -865,9 +867,9 @@ function drawLayoutBtns()
 	--timerTxtShadow.isVisible = false
 	--timerTxtShadow:setTextColor(100, 100, 100, 127)
 	
-	timerTxt = display.newText("(00:00)",0,0,native.systemFont,16)
+	timerTxt = display.newText("(00:00)",0,0,native.systemFont,math.round(16*sizeCoef))
 	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-	timerTxt.x,timerTxt.y = 180*coefW + display.screenOriginX,30*coefH
+	timerTxt.x,timerTxt.y = 180*coefW + display.screenOriginX,30*coefH + display.screenOriginY
 	timerTxt.isVisible = false
 	timerTxt.alpha = 0.5
 	
@@ -877,20 +879,20 @@ function drawLayoutBtns()
 	--nextSceneTimerTxtShadow.isVisible = false
 	--nextSceneTimerTxtShadow:setTextColor(100, 100, 100, 255)
 
-	nextSceneTimerTxt = display.newText("Next scene: ",0,0,native.systemFontBold,12)
+	nextSceneTimerTxt = display.newText("Next scene: ",0,0,native.systemFontBold,math.round(12*sizeCoef))
 	nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
-	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 171*coefW + display.screenOriginX,301*coefH
+	nextSceneTimerTxt.x,nextSceneTimerTxt.y = 171*coefW + display.screenOriginX,301*coefH + display.screenOriginY
 	nextSceneTimerTxt.isVisible = false
 	
-	sceneNumberShadow = display.newText("Scene: I",0,0,native.systemFont,18)
+	sceneNumberShadow = display.newText("Scene: I",0,0,native.systemFont,math.round(18*sizeCoef))
 	sceneNumberShadow:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumberShadow.x,sceneNumberShadow.y = 167*coefW + display.screenOriginX,7*coefH
+	sceneNumberShadow.x,sceneNumberShadow.y = 167*coefW + display.screenOriginX,7*coefH + display.screenOriginY
 	sceneNumberShadow.isVisible = false
 	sceneNumberShadow:setTextColor(100, 100, 100, 255)
 
-	sceneNumber = display.newText("Scene: I",0,0,native.systemFont,18)
+	sceneNumber = display.newText("Scene: I",0,0,native.systemFont,math.round(18*sizeCoef))
 	sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumber.x,sceneNumber.y = 168*coefW + display.screenOriginX,8*coefH
+	sceneNumber.x,sceneNumber.y = 168*coefW + display.screenOriginX,8*coefH + display.screenOriginY
 	sceneNumber.isVisible = false
 
 	--glitchTxtShadow = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
@@ -899,9 +901,9 @@ function drawLayoutBtns()
 	--glitchTxtShadow.isVisible = false
 	--glitchTxtShadow:setTextColor(100, 100, 100, 255)
 
-	glitchTxt = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
+	glitchTxt = display.newText("Glitch", 0, 0, native.systemFontBold, math.round(14*sizeCoef))
 	glitchTxt:setReferencePoint(display.TopLeftReferencePoint)
-	glitchTxt.x,glitchTxt.y = 30*coefW + display.screenOriginX,215*coefH
+	glitchTxt.x,glitchTxt.y = 30*coefW + display.screenOriginX,215*coefH + display.screenOriginY
 	glitchTxt.isVisible = false
 		
 	shareTxt = display.newText("Share!!!",0,0,native.systemFont,32)

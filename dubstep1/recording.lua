@@ -292,7 +292,7 @@ function startRecording()
 			end
 			gl.timerTxt.text = "("..minutes..":"..secondes..")"
 			gl.timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-			gl.timerTxt.x, gl.timerTxt.y = 248*gl.coefW + display.screenOriginX,10*gl.coefH
+			gl.timerTxt.x, gl.timerTxt.y = 248*gl.coefW + display.screenOriginX,10*gl.coefH + display.screenOriginY
 
 			--gl.timerTxtShadow.text = gl.timerTxt.text
 			--gl.timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
@@ -316,7 +316,7 @@ function startRecording()
 			end
 			gl.nextSceneTimerTxt.text = "Next scene: "..minutes..":"..secondes
 			gl.nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
-			gl.nextSceneTimerTxt.x, gl.nextSceneTimerTxt.y = 171*gl.coefW + display.screenOriginX,300*gl.coefH
+			gl.nextSceneTimerTxt.x, gl.nextSceneTimerTxt.y = 171*gl.coefW + display.screenOriginX,300*gl.coefH + display.screenOriginY
 
 			--gl.nextSceneTimerTxtShadow.text = gl.nextSceneTimerTxt.text
 			--gl.nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)

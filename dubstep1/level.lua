@@ -35,7 +35,10 @@ function new()
 	local myW = gl.myW
 	local myH = gl.myH
 
-	local firstScreenBackground = display.newImageRect("images/iphone/dubstepIphoneFirstScreen.png", myW, myH)
+	local vW = gl.vW
+	local vH = gl.vH
+
+	local firstScreenBackground = display.newImageRect("images/iphone/dubstepIphoneFirstScreen.png", vW, vH)
 	firstScreenBackground.x, firstScreenBackground.y = w/2, h/2
 	 
 	local playModule = require("playing")
@@ -121,11 +124,11 @@ function new()
 	continueButton = widget.newButton{
 		id = "continue",
 		left = 335*gl.coefW + display.screenOriginX,
-		top = 220*gl.coefH,
+		top = 220*gl.coefH + display.screenOriginY,
 		default = "images/elements/continueButton.png",
 		over = "images/elements/continueButtonPressed.png",
-		width = 77,
-		height = 38,
+		width = 77*gl.sizeCoef,
+		height = 38*gl.sizeCoef,
 		onEvent = continuePress
 	}
 
@@ -133,18 +136,18 @@ function new()
 	
 	gl.voicesBack1 = display.newImageRect("images/elements/voicesGroup.png", 159*gl.coefW, 128*gl.coefH)
 	gl.voicesBack1:setReferencePoint(display.TopLeftReferencePoint)
-	gl.voicesBack1.x, gl.voicesBack1.y = 320*gl.coefW + display.screenOriginX, 63*gl.coefH
+	gl.voicesBack1.x, gl.voicesBack1.y = 320*gl.coefW + display.screenOriginX, 63*gl.coefH + display.screenOriginY
 	gl.voicesBack1.isVisible = false
 
 	gl.voicesBack2 = display.newImageRect("images/elements/voicesGroup.png", 159*gl.coefW, 128*gl.coefH)
 	gl.voicesBack2:setReferencePoint(display.TopLeftReferencePoint)
-	gl.voicesBack2.x, gl.voicesBack2.y = 320*gl.coefW + display.screenOriginX, 191*gl.coefH
+	gl.voicesBack2.x, gl.voicesBack2.y = 320*gl.coefW + display.screenOriginX, 191*gl.coefH + display.screenOriginY
 	gl.voicesBack2.isVisible = false
 
 	gl.navBar = display.newGroup()
 	for i = 1, 120 do
 		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 43*gl.coefH)
-		navBarPart.x, navBarPart.y = (2 + 4*(i-1) )*gl.coefW + display.screenOriginX, 21*gl.coefH
+		navBarPart.x, navBarPart.y = (2 + 4*(i-1) )*gl.coefW + display.screenOriginX, 21*gl.coefH + display.screenOriginY
 		gl.navBar:insert(navBarPart)
 	end
 
@@ -177,7 +180,7 @@ function new()
 
 
 	for i, v in pairs(gl.configInterface.backGrounds) do
-		backs[i] = display.newImageRect(v.fileName,gl.myW,gl.myH)
+		backs[i] = display.newImageRect(v.fileName,gl.vW,gl.vH)
 		backs[i].x, backs[i].y = gl.w/2,gl.h/2
 		backs[i].isVisible = false
 	end
