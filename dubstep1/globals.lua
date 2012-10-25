@@ -26,8 +26,6 @@ coefH = vH/h
 
 sizeCoef = math.min(coefW, coefH)
 
-print(display.screenOriginX, display.screenOriginY, vW, vH, w, h,sizeCoef)
-
 deltaTime = 0
 
 toNextSceneTime = 9999
@@ -786,10 +784,21 @@ function drawLayoutBtns()
 					mainGroup:remove(1)
 				end
 
-				local loading = display.newImageRect("images/iphone/splashScreenImage.png", myW, myH)
+				local loading = display.newImageRect("images/iphone/splashScreenImage.png", w, h)
 				loading.x, loading.y = w/2, h/2
 				loading.isVisible = true
 				mainGroup:insert(loading)
+
+				local title = display.newImageRect("images/iphone/dubstep.png",182*sizeCoef, 30*sizeCoef)
+				title:setReferencePoint(display.TopLeftReferencePoint)
+				title.x, title.y = 300 * coefW + display.screenOriginX, 162 * coefH + display.screenOriginY
+
+				local loadIndicator = display.newImageRect("images/iphone/loading.png",51*sizeCoef, 16*sizeCoef)
+				loadIndicator:setReferencePoint(display.TopLeftReferencePoint)
+				loadIndicator.x, loadIndicator.y = 300 * coefW + display.screenOriginX, 199 * coefH + display.screenOriginY
+				
+				mainGroup:insert(title)
+				mainGroup:insert(loadIndicator)
 			end
 			timer.performWithDelay(200, function()
 				director:changeScene(event.target.scene)
@@ -812,7 +821,7 @@ function drawLayoutBtns()
 	
 	btn2 = widget.newButton{
 		id = "restart",
-		left = 440*coefW + display.screenOriginX,
+		left = 445*coefW + display.screenOriginX,
 		top = 5*coefH + display.screenOriginY,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",

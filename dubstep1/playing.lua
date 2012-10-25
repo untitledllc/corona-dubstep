@@ -61,6 +61,9 @@ function prepareToPlay()
 					
 					audio.setVolume(0, {channel = v.channel})
 					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "chVolume", 0, v.id, -1)
+				
+					audio.pause(ch)
+					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "pause", 0, v.id, -1)
 				end
 			end
 		end
@@ -77,18 +80,27 @@ function prepareToPlay()
 
 					audio.setVolume(0, {channel = gl.soundsConfig[v].channel})
 					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "chVolume", 0, v.id, -1)
+
+					audio.pause(ch)
+					recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), v.channel, "pause", 0, v.id, -1)
 				end
 			end
 		end
 	end
+
+	
 	audio.setVolume(masterVolume)
-	-- Нажимаем те кнопки, которые нажаты по умолчанию на первой сцене
-	for i, v in pairs(gl.buttonsInScenes[1]) do
-		if v[2] == true and gl.configInterface.soundButtons[v[1]].button then
-			local b = gl.configInterface.soundButtons[v[1]].button
-			b:dispatchEvent({name = "emulatePress", phase = "release", target = b})
+	timer.performWithDelay(100, function()
+		audio.resume(0)
+		recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "resume", 0, "", -1)
+		-- Нажимаем те кнопки, которые нажаты по умолчанию на первой сцене
+		for i, v in pairs(gl.buttonsInScenes[1]) do
+			if v[2] == true and gl.configInterface.soundButtons[v[1]].button then
+				local b = gl.configInterface.soundButtons[v[1]].button
+				b:dispatchEvent({name = "emulatePress", phase = "release", target = b})
+			end
 		end
-	end
+	end)
 
 	-- DEBUG //зажатый глитч
 	--[[gl.configInterface.glitchButtons[1].button[1].isVisible = false
@@ -182,20 +194,20 @@ function nextScene(event)
 			end)
 
 			-- Меняем бэкграунд
-			local backs = require("level").getLayoutBacks()
 
 			gl.mainGroup:remove(1)
-			gl.mainGroup:insert(1, backs[gl.currentScene])
+			gl.mainGroup:insert(1, gl.currentBacks[2])
 
 			-- Плавно
-			transition.to(backs[gl.currentScene - 1], {alpha = 0, time = 500})
-			backs[gl.currentScene].alpha = 0
-			backs[gl.currentScene].isVisible = true
-			transition.to(backs[gl.currentScene], {alpha = 1, time = 500})
+			transition.to(gl.currentBacks[1], {alpha = 0, time = 500})
+			gl.currentBacks[2].alpha = 0
+			gl.currentBacks[2].isVisible = true
+			transition.to(gl.currentBacks[2], {alpha = 1, time = 500})
 
-			timer.performWithDelay(600, function()
-				backs[gl.currentScene - 1].isVisible = false
-			end)
+			--timer.performWithDelay(600, function()
+				--table.remove(gl.currentBacks, 1)
+				--gl.currentBacks[1] = gl.currentBacks[2]
+			--end)
 
 			-- Скрываем кнопки предыдущей сцены, которых нет в новой сцене
 			for i, v in pairs(gl.buttonsInScenes[gl.currentScene - 1]) do
@@ -308,6 +320,12 @@ function nextScene(event)
 					end
 				end
 			end
+			timer.performWithDelay(2500, function()
+				gl.currentBacks[2] = display.newImageRect(gl.configInterface.backGrounds[gl.currentScene+1].fileName, gl.w, gl.h)
+				gl.currentBacks[2].isVisible = false
+				gl.currentBacks[2].x, gl.currentBacks[2].y = gl.w/2, gl.h/2
+			end)
+			
 		-- Если закончились сцены
 		else
 
@@ -371,19 +389,23 @@ function nextScene(event)
 			gl.nextSceneButton.txt.isVisible = false
 
 			-- Меняем бэкграунд
-			local backs = require("level").getLayoutBacks()
 
 			gl.mainGroup:remove(1)
-			gl.mainGroup:insert(1, backs[gl.currentScene])
+			gl.mainGroup:insert(1, gl.currentBacks[2])
 
 			-- Плавно
-			transition.to(backs[gl.currentScene - 1], {alpha = 0, time = 500})
-			backs[gl.currentScene].alpha = 0
-			backs[gl.currentScene].isVisible = true
-			transition.to(backs[gl.currentScene], {alpha = 1, time = 500})
+			transition.to(gl.currentBacks[1], {alpha = 0, time = 500})
+			gl.currentBacks[2].alpha = 0
+			gl.currentBacks[2].isVisible = true
+			transition.to(gl.currentBacks[2], {alpha = 1, time = 500})
+
+			local title = display.newImageRect("images/iphone/dubstep.png",182*gl.sizeCoef, 30*gl.sizeCoef)
+			title:setReferencePoint(display.TopLeftReferencePoint)
+			title.x, title.y = 300 * gl.coefW + display.screenOriginX, 148 * gl.coefH + display.screenOriginY
+			gl.mainGroup:insert(2, title)
 
 			timer.performWithDelay(600, function()
-				backs[gl.currentScene - 1].isVisible = false
+				--gl.currentBacks[1].isVisible = false
 			end)
 
 			-- включаем музыку экрана с кнопкой шаринга

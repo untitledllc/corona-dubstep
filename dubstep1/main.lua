@@ -5,7 +5,7 @@ local director = require("director")
 display.setStatusBar( display.HiddenStatusBar )
 system.setIdleTimer( false )
 
---audio.setVolume(3)
+audio.setVolume(2)
 local mainGroup = display.newGroup()
 
 mainGroup:insert(director.directorView)

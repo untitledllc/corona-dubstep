@@ -18,7 +18,6 @@ function getLayoutAppearTime()
 end
 
 function new()
-
 	local gl = require("globals")
 
 	if gl.toEndTimerFunc then
@@ -38,8 +37,12 @@ function new()
 	local vW = gl.vW
 	local vH = gl.vH
 
-	local firstScreenBackground = display.newImageRect("images/iphone/dubstepIphoneFirstScreen.png", vW, vH)
+	local firstScreenBackground = display.newImageRect("images/iphone/splashScreenImage.png", w, h)
 	firstScreenBackground.x, firstScreenBackground.y = w/2, h/2
+
+	local title = display.newImageRect("images/iphone/dubstep.png",182*gl.sizeCoef, 30*gl.sizeCoef)
+	title:setReferencePoint(display.TopLeftReferencePoint)
+	title.x, title.y = 300 * gl.coefW + display.screenOriginX, 162 * gl.coefH + display.screenOriginY
 	 
 	local playModule = require("playing")
 
@@ -60,6 +63,9 @@ function new()
 			end
 
 			firstScreenBackground.isVisible = false
+			firstScreenBackground:removeSelf()
+			title.isVisible = false
+			title:removeSelf()
 			continueButton.isVisible = false
 
 			gl.currentLayout = "layout2"
@@ -133,7 +139,6 @@ function new()
 	}
 
 	
-	
 	gl.voicesBack1 = display.newImageRect("images/elements/voicesGroup.png", 159*gl.coefW, 128*gl.coefH)
 	gl.voicesBack1:setReferencePoint(display.TopLeftReferencePoint)
 	gl.voicesBack1.x, gl.voicesBack1.y = 320*gl.coefW + display.screenOriginX, 63*gl.coefH + display.screenOriginY
@@ -177,18 +182,25 @@ function new()
 		v.button = b
 		localGroup:insert(b)
 	end
-
-
-	for i, v in pairs(gl.configInterface.backGrounds) do
-		backs[i] = display.newImageRect(v.fileName,gl.vW,gl.vH)
-		backs[i].x, backs[i].y = gl.w/2,gl.h/2
-		backs[i].isVisible = false
-	end
 	
+	
+	
+
+	--for i, v in pairs(gl.configInterface.backGrounds) do
+		backs[1] = display.newImageRect(gl.configInterface.backGrounds[1].fileName, w, h)
+		backs[1].x, backs[1].y = gl.w/2, gl.h/2
+		backs[1].isVisible = false
+	timer.performWithDelay(7000, function()
+		backs[2] = display.newImageRect(gl.configInterface.backGrounds[2].fileName, w, h)
+		backs[2].x, backs[2].y = gl.w/2, gl.h/2
+		backs[2].isVisible = false
+	end)
+	--end
 
 	mainGroup:insert(backs[1])
 	mainGroup:insert(localGroup)
 	mainGroup:insert(firstScreenBackground)
+	mainGroup:insert(title)
 	mainGroup:insert(continueButton)
 
 	gl.mainGroup = mainGroup
@@ -202,6 +214,7 @@ function new()
 			continuePress({name = "buttonEvent", phase = "release"})
 		end)
 	end
+	--native.showAlert("alert3", "alert3", {"ok"})
 	--gl.loading:removeSelf()
 	return mainGroup
 end

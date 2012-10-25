@@ -39,8 +39,8 @@ function new()
 	backGround.x, backGround.y = gl.w/2, gl.h/2
 	localGroup:insert(backGround)
 	
-	local playBtn = display.newImageRect("player/play.png", 73, 73)
-	local pauseBtn = display.newImageRect("player/pause.png", 73, 73)
+	local playBtn = display.newImageRect("player/play.png", 73*gl.sizeCoef, 73*gl.sizeCoef)
+	local pauseBtn = display.newImageRect("player/pause.png", 73*gl.sizeCoef, 73*gl.sizeCoef)
 	local stopBtn = display.newRoundedRect(1, 1, w/3, h/12, 12)
 	local playLine = display.newImageRect("player/progressBar.png", 278, 12)
 	local curPlayPos = display.newImageRect("player/playingBuble.png", 24, 24)
@@ -162,17 +162,6 @@ function new()
 			audio.setVolume(0,{channel = idx})
 			idx = idx + 1
 		end
-	end
-	
-	local function findSeekSamplesTime()
-		local idx = 1
-		while (userActionList[idx].actionTime == 0) do
-			if (userActionList[idx].category <= 3) then
-				return userActionList[idx].channelActiveTime
-			end
-			idx = idx + 1
-		end
-		return nil
 	end
 	
 	local function makePreRecordActions()
@@ -599,11 +588,21 @@ function new()
 				localGroup:remove(1)
 			end
 
-			local loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.myW, gl.myH)
+			local loading = display.newImageRect("images/iphone/splashScreenImage.png", gl.w, gl.h)
 			loading.x, loading.y = gl.w/2, gl.h/2
 			loading.isVisible = true
-			loading:toFront()
+			
+			local title = display.newImageRect("images/iphone/dubstep.png",182*gl.sizeCoef, 30*gl.sizeCoef)
+			title:setReferencePoint(display.TopLeftReferencePoint)
+			title.x, title.y = 300 * gl.coefW + display.screenOriginX, 162 * gl.coefH + display.screenOriginY
+
+			local loadIndicator = display.newImageRect("images/iphone/loading.png",51*gl.sizeCoef, 16*gl.sizeCoef)
+			loadIndicator:setReferencePoint(display.TopLeftReferencePoint)
+			loadIndicator.x, loadIndicator.y = 300 * gl.coefW + display.screenOriginX, 199 * gl.coefH + display.screenOriginY
+
 			localGroup:insert(loading)
+			localGroup:insert(title)
+			localGroup:insert(loadIndicator)
 			--localGroup.isVisible = false
 			timer.performWithDelay(200, function()
 				director:changeScene("level")
@@ -623,13 +622,13 @@ function new()
 	--playLine:setFillColor(255,0,0)
 
 	playLine:setReferencePoint(display.TopLeftReferencePoint)
-	playLine.x,playLine.y = 99, 292
-	curPlayPos.x,curPlayPos.y = 101,298
+	playLine.x,playLine.y = 99*gl.coefW + display.screenOriginX, 292*gl.coefH + display.screenOriginY
+	curPlayPos.x,curPlayPos.y = 101*gl.coefW + display.screenOriginX,298*gl.coefH + display.screenOriginY
 	--exitBtn.x, exitBtn.y = w/2, 5*h/6
 	playBtn:setReferencePoint(display.TopLeftReferencePoint)
-	playBtn.x, playBtn.y = 204*gl.coefW + display.screenOriginX, 143*gl.coefH
+	playBtn.x, playBtn.y = 204*gl.coefW + display.screenOriginX, 143*gl.coefH + display.screenOriginY
 	pauseBtn:setReferencePoint(display.TopLeftReferencePoint)
-	pauseBtn.x, pauseBtn.y = 204*gl.coefW + display.screenOriginX, 143*gl.coefH
+	pauseBtn.x, pauseBtn.y = 204*gl.coefW + display.screenOriginX, 143*gl.coefH + display.screenOriginY
 	stopBtn.x, stopBtn.y = 2*w/3-5, 2*h/3
 
 	--txtExit.x,txtExit.y = w/2, 5*h/6
@@ -663,11 +662,11 @@ function new()
 	gl.btn1 = gl.widget.newButton{
 		id = "toMenu",
 		left = 5*gl.coefW + display.screenOriginX,
-		top = 3*gl.coefH,
+		top = 3*gl.coefH + display.screenOriginY,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
-		width = 55,
-		height = 36,
+		width = 55*gl.sizeCoef,
+		height = 36*gl.sizeCoef,
 		onEvent = exitPressed
 	}
 	gl.btn1.atOncePlay = false
@@ -675,11 +674,11 @@ function new()
 	gl.btn2 = gl.widget.newButton{
 		id = "restart",
 		left = 440*gl.coefW + display.screenOriginX,
-		top = 5*gl.coefH,
+		top = 5*gl.coefH + display.screenOriginY,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",
-		width = 38,
-		height = 36,
+		width = 38*gl.sizeCoef,
+		height = 36*gl.sizeCoef,
 		onEvent = exitPressed
 	}
 	gl.btn2.atOncePlay = true
@@ -691,7 +690,7 @@ function new()
 	gl.navBar = display.newGroup()
 	for i = 1, 120 do
 		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 43*gl.coefH)
-		navBarPart.x, navBarPart.y = (2 + 4*(i-1))*gl.coefW + display.screenOriginX, 21*gl.coefH
+		navBarPart.x, navBarPart.y = (2 + 4*(i-1))*gl.coefW + display.screenOriginX, 21*gl.coefH + display.screenOriginY
 		gl.navBar:insert(navBarPart)
 	end
 	

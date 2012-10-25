@@ -7,7 +7,7 @@
 			3, 4, 5
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"1"
 	},
 
@@ -19,7 +19,7 @@
 			3
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"2"
 	},
 
@@ -31,7 +31,7 @@
 			3, 4, 5
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"3"
 	},
 
@@ -43,7 +43,7 @@
 			2, 3, 4, 5
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"4"
 	},
 
@@ -55,7 +55,7 @@
 			1, 2, 3, 4, 5
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"5"
 	},
 
@@ -67,7 +67,7 @@
 			1, 2, 3, 4, 5
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"6"
 	},
 
@@ -79,7 +79,7 @@
 			2, 3, 4
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"7"
 	},
 
@@ -91,7 +91,7 @@
 			2, 3, 4
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"8"
 	},
 
@@ -103,7 +103,7 @@
 			3, 4, 5
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"9"
 	},
 
@@ -115,7 +115,7 @@
 			1, 2, 3, 4, 5
 		],
 		"side":	"evil",
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"10"
 	},
 
@@ -126,7 +126,7 @@
 		"scenes": [
 			2, 3, 4
 		],
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"11"
 	},
 
@@ -137,7 +137,7 @@
 		"scenes": [
 			1, 2, 3, 4, 5
 		],
-		"defaultVolume": 0.15,
+		"defaultVolume": 0.3,
 		"channel":	"11"
 	},
 
