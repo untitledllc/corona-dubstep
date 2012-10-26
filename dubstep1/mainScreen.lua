@@ -66,7 +66,7 @@ function new()
 	
 	--localGroup:insert(level1Btn)
 	localGroup:insert(level2Btn)
-	localGroup:insert(gl.loading)
+	--localGroup:insert(gl.loading)
 	
 	bindListeners()
 	

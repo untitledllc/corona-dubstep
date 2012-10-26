@@ -752,7 +752,7 @@ function drawLayoutBtns()
 				Runtime:removeEventListener("enterFrame", toNextSceneTimerFunc)
 			end
 			audio.stop()
-			loading.isVisible = true
+			--loading.isVisible = true
 			recording.cancelTimers(recording.timers)
 			recording.timers = {}
 			--recording.cancelTimers(recording.goodEvilButtonTimers)
