@@ -56,20 +56,6 @@ function printUserActList()
 	print("-----------------------------------------------")
 end
 
-local function completeUserActList()
-	local idx = 1
-	--addAction(endRecordingTime - recPressTime,-1,0,0,-1,0)
-	idx = idx + 1
-end
-
-local function calcSeekTimeInActiveChannels(activeChannels)
-	for idx,val in pairs(activeChannels) do
-		if (val[1] ~= -1) then
-			--addAction(0,val.channel,1,val.volume,val.category,recPressTime - val.startTime)
-		end
-	end
-end
-
 function saveUserActList()
     local path = system.pathForFile( "test.json", system.DocumentsDirectory )
 
@@ -110,116 +96,6 @@ function saveUserActList()
     f:close()
 end
 
-local function hideBtns()
-	for idx,val in pairs(gl.currentHiddenBtns) do
-		gl.mainGroup[2][val].alpha = 0.5
-		gl.mainGroup[2][val].isVisible = false
-		audio.setVolume(0,{channel = val})
-	end	
-end	
-
-function stopRecording(e)	
-	if gl.currentLayout == "layout1" then
-		for i = 1, 6 do
-			gl.localGroup[19]:removeEventListener("touch", goToScene[i])
-			gl.localGroup[18]:removeEventListener("touch", goToScene[i])
-		end
-	else
-		for i = 1, 6 do
-			gl.localGroup[gl.localGroup.numChildren - 1]:removeEventListener("touch", goToScene[i])
-			gl.localGroup[gl.localGroup.numChildren]:removeEventListener("touch", goToScene[i])
-		end
-	end
-
-	for i = 1, gl.localGroup.numChildren, 1 do
-		gl.localGroup[i].isVisible = false
-		gl.localGroup[i].txt.isVisible = false
-	end
-	--[[
-	gl.localGroup[14].isVisible = false
-	gl.localGroup[15].isVisible = false
-	gl.localGroup[16].isVisible = false
-	gl.localGroup[17].isVisible = false
-
-	gl.localGroup[14].txt.isVisible = false
-	gl.localGroup[15].txt.isVisible = false
-	gl.localGroup[16].txt.isVisible = false
-	gl.localGroup[17].txt.isVisible = false
-	]]--
-	if gl.currentLayout == "layout1" then
-		pl.shutUpFX(gl.localGroup,true,gl.currentNumSamples,numFX,numVoices)
-		pl.shutUpMelodies(gl.localGroup,true,pl.getPartSumms(),layout.trackCounters)
-	else
-		for i = 1, #gl.lvl1Voices do
-			gl.lvl1Voices[i].isVisible = false
-			gl.lvl1Voices[i].txt.isVisible = false
-			gl.gunFxButton.isVisible = false
-			gl.gunFxButton.txt.isVisible = false
-		end
-	end
-	
-	cancelTimers(timers)
-	cancelTimers(goodEvilButtonTimers)
-	goodEvilButtonTimers = {}
-	timers = {}
-	
-	gl.currentBacks[#gl.currentBacks - 1].isVisible = false
-	gl.changeBackGround(gl.currentBacks[#gl.currentBacks])								
-	gl.currentSceneAppearTime = system.getTimer()
-
-	endRecordingTime = system.getTimer() - layout.getLayoutAppearTime()
-
-	--recording.addAction(endRecordingTime - recPressTime,
-   -- 							1,0,0,4,-1)
-
-	--recording.addAction(endRecordingTime - recPressTime,
-    --							gl.currentGoodChannel,0,0,4,-1)
-
-	--recording.addAction(endRecordingTime - recPressTime,
-    --							gl.currentEvilChannel,0,0,4,-1)
-	
-	gl.shareBtn.isVisible = true
-	gl.shareBtn.txt.isVisible = true
-
-	if (isRecSwitchedOn == true) then
-		completeUserActList()
-		saveUserActList()
-		printUserActList()
-	end
-	
-	isRecSwitchedOn = false
-	
-	userActionList = {}
-		
-	gl.repBtn.isVisible = true
-	gl.repBtn.txt.isVisible = true
-	
-	gl.timerTxt.isVisible = false
-	gl.sceneNumber.isVisible = false
-	gl.nextSceneTimerTxt.isVisible = false
-
-	audio.stop()
-	--audio.stop(gl.currentGoodChannel)
-	--audio.stop(gl.currentEvilChannel)
-	if gl.currentLayout == "layout1" then
-		audio.play(gl.sharingMelody,{channel = gl.sharingChannel,loops = -1})
-		audio.setVolume(defaultVolume,{channel = gl.sharingChannel})
-	else
-
-	end
-
-	Runtime:removeEventListener("enterFrame",function ()
-												if (isRecSwitchedOn == true) then
-													gl.timerTxt.text = "Time left: "..tostring(
-														math.round((gl.fullRecordLength - 
-															system.getTimer() + 
-																layout.getLayoutAppearTime() + 
-																	recPressTime)/1000 )
-																		)
-												end
-											 end )
-end
-
 function startRecording()
 	currentSceneAppearTime = layout.getLayoutAppearTime()
 	gl.nextSceneAppearTime = currentSceneAppearTime + gl.sceneLength
@@ -227,7 +103,6 @@ function startRecording()
 	gl.sceneNumber.isVisible = true
 	
 	gl.currentSceneAppearTime = currentSceneAppearTime
-	print(gl.currentSceneAppearTime, gl.nextSceneAppearTime)
 	
 	--hideBtns()
 	

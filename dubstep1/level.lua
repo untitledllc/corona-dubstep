@@ -62,11 +62,34 @@ function new()
 				end
 			end
 
-			firstScreenBackground.isVisible = false
+			--firstScreenBackground.isVisible = false
 			firstScreenBackground:removeSelf()
-			title.isVisible = false
+			firstScreenBackground = nil
+			--title.isVisible = false
 			title:removeSelf()
-			continueButton.isVisible = false
+			title = nil
+			--continueButton.isVisible = false
+			continueButton:removeSelf()
+			continueButton = nil
+
+			
+			print("this1")
+				backs[1] = display.newImageRect(gl.configInterface.backGrounds[1].fileName, w, h)
+				backs[1].isVisible = false
+				backs[1].x, backs[1].y = gl.w/2, gl.h/2
+				
+			print("this2")
+			timer.performWithDelay(3000, function()
+				print("this3")
+				backs[2] = display.newImageRect(gl.configInterface.backGrounds[2].fileName, w, h)
+				backs[2].isVisible = false
+				backs[2].x, backs[2].y = gl.w/2, gl.h/2
+				
+				print("this4")
+			end)
+			
+			print("this2.5")
+			mainGroup:insert(1, backs[1])
 
 			gl.currentLayout = "layout2"
 			gl.choosenSide = "evil"
@@ -186,18 +209,7 @@ function new()
 	
 	
 
-	--for i, v in pairs(gl.configInterface.backGrounds) do
-		backs[1] = display.newImageRect(gl.configInterface.backGrounds[1].fileName, w, h)
-		backs[1].x, backs[1].y = gl.w/2, gl.h/2
-		backs[1].isVisible = false
-	timer.performWithDelay(7000, function()
-		backs[2] = display.newImageRect(gl.configInterface.backGrounds[2].fileName, w, h)
-		backs[2].x, backs[2].y = gl.w/2, gl.h/2
-		backs[2].isVisible = false
-	end)
-	--end
 
-	mainGroup:insert(backs[1])
 	mainGroup:insert(localGroup)
 	mainGroup:insert(firstScreenBackground)
 	mainGroup:insert(title)

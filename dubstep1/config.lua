@@ -8,10 +8,6 @@ application =
 		width = 320,
 		height = 480,
 		scale = "zoomEven",
-		imageSuffix =
-        {
-            ["@2x"] = 2,
-        },
         audioPlayFrequency = 44100,
 	},
 }

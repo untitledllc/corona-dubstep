@@ -79,7 +79,12 @@ function new()
 		if not isPaused then
 			relPlayTime = (system.getTimer() - startReplayTime)
 			if relPlayTime >= relEndTrackTime then
+				audio.stop()
 				Runtime:removeEventListener("enterFrame", mainPlayingFunction)
+
+				for i, v in pairs(runtimeGlitchHandlers) do
+					Runtime:removeEventListener("enterFrame", v.f)
+				end
 
 				stopBtn:dispatchEvent({name = "touch", phase = "ended"})
 
@@ -98,7 +103,7 @@ function new()
 					scrollTransition = nil
 				end
 
-				audio.stop()
+				
 				
 				for i, v in pairs(gl.soundsConfig) do
 					if v.type == "melody" then
@@ -294,17 +299,17 @@ function new()
 
 		if curActType == "pause" then
 			audio.pause(curChannel)
-			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:removeEventListener("enterFrame", v.f)
-			end
+			--for i, v in pairs(runtimeGlitchHandlers) do
+			--	Runtime:removeEventListener("enterFrame", v.f)
+			--end
 			return 1
 		end
 
 		if curActType == "resume" then
 			audio.resume(curChannel)
-			for i, v in pairs(runtimeGlitchHandlers) do
-				Runtime:addEventListener("enterFrame", v.f)
-			end
+			--for i, v in pairs(runtimeGlitchHandlers) do
+			--	Runtime:addEventListener("enterFrame", v.f)
+			--end
 			return 1
 		end
 
@@ -403,7 +408,7 @@ function new()
 
 			local masterVolume = audio.getVolume()
 			print(masterVolume)
-			audio.setVolume(0)
+			--audio.setVolume(0)
 
 			audio.stop()
 			for i, v in pairs(gl.soundsConfig) do
@@ -422,7 +427,6 @@ function new()
 
 			curActionIdx = 1
 			relPlayTime = (event.x - event.target.x)/(event.target.width - 6)*relEndTrackTime
-			print(relPlayTime)
 
 			-- Последовательно выполняем все действия, до момента, на который мы перемотали
 			while tonumber(userActionList[curActionIdx].actionTime) < relPlayTime do
@@ -433,16 +437,18 @@ function new()
 					audio.pause(tonumber(act.channel))
 					local wantToSeek = relPlayTime - tonumber(act.actionTime)
 					if act.loops == "-1" then
-						local duration = audio.getDuration(gl.soundsConfig[act.id].sound)
-						wantToSeek = wantToSeek % duration
+						--local duration = audio.getDuration(gl.soundsConfig[act.id].sound)
+						--wantToSeek = wantToSeek % duration
 						
 						audio.seek(wantToSeek, tonumber(act.channel))
 					elseif act.loops == "0" then
 						if gl.soundsConfig[act.id].type ~= "melody" then
 							local duration = audio.getDuration(gl.soundsConfig[act.id].sound)
 							if wantToSeek >= duration then
+								print("__stoped: "..act.id)
 								audio.stop(tonumber(act.channel))
 							else
+								print("__seeked: "..act.id)
 								audio.seek(wantToSeek, tonumber(act.channel))
 							end
 						end
@@ -461,34 +467,36 @@ function new()
 				curActionIdx = curActionIdx + 1
 			end
 
-			audio.setVolume(masterVolume)
+			--audio.setVolume(masterVolume)
 
 			curPlayPos.x = event.x
 			
+			timer.performWithDelay(80, function()
+				startReplayTime = system.getTimer() - relPlayTime
 
-			startReplayTime = system.getTimer() - relPlayTime
-
-			for i, v in pairs(runtimeGlitchHandlers) do
-				v.cl.curMeasure = system.getTimer()
-				v.cl.prevMeasure = v.cl.curMeasure - 16
-				Runtime:addEventListener("enterFrame", v.f)
-			end
-			if playPressCounter % 2 == 0 then
-				timeInPause = 0
-				beginPauseTime = system.getTimer()
-				isPaused = true
-				Runtime:addEventListener("enterFrame", mainPlayingFunction)
-				audio.pause()
-				playPressCounter = playPressCounter + 2
-				--txtPlay.text = "Play"
-			else
-				scrollTransition = transition.to(curPlayPos,
-				{time=relEndTrackTime - relPlayTime,x=374})
-				audio.resume()
-				isPaused = false
-				Runtime:addEventListener("enterFrame", mainPlayingFunction)
-				--txtPlay.text = "Pause"
-			end
+				for i, v in pairs(runtimeGlitchHandlers) do
+					v.cl.curMeasure = system.getTimer()
+					v.cl.prevMeasure = v.cl.curMeasure - 16
+					Runtime:addEventListener("enterFrame", v.f)
+				end
+				if playPressCounter % 2 == 0 then
+					timeInPause = 0
+					beginPauseTime = system.getTimer()
+					isPaused = true
+					Runtime:addEventListener("enterFrame", mainPlayingFunction)
+					audio.pause()
+					playPressCounter = playPressCounter + 2
+					--txtPlay.text = "Play"
+				else
+					scrollTransition = transition.to(curPlayPos,
+					{time=relEndTrackTime - relPlayTime,x=374})
+					audio.resume(0)
+					isPaused = false
+					Runtime:addEventListener("enterFrame", mainPlayingFunction)
+					--txtPlay.text = "Pause"
+				end
+			end)
+			
 
 				
 		end
@@ -513,7 +521,7 @@ function new()
 					Runtime:addEventListener("enterFrame", mainPlayingFunction)
 				else
 					startReplayTime = startReplayTime + timeInPause
-					audio.resume()
+					audio.resume(0)
 					isPaused = false
 					prevMeasure = system.getTimer()
 					--[[for i, v in pairs(runtimeGlitchHandlers) do

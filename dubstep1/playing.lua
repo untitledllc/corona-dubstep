@@ -320,11 +320,13 @@ function nextScene(event)
 					end
 				end
 			end
+			
 			timer.performWithDelay(2500, function()
 				gl.currentBacks[2] = display.newImageRect(gl.configInterface.backGrounds[gl.currentScene+1].fileName, gl.w, gl.h)
 				gl.currentBacks[2].isVisible = false
 				gl.currentBacks[2].x, gl.currentBacks[2].y = gl.w/2, gl.h/2
 			end)
+
 			
 		-- Если закончились сцены
 		else
@@ -332,9 +334,9 @@ function nextScene(event)
 			Runtime:removeEventListener("enterFrame", gl.toEndTimerFunc)
 			Runtime:removeEventListener("enterFrame", gl.toNextSceneTimerFunc)
 
-			--for i, v in pairs(runtimeGlitchHandlers) do
-			--	Runtime:removeEventListener("enterFrame", v)
-			--end
+			for i, v in pairs(runtimeGlitchHandlers) do
+				Runtime:removeEventListener("enterFrame", v)
+			end
 			for i, b in pairs(gl.configInterface.glitchButtons) do
 				if b.button and b.button[2].isVisible ~= false then
 					Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[b.button.id])
@@ -381,10 +383,6 @@ function nextScene(event)
 
 			recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), 0, "endRecord", 0, 0, 0)
 			
-			gl.goodBtn.isVisible = false
-			gl.goodBtn.txt.isVisible = false
-			gl.evilBtn.isVisible = false
-			gl.evilBtn.txt.isVisible = false
 			gl.nextSceneButton.isVisible = false
 			gl.nextSceneButton.txt.isVisible = false
 
@@ -879,126 +877,6 @@ local function playChoosingMelody()
 	recording.addAction(system.getTimer() - curLayout.getLayoutAppearTime(), ch, "chVolume", 0.5, "choosing", 0)
 end
 
-function playGoodMelody(event)
-	gl.ifChoosen = true
-	gl.goodBtn.isVisible = false
-	gl.evilBtn.isVisible = false
-	gl.goodBtn.txt.isVisible = false
-	gl.evilBtn.txt.isVisible = false
-	local newSide = "dobro"
-
-	if gl.currentLayout == "layout1" then
-
-		audio.stop()
-		timer.cancel(gl.sceneChangingTimer)	
-		playChoosingMelody()
-		
-		-- если сторона поменялась, то подгружаем треки новой стороны
-		if gl.choosenSide ~= newSide then
-			--[[for i, v in pairs(gl.soundsConfig) do
-				if v.side and v.side == newSide then
-					v.sound = audio.loadSound(gl.kitAddress..v.side.."/"..v.name)
-					v.channel = nil
-				elseif v.side then
-					audio.dispose(v.sound)
-					v.sound = nil
-					v.channel = nil
-				end
-			end]]--
-
-			--[[ и создаем кнопки новой стороны
-			for i, v in pairs(gl.configInterface.soundButtons) do
-				if v.side and v.side == newSide then
-					local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId})
-					b.isVisible = false
-					b.txt.isVisible = false
-					v.button = b
-					gl.mainGroup[2]:insert(b)
-				end
-			end]]--
-		end
-		
-		-- переходим к следующей сцене
-		timer.performWithDelay(1400, function()
-			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
-		end)
-		
-
-		--[[recording.addAction(system.getTimer() - 
-					curLayout.getLayoutAppearTime(),
-							currentBasicChannel,
-								0,0,2,0)]]--	
-	else
-		gl.goodBtn.isVisible = false
-		gl.evilBtn.isVisible = false
-		gl.goodBtn.txt.isVisible = false
-		gl.evilBtn.txt.isVisible = false
-		gl.currentBasicMelody = gl.currentEvilMelody
-	end
-
-	--gl.choosenSide = newSide
-end
-
-function playEvilMelody(event)
-	gl.ifChoosen = true
-	gl.goodBtn.isVisible = false
-	gl.evilBtn.isVisible = false
-	gl.goodBtn.txt.isVisible = false
-	gl.evilBtn.txt.isVisible = false
-	local newSide = "evil"
-
-	if gl.currentLayout == "layout1" then
-
-		audio.stop()
-		timer.cancel(gl.sceneChangingTimer)	
-		playChoosingMelody()
-		
-		-- если сторона поменялась, то подгружаем треки новой стороны
-		if gl.choosenSide ~= newSide then
-			--[[for i, v in pairs(gl.soundsConfig) do
-				if v.side and v.side == newSide then
-					v.sound = audio.loadSound(gl.kitAddress..v.side.."/"..v.name)
-					v.channel = nil
-				elseif v.side then
-					audio.dispose(v.sound)
-					v.sound = nil
-					v.channel = nil
-				end
-			end]]--
-
-			--[[ и создаем кнопки новой стороны
-			for i, v in pairs(gl.configInterface.soundButtons) do
-				if v.side and v.side == newSide then
-					local b = gl.createButton({["track"] = gl.soundsConfig[v.soundId], ["left"] = v.left, ["top"] = v.top, ["width"] = v.w, ["height"] = v.h, ["type"] = gl.soundsConfig[v.soundId].type, ["rgb"] = v.rgb, ["alpha"] = v.alpha, ["scenes"] = v.scenes, ["soundId"] = v.soundId})
-					b.isVisible = false
-					b.txt.isVisible = false
-					v.button = b
-					gl.mainGroup[2]:insert(b)
-				end
-			end]]--
-		end
-		
-		-- переходим к следующей сцене
-		timer.performWithDelay(1400, function()
-			gl.nextSceneButton:dispatchEvent({name = "touch", phase = "ended"})
-		end)
-		
-
-		--[[recording.addAction(system.getTimer() - 
-					curLayout.getLayoutAppearTime(),
-							currentBasicChannel,
-								0,0,2,0)]]--	
-	else
-		gl.goodBtn.isVisible = false
-		gl.evilBtn.isVisible = false
-		gl.goodBtn.txt.isVisible = false
-		gl.evilBtn.txt.isVisible = false
-		gl.currentBasicMelody = gl.currentEvilMelody
-	end
-
-	gl.choosenSide = newSide
-end
-
 
 function initSounds(kitAddress)
 	local soundsConfig = gl.jsonModule.decode( gl.readFile("configSounds.json", kitAddress))
@@ -1020,9 +898,9 @@ function initSounds(kitAddress)
 		for i, v in pairs(soundsConfig) do
 			if v.type == "melody" then
 				if v.side then --and v.side == gl.choosenSide then
-					v.sound = audio.loadStream(kitAddress..v.side.."/"..v.name, {bufferSize=16384, maxQueueBuffers=8, startupBuffers=1, buffersQueuedPerUpdate=2})
+					v.sound = audio.loadSound(kitAddress..v.side.."/"..v.name)--, {bufferSize=32768, maxQueueBuffers=20, startupBuffers=4, buffersQueuedPerUpdate=2})
 				elseif not v.side then
-					v.sound = audio.loadStream(kitAddress..v.name, {bufferSize=16384, maxQueueBuffers=8, startupBuffers=1, buffersQueuedPerUpdate=2})
+					v.sound = audio.loadSound(kitAddress..v.name)--, {bufferSize=32768, maxQueueBuffers=20, startupBuffers=4, buffersQueuedPerUpdate=2})
 				end
 			else
 				if v.side then --and v.side == gl.choosenSide then

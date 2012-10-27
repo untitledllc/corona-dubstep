@@ -38,22 +38,11 @@ startRecordTime = nil
 -- track = {type = "fx/melody/voice", scene = 1..5, button = buttonStruct, sound = "sound1/track1.mp3", channel = 1..32 }
 soundsConfig = {}
 
-currentBasicMelody = nil
-currentEvilMelody = nil
-
 -- buttonInScenes = {sceneNum = {{button1Id, pressed}, {button2Id, pressed}, ...}, ...} - ставит кнопки в соответствие номеру сцены, на которой они должны быть
 buttonsInScenes = {}
 
 -- soundInScenes = {sceneNum = {soundInfo1Id, soundInfo2Id, ...}, ...} - ставит id треков в соответствие номеру сцены, на которой они должны быть
 soundsInScenes = {}
-
-currentGoodMelody = nil
-
-gunFxButton = nil
-
-currentBasicChannel = nil
-currentEvilChannel = nil
-currentGoodChannel = nil
 
 currentScene = nil
 currentKit = nil
@@ -63,7 +52,6 @@ currentNumFX = nil
 currentNumVoices = nil
 mainGroup = nil
 localGroup = nil
-isRecordingTimeRestricted = true
 
 timerTxtShadow = nil
 timerTxt = nil
@@ -73,45 +61,27 @@ nextSceneTimerTxtShadow = nil
 
 changeLayoutTime = 30000
 fullRecordLength = 170000 / 1
-showChoiceTime = 30000 / 1
-choiceShownDurationTime = 8000
 currentSceneLocalTime = 0
 currentSceneAppearTime = nil
 nextSceneAppearTime = 0
 
-glitchChannel = 99
-glitchShutUpTime = 50
-glitchPlayTime = 70
-
 currentBacks = nil
-currentHiddenBtns = {}
 
 menuButtonFinal = nil
 repBtn = nil
 btn1 = nil
 btn2 = nil
-volumeBtn = nil
-goodBtn = nil
-evilBtn = nil
 nextSceneButton = nil
-
 
 voicesBack1 = nil
 voicesBack2 = nil
 navBar = nil
 
-eqTxt = nil
-repTxt = nil
-
 glitchTxt = nil
 glitchTxtShadow = nil
 
-loading = nil
-
 sceneNumber = nil
 sceneNumberShadow = nil
-
-shareBtn = nil
 
 choosenSide = nil
 ifChoosen = false
@@ -526,9 +496,9 @@ function createResizableButton(arg)
 										if event.target[1].isVisible == true then
 											event.target[1].isVisible = false
 											event.target[2].isVisible = true
-										elseif event.target[3].isVisible == true then
-											event.target[3].isVisible = false
-											event.target[4].isVisible = true
+										--elseif event.target[3].isVisible == true then
+										--	event.target[3].isVisible = false
+										--	event.target[4].isVisible = true
 										end
 										display.getCurrentStage():setFocus(event.target, event.id)
 									elseif event.phase == "ended" or event.phase == "cancelled" then
@@ -546,9 +516,9 @@ function createResizableButton(arg)
 										if event.target[2].isVisible == true then
 											event.target[2].isVisible = false
 											event.target[1].isVisible = true
-										elseif event.target[4].isVisible == true then
-											event.target[4].isVisible = false
-											event.target[3].isVisible = true
+										--elseif event.target[4].isVisible == true then
+										--	event.target[4].isVisible = false
+										--	event.target[3].isVisible = true
 										end
 										display.getCurrentStage():setFocus(event.target, nil)
 
@@ -606,7 +576,7 @@ function createResizableButton(arg)
 	b:insert(shortPressedImageGroup)
 	-----
 
-	-- Длинная ненажатая кнопка
+	--[[ Длинная ненажатая кнопка
 	local longImageGroup = display.newGroup()
 
 	local tmpImg = display.newImageRect(configInterface.longerButtonElements.left.fileName, 5, 33)
@@ -680,12 +650,13 @@ function createResizableButton(arg)
 	longPressedImageGroup.x, longPressedImageGroup.y = _left, _top
 
 	b:insert(longPressedImageGroup)
+	]]--
 	-----
 
 	b[1].isVisible = true
 	b[2].isVisible = false
-	b[3].isVisible = false
-	b[4].isVisible = false
+	--b[3].isVisible = false
+	--b[4].isVisible = false
 
 	b.track = arg.track
 	
@@ -718,25 +689,8 @@ function createResizableButton(arg)
 	return b
 end
 
-function changeBackGround(object) 
-	object.isVisible = true
-	object.alpha = 0
-	mainGroup:insert(2,object)
-	transition.to(object, {alpha = 1, time = 500})
-	transition.to(mainGroup[1], {alpha = 0, time = 500})
-	mainGroup:insert(3,localGroup)
-	timer.performWithDelay(500, function()
-		mainGroup:insert(1, object)
-		mainGroup:insert(2, localGroup)
-	end)
-end
-
 function drawLayoutBtns()
 	activeChannels = {}
-	partSumms = {}
-	
-	--volumePanel = require("volumeRegulator")
-	--volumePanel.regulatorPanel = nil
 	
 	recording = require("recording")
 	replaying = require("replayModule")
@@ -756,7 +710,7 @@ function drawLayoutBtns()
 			recording.cancelTimers(recording.timers)
 			recording.timers = {}
 			--recording.cancelTimers(recording.goodEvilButtonTimers)
-			recording.goodEvilButtonTimers = {}
+			--recording.goodEvilButtonTimers = {}
 			timer.cancel(sceneChangingTimer)
 			for i, v in pairs(soundsConfig) do
 				if v.sound then
@@ -865,8 +819,8 @@ function drawLayoutBtns()
 	--nextSceneButton.txt.isVisible = false
 
 	
-	goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
-	evilBtn = display.newRoundedRect(7*w/16,3*h/12,4*w/16,5*h/15,10)
+	--goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
+	--evilBtn = display.newRoundedRect(7*w/16,3*h/12,4*w/16,5*h/15,10)
 	
 	--volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
 
@@ -914,40 +868,12 @@ function drawLayoutBtns()
 	glitchTxt:setReferencePoint(display.TopLeftReferencePoint)
 	glitchTxt.x,glitchTxt.y = 30*coefW + display.screenOriginX,215*coefH + display.screenOriginY
 	glitchTxt.isVisible = false
-		
-	shareTxt = display.newText("Share!!!",0,0,native.systemFont,32)
-	shareBtn = display.newRoundedRect(0,0,w/2,h/2,12)
-
-	shareBtn.x,shareTxt.x = w/2,w/2
-	shareBtn.y,shareTxt.y = h/2,h/2
-	
-	shareBtn.isVisible = false
-	shareTxt.isVisible = false
-	
-	shareTxt:setTextColor(255,0,0)
-	shareBtn.txt = shareTxt
 	
 	--btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/16,12*h/16
 	--btn1:setFillColor(140,255,0)
 	--btn2:setFillColor(140,255,0)
 	--btn1.alpha = 0.5
 	--btn2.alpha = 0.5
-	
-	goodBtn:setFillColor(0,100,255)
-	evilBtn:setFillColor(255,100,0)
-	goodBtn.alpha = 0.5
-	evilBtn.alpha = 0.5
-	goodBtn.isVisible = false
-	evilBtn.isVisible = false
-
-	goodBtn.txt = display.newText("Good",0,0,native.systemFont,16)
-	evilBtn.txt = display.newText("Evil",0,0,native.systemFont,16)
-	goodBtn.txt.x,goodBtn.txt.y = goodBtn.x, goodBtn.y
-	evilBtn.txt.x,evilBtn.txt.y = evilBtn.x, evilBtn.y
-	evilBtn.txt:toBack()
-	goodBtn.txt:toBack()
-	goodBtn.txt.isVisible = false
-	evilBtn.txt.isVisible = false
 	
 	--btn1.txt = display.newText("Back",0,0,native.systemFont,14)
 	--btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
@@ -987,12 +913,6 @@ function drawLayoutBtns()
 	--btn2:addEventListener("touch",changeScene)
 	--repBtn:addEventListener("touch",changeScene)
 	--volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
-	goodBtn:addEventListener("touch",playing.playGoodMelody)
-	evilBtn:addEventListener("touch",playing.playEvilMelody)
-	shareBtn:addEventListener("touch",function()
-										shareBtn.isVisible = false
-										shareTxt.isVisible = false
-									  end )
 	
 	btns[1] = btn1
 	btns[2] = btn2
