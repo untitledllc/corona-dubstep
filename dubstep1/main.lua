@@ -5,7 +5,7 @@ local director = require("director")
 display.setStatusBar( display.HiddenStatusBar )
 system.setIdleTimer( false )
 
-audio.setVolume(2)
+audio.setVolume(3)
 local mainGroup = display.newGroup()
 
 --[[local monitorMem = {prevMeasure = -1000}
