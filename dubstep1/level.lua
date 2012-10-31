@@ -109,7 +109,7 @@ function new()
 
 			-- adversity
 			
-			gl.ads.show( "banner", { x=(240*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=30, testMode = true } )
+			gl.ads.show( "banner", { x=(240*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=30} )
 			
 			------------
 
