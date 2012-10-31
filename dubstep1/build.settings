@@ -34,4 +34,18 @@ settings =
             CFBundleIdentifier = "ru.hintsolutions.romneydub",
         },
     },
+    android =
+    {
+        versionCode = "1",
+        installLocation = "auto",
+        versionName = "1.0",
+    },
+    androidPermissions =
+    {
+        "android.permission.WRITE_EXTERNAL_STORAGE",
+        "android.permission.STATUS_BAR",
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "android.permission.ACCESS_COARSE_LOCATION",
+    },
 }

@@ -5,6 +5,7 @@ local director = require("director")
 local gl = require("globals")
 
 function new()
+	
 	local localGroup = display.newGroup()
 	local splashImage = display.newImageRect("images/iphone/splashScreenImage.png",gl.w, gl.h)
 	

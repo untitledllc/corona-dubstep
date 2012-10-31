@@ -4,6 +4,9 @@ jsonModule = require "json"
 
 widget = require "widget"
 
+ads = require "ads"
+
+
 -- DEBUG
 --glIndicator = nil
 
@@ -699,6 +702,7 @@ function drawLayoutBtns()
 
 	function changeScene(event)
 		if event.phase == "release" then
+			ads.hide()
 			if toEndTimerFunc then
 				Runtime:removeEventListener("enterFrame", toEndTimerFunc)
 			end
@@ -737,6 +741,9 @@ function drawLayoutBtns()
 				while mainGroup.numChildren > 0 do
 					mainGroup:remove(1)
 				end
+				
+				btn1:removeSelf()
+				btn2:removeSelf()
 
 				local loading = display.newImageRect("images/iphone/splashScreenImage.png", w, h)
 				loading.x, loading.y = w/2, h/2
@@ -764,7 +771,7 @@ function drawLayoutBtns()
 	btn1 = widget.newButton{
 		id = "toMenu",
 		left = 5*coefW + display.screenOriginX,
-		top = 3*coefH + display.screenOriginY,
+		top = (55*coefH-36*sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
 		width = 55*sizeCoef,
@@ -775,8 +782,8 @@ function drawLayoutBtns()
 	
 	btn2 = widget.newButton{
 		id = "restart",
-		left = 445*coefW + display.screenOriginX,
-		top = 5*coefH + display.screenOriginY,
+		left = 65*coefW + display.screenOriginX,
+		top = (55*coefH-36*sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",
 		width = 38*sizeCoef,
@@ -815,8 +822,8 @@ function drawLayoutBtns()
 	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
 	nextSceneButton.alpha = 0.5
 	nextSceneButton:setFillColor(128, 128, 128)
-	--nextSceneButton.isVisible = false
-	--nextSceneButton.txt.isVisible = false
+	nextSceneButton.isVisible = false
+	nextSceneButton.txt.isVisible = false
 
 	
 	--goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
@@ -834,7 +841,7 @@ function drawLayoutBtns()
 	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
 	timerTxt.x,timerTxt.y = 180*coefW + display.screenOriginX,30*coefH + display.screenOriginY
 	timerTxt.isVisible = false
-	timerTxt.alpha = 0.5
+	timerTxt.alpha = 0.8
 	
 	--nextSceneTimerTxtShadow = display.newText("Next scene: ",0,0,native.systemFontBold,12)
 	--nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
@@ -849,13 +856,13 @@ function drawLayoutBtns()
 	
 	sceneNumberShadow = display.newText("Scene: I",0,0,native.systemFont,math.round(18*sizeCoef))
 	sceneNumberShadow:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumberShadow.x,sceneNumberShadow.y = 167*coefW + display.screenOriginX,7*coefH + display.screenOriginY
+	sceneNumberShadow.x,sceneNumberShadow.y = 161*coefW + display.screenOriginX,249*coefH + display.screenOriginY
 	sceneNumberShadow.isVisible = false
 	sceneNumberShadow:setTextColor(100, 100, 100, 255)
 
 	sceneNumber = display.newText("Scene: I",0,0,native.systemFont,math.round(18*sizeCoef))
 	sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumber.x,sceneNumber.y = 168*coefW + display.screenOriginX,8*coefH + display.screenOriginY
+	sceneNumber.x,sceneNumber.y = 162*coefW + display.screenOriginX,250*coefH + display.screenOriginY
 	sceneNumber.isVisible = false
 
 	--glitchTxtShadow = display.newText("Glitch", 0, 0, native.systemFontBold, 14)

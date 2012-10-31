@@ -185,8 +185,8 @@ function nextScene(event)
 			gl.sceneNumber.text = "Scene: "..newNum
 			gl.sceneNumberShadow.text = gl.sceneNumber.text
 			gl.sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-			gl.sceneNumber.x,gl.sceneNumber.y = 168*gl.coefW + display.screenOriginX,8*gl.coefH + display.screenOriginY
-			gl.sceneNumberShadow.x,gl.sceneNumberShadow.y = 167*gl.coefW + display.screenOriginX,7*gl.coefH + display.screenOriginY
+			gl.sceneNumber.x,gl.sceneNumber.y = 162*gl.coefW + display.screenOriginX,250*gl.coefH + display.screenOriginY
+			gl.sceneNumberShadow.x,gl.sceneNumberShadow.y = 161*gl.coefW + display.screenOriginX,249*gl.coefH + display.screenOriginY
 			
 			-- Переключаем таймер перехода на следующую сцену
 			gl.sceneChangingTimer = timer.performWithDelay(gl.sceneLength, function()
@@ -333,7 +333,7 @@ function nextScene(event)
 
 			Runtime:removeEventListener("enterFrame", gl.toEndTimerFunc)
 			Runtime:removeEventListener("enterFrame", gl.toNextSceneTimerFunc)
-
+			gl.ads.hide()
 			for i, v in pairs(runtimeGlitchHandlers) do
 				Runtime:removeEventListener("enterFrame", v)
 			end

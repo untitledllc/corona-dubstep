@@ -20,6 +20,16 @@ end
 function new()
 	local gl = require("globals")
 
+	local function showAd(event)
+		if event.isError then
+			print("Failed to receive an ad")
+		end
+		if gl.ads.width and gl.ads.height then
+			print("sizes: ",gl.ads.width, gl.ads.height)
+		end
+	end
+	gl.ads.init("inneractive", "itsbeta_RomneyDubtest_Android", showAd)
+
 	if gl.toEndTimerFunc then
 		Runtime:removeEventListener("enterFrame", gl.toEndTimerFunc)
 	end
@@ -97,6 +107,12 @@ function new()
 
 			audio.stop(32)
 
+			-- adversity
+			
+			gl.ads.show( "banner", { x=(240*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=30, testMode = true } )
+			
+			------------
+
 			gl.btns = gl.drawLayoutBtns()
 	
 			for idx,val in pairs(gl.btns) do
@@ -125,8 +141,8 @@ function new()
 			gl.toNextSceneTime = 9999
 			gl.toFinalTime = 9999
 
-			localGroup:insert(gl.btn1)
-			localGroup:insert(gl.btn2)
+			--localGroup:insert(gl.btn1)
+			--localGroup:insert(gl.btn2)
 			localGroup:insert(gl.repBtn)
 			localGroup:insert(gl.menuButtonFinal)
 			localGroup:insert(gl.glitchTxt)
@@ -145,8 +161,9 @@ function new()
 			-----
 
 			require("recording").startRecording()
+
 			
-			
+
 		end
 	end
 	require("recording").userActionList = {}
@@ -174,8 +191,8 @@ function new()
 
 	gl.navBar = display.newGroup()
 	for i = 1, 120 do
-		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 43*gl.coefH)
-		navBarPart.x, navBarPart.y = (2 + 4*(i-1) )*gl.coefW + display.screenOriginX, 21*gl.coefH + display.screenOriginY
+		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 55*gl.coefH)
+		navBarPart.x, navBarPart.y = (2 + 4*(i-1) )*gl.coefW + display.screenOriginX, 55*gl.coefH/2 + display.screenOriginY
 		gl.navBar:insert(navBarPart)
 	end
 
@@ -206,8 +223,8 @@ function new()
 		localGroup:insert(b)
 	end
 	
-	
-	
+
+
 
 
 	mainGroup:insert(localGroup)
