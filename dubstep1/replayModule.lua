@@ -18,6 +18,17 @@ local playPressCounter = 0
 function new()
 
 	audio.stop()
+
+	local function showAd(event)
+		if event.isError then
+			print("Failed to receive an ad")
+		end
+		if gl.ads.width and gl.ads.height then
+			print("sizes: ",gl.ads.width, gl.ads.height)
+		end
+	end
+	gl.ads.init("inneractive", "itsbeta_RomneyDubtest_Android", showAd)
+
 	for i, v in pairs(gl.soundsConfig) do
 		if v.type == "melody" then
 			if v.sound then
@@ -670,7 +681,7 @@ function new()
 	gl.btn1 = gl.widget.newButton{
 		id = "toMenu",
 		left = 5*gl.coefW + display.screenOriginX,
-		top = 3*gl.coefH + display.screenOriginY,
+		top = (55*gl.coefH-36*gl.sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
 		width = 55*gl.sizeCoef,
@@ -681,8 +692,8 @@ function new()
 
 	gl.btn2 = gl.widget.newButton{
 		id = "restart",
-		left = 440*gl.coefW + display.screenOriginX,
-		top = 5*gl.coefH + display.screenOriginY,
+		left = 65*gl.coefW + display.screenOriginX,
+		top = (55*gl.coefH-36*gl.sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",
 		width = 38*gl.sizeCoef,
@@ -697,8 +708,8 @@ function new()
 	gl.navBar:removeSelf()	
 	gl.navBar = display.newGroup()
 	for i = 1, 120 do
-		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 43*gl.coefH)
-		navBarPart.x, navBarPart.y = (2 + 4*(i-1))*gl.coefW + display.screenOriginX, 21*gl.coefH + display.screenOriginY
+		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 55*gl.coefH)
+		navBarPart.x, navBarPart.y = (2 + 4*(i-1) )*gl.coefW + display.screenOriginX, 52*gl.coefH/2 + display.screenOriginY
 		gl.navBar:insert(navBarPart)
 	end
 	
@@ -708,5 +719,12 @@ function new()
 	localGroup:insert(gl.btn1)
 	localGroup:insert(gl.btn2)
 	--director.loadingScreen:removeSelf()
+
+	-- adversity
+			
+	gl.ads.show( "banner", { x=(240*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=30, testMode = true } )
+			
+	------------
+
 	return localGroup
 end

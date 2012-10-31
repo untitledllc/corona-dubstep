@@ -824,9 +824,6 @@ function drawLayoutBtns()
 	nextSceneButton:setFillColor(128, 128, 128)
 	nextSceneButton.isVisible = false
 	nextSceneButton.txt.isVisible = false
-
-	
-	
 	
 	timerTxt = display.newText("(00:00)",0,0,native.systemFont,math.round(16*sizeCoef))
 	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
