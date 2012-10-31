@@ -167,7 +167,7 @@ function startRecording()
 			end
 			gl.timerTxt.text = "("..minutes..":"..secondes..")"
 			gl.timerTxt:setReferencePoint(display.TopLeftReferencePoint)
-			gl.timerTxt.x, gl.timerTxt.y = 230*gl.coefW + display.screenOriginX,252*gl.coefH + display.screenOriginY
+			gl.timerTxt.x, gl.timerTxt.y = 230*gl.coefW + display.screenOriginX,262*gl.coefH + display.screenOriginY
 
 			--gl.timerTxtShadow.text = gl.timerTxt.text
 			--gl.timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)

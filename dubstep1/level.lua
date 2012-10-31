@@ -192,7 +192,7 @@ function new()
 	gl.navBar = display.newGroup()
 	for i = 1, 120 do
 		local navBarPart = display.newImageRect("images/elements/navBar.png", 4*gl.coefW, 55*gl.coefH)
-		navBarPart.x, navBarPart.y = (2 + 4*(i-1) )*gl.coefW + display.screenOriginX, 55*gl.coefH/2 + display.screenOriginY
+		navBarPart.x, navBarPart.y = (2 + 4*(i-1) )*gl.coefW + display.screenOriginX, 52*gl.coefH/2 + display.screenOriginY
 		gl.navBar:insert(navBarPart)
 	end
 

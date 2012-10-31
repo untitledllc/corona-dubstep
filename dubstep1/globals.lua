@@ -826,16 +826,7 @@ function drawLayoutBtns()
 	nextSceneButton.txt.isVisible = false
 
 	
-	--goodBtn = display.newRoundedRect(4*w/27,3*h/12,4*w/16,5*h/15,10)
-	--evilBtn = display.newRoundedRect(7*w/16,3*h/12,4*w/16,5*h/15,10)
 	
-	--volumeBtn = display.newRoundedRect(1,1,w/10,h/15,4)
-
-	--timerTxtShadow = display.newText("(00:00)",0,0,native.systemFont,16)
-	--timerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-	--timerTxtShadow.x,timerTxtShadow.y = 179,30
-	--timerTxtShadow.isVisible = false
-	--timerTxtShadow:setTextColor(100, 100, 100, 127)
 	
 	timerTxt = display.newText("(00:00)",0,0,native.systemFont,math.round(16*sizeCoef))
 	timerTxt:setReferencePoint(display.TopLeftReferencePoint)
@@ -843,11 +834,6 @@ function drawLayoutBtns()
 	timerTxt.isVisible = false
 	timerTxt.alpha = 0.8
 	
-	--nextSceneTimerTxtShadow = display.newText("Next scene: ",0,0,native.systemFontBold,12)
-	--nextSceneTimerTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-	--nextSceneTimerTxtShadow.x,nextSceneTimerTxtShadow.y = 170,300
-	--nextSceneTimerTxtShadow.isVisible = false
-	--nextSceneTimerTxtShadow:setTextColor(100, 100, 100, 255)
 
 	nextSceneTimerTxt = display.newText("Next scene: ",0,0,native.systemFontBold,math.round(12*sizeCoef))
 	nextSceneTimerTxt:setReferencePoint(display.TopLeftReferencePoint)
@@ -856,59 +842,26 @@ function drawLayoutBtns()
 	
 	sceneNumberShadow = display.newText("Scene: I",0,0,native.systemFont,math.round(18*sizeCoef))
 	sceneNumberShadow:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumberShadow.x,sceneNumberShadow.y = 161*coefW + display.screenOriginX,249*coefH + display.screenOriginY
+	sceneNumberShadow.x,sceneNumberShadow.y = 161*coefW + display.screenOriginX,259*coefH + display.screenOriginY
 	sceneNumberShadow.isVisible = false
 	sceneNumberShadow:setTextColor(100, 100, 100, 255)
 
 	sceneNumber = display.newText("Scene: I",0,0,native.systemFont,math.round(18*sizeCoef))
 	sceneNumber:setReferencePoint(display.TopLeftReferencePoint)
-	sceneNumber.x,sceneNumber.y = 162*coefW + display.screenOriginX,250*coefH + display.screenOriginY
+	sceneNumber.x,sceneNumber.y = 162*coefW + display.screenOriginX,260*coefH + display.screenOriginY
 	sceneNumber.isVisible = false
 
-	--glitchTxtShadow = display.newText("Glitch", 0, 0, native.systemFontBold, 14)
-	--glitchTxtShadow:setReferencePoint(display.TopLeftReferencePoint)
-	--glitchTxtShadow.x,glitchTxtShadow.y = 29,216
-	--glitchTxtShadow.isVisible = false
-	--glitchTxtShadow:setTextColor(100, 100, 100, 255)
+	
 
 	glitchTxt = display.newText("Glitch", 0, 0, native.systemFontBold, math.round(14*sizeCoef))
 	glitchTxt:setReferencePoint(display.TopLeftReferencePoint)
 	glitchTxt.x,glitchTxt.y = 30*coefW + display.screenOriginX,215*coefH + display.screenOriginY
 	glitchTxt.isVisible = false
 	
-	--btn1.x,btn1.y,btn2.x,btn2.y = w/16,15*h/16,w/16,12*h/16
-	--btn1:setFillColor(140,255,0)
-	--btn2:setFillColor(140,255,0)
-	--btn1.alpha = 0.5
-	--btn2.alpha = 0.5
 	
-	--btn1.txt = display.newText("Back",0,0,native.systemFont,14)
-	--btn2.txt = display.newText("Restart",0,0,native.systemFont,14)
-	--btn1.txt.x,btn1.txt.y = btn1.x, btn1.y
-	--btn2.txt.x,btn2.txt.y = btn2.x, btn2.y
-	
-	--repBtn.x,repBtn.y = 15*w/16,h/16
-	--repBtn:setFillColor(255,140,140)
-	--repBtn.alpha = 0.5
 	repBtn.isVisible = false	
 	menuButtonFinal.isVisible = false
-	--repBtn.txt = display.newText("Play",0,0,native.systemFont,14)
-	--repBtn.txt.x,repBtn.txt.y = 15*w/16,h/16
-	--repBtn.txt.isVisible = false
-	--repBtn.txt:setTextColor(0,255,0)
-
 	
-	
-	--volumeBtn.x,volumeBtn.y = w/16,h/16
-	--volumeBtn:setFillColor(140,255,140)
-	--volumeBtn.alpha = 0.5
-	
-	--volumeBtn.txt = display.newText("EQ",0,0,native.systemFont,14)
-	--volumeBtn.txt.x,volumeBtn.txt.y = w/16,h/16
-	--volumeBtn.isVisible = false
-	--volumeBtn.txt.isVisible = false
-	
-	--volumeBtn.scene = "volumeRegulator"
 	
 	recording.cancelTimers(recording.getTimers())
 	
@@ -916,10 +869,7 @@ function drawLayoutBtns()
 	
 	nextSceneButton:addEventListener("touch", require("playing").nextScene)
 
-	--btn1:addEventListener("touch",changeScene)
-	--btn2:addEventListener("touch",changeScene)
-	--repBtn:addEventListener("touch",changeScene)
-	--volumeBtn:addEventListener("touch",volumePanel.showHidePanel)
+	
 	
 	btns[1] = btn1
 	btns[2] = btn2
