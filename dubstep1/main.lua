@@ -2,6 +2,10 @@ system.activate("multitouch")
 
 local director = require("director")
 
+local analytics = require "analytics"
+
+analytics.init( "5Y897JW45TZPDTY2B6J2" )
+
 display.setStatusBar( display.HiddenStatusBar )
 system.setIdleTimer( false )
 
@@ -26,10 +30,3 @@ Runtime:addEventListener( "enterFrame", monitorMem )]]--
 mainGroup:insert(director.directorView)
 director:changeScene("splashScreen")
 
---[[local function main()
-	
-	return true
-end
-timer.performWithDelay(200, function ()
-	main()
-end)]]--
