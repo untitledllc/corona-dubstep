@@ -28,7 +28,7 @@ function new()
 			print("sizes: ",gl.ads.width, gl.ads.height)
 		end
 	end
-	gl.ads.init("inneractive", "itsbeta_RomneyDubtest_Android", showAd)
+	gl.ads.init("inmobi", "4028cbff3aab0518013ad5ce36cb0305", showAd)
 
 	if gl.toEndTimerFunc then
 		Runtime:removeEventListener("enterFrame", gl.toEndTimerFunc)
@@ -109,8 +109,8 @@ function new()
 
 			-- adversity
 			
-			gl.ads.show( "banner", { x=(240*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=30} )
-			
+			gl.ads.show( "banner320x48", { x=(0*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=27, testMode=true} )
+
 			------------
 
 			gl.btns = gl.drawLayoutBtns()

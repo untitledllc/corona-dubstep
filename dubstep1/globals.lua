@@ -770,7 +770,7 @@ function drawLayoutBtns()
 	
 	btn1 = widget.newButton{
 		id = "toMenu",
-		left = 5*coefW + display.screenOriginX,
+		left = 375*coefW + display.screenOriginX,
 		top = (55*coefH-36*sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
@@ -782,7 +782,7 @@ function drawLayoutBtns()
 	
 	btn2 = widget.newButton{
 		id = "restart",
-		left = 65*coefW + display.screenOriginX,
+		left = 440*coefW + display.screenOriginX,
 		top = (55*coefH-36*sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",

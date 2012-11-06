@@ -27,7 +27,7 @@ function new()
 			print("sizes: ",gl.ads.width, gl.ads.height)
 		end
 	end
-	gl.ads.init("inneractive", "itsbeta_RomneyDubtest_Android", showAd)
+	gl.ads.init("inmobi", "4028cbff3aab0518013ad5ce36cb0305", showAd)
 
 	for i, v in pairs(gl.soundsConfig) do
 		if v.type == "melody" then
@@ -578,6 +578,7 @@ function new()
 	
 	local function exitPressed(event)
 		if (event.phase == "release") then
+			ads.hide()
 			--local vol = require("volumeRegulator")
 			--local rc = require("recording")
 			--rc.recPressCounter = 0
@@ -680,7 +681,7 @@ function new()
 
 	gl.btn1 = gl.widget.newButton{
 		id = "toMenu",
-		left = 5*gl.coefW + display.screenOriginX,
+		left = 375*gl.coefW + display.screenOriginX,
 		top = (55*gl.coefH-36*gl.sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/toMenuFromPlayng.png",
 		over = "images/elements/toMenuFromPlayngPressed.png",
@@ -692,7 +693,7 @@ function new()
 
 	gl.btn2 = gl.widget.newButton{
 		id = "restart",
-		left = 65*gl.coefW + display.screenOriginX,
+		left = 440*gl.coefW + display.screenOriginX,
 		top = (55*gl.coefH-36*gl.sizeCoef)/2 + display.screenOriginY,
 		default = "images/elements/restart.png",
 		over = "images/elements/restartPressed.png",
@@ -722,7 +723,7 @@ function new()
 
 	-- adversity
 			
-	gl.ads.show( "banner", { x=(240*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=30} )
+	gl.ads.show( "banner320x48", { x=(0*gl.coefW + display.screenOriginX), y=(0*gl.coefH + display.screenOriginY), interval=27, testMode=true} )
 			
 	------------
 

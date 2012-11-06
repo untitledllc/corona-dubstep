@@ -36,7 +36,7 @@ settings =
     },
     android =
     {
-        versionCode = "2",
+        versionCode = "3",
         installLocation = "auto",
         versionName = "1.0",
     },
