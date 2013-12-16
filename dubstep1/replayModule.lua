@@ -578,7 +578,7 @@ function new()
 	
 	local function exitPressed(event)
 		if (event.phase == "ended") then
-			ads.hide()
+			gl.ads.hide()
 			--local vol = require("volumeRegulator")
 			--local rc = require("recording")
 			--rc.recPressCounter = 0

@@ -817,7 +817,7 @@ function drawLayoutBtns()
 	menuButtonFinal.scene = "level"
 
 
-	nextSceneButton = display.newRoundedRect(180, 230, 55, 38, 8)
+	nextSceneButton = display.newRoundedRect(170, 200, 95, 38, 8)
 	nextSceneButton.txt = display.newText("Next scene", 0, 0, native.systemFont, 16)
 	nextSceneButton.txt.x, nextSceneButton.txt.y = nextSceneButton.x, nextSceneButton.y
 	nextSceneButton.alpha = 0.5
