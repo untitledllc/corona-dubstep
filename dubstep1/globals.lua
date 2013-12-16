@@ -197,7 +197,7 @@ function createButton(arg)
 	end
 
 	local function buttonListener (event)
-									if event.phase == "release" then				
+									if event.phase == "ended" then				
 										if event.target.type == "fx" then
 											require("playing").playFX(event.target.track, event.target)
 										elseif event.target.type == "melody" then
@@ -232,8 +232,8 @@ function createButton(arg)
 												id = _id,
 												left = 1,
 												top = 1,
-												default = overImage,
-												over = defaultImage,
+												defaultFile = overImage,
+												overFile = defaultImage,
 												width = w,
 												height = h,
 												onEvent = buttonListener
@@ -262,8 +262,8 @@ function createButton(arg)
 		id = "sound"..arg.soundId,
 		left = _left*coefW + display.screenOriginX,
 		top = _top*coefH + display.screenOriginY,
-		default = _default,
-		over = _over,
+		defaultFile = _default,
+		overFile = _over,
 		width = _width*sizeCoef,
 		height = _height*sizeCoef,
 		onEvent = buttonListener
@@ -400,8 +400,8 @@ function createGlitchButton(arg)
 		id = arg.id,
 		left = _left*coefW + display.screenOriginX,
 		top = _top*coefH + display.screenOriginY,
-		default = _default,
-		over = _over,
+		defaultFile = _default,
+		overFile = _over,
 		width = _width*sizeCoef,
 		height = _height*sizeCoef,
 		onEvent = _f
@@ -701,7 +701,7 @@ function drawLayoutBtns()
 	local btns = {}
 
 	function changeScene(event)
-		if event.phase == "release" then
+		if event.phase == "ended" then
 			ads.hide()
 			if toEndTimerFunc then
 				Runtime:removeEventListener("enterFrame", toEndTimerFunc)
@@ -772,8 +772,8 @@ function drawLayoutBtns()
 		id = "toMenu",
 		left = 375*coefW + display.screenOriginX,
 		top = (55*coefH-36*sizeCoef)/2 + display.screenOriginY,
-		default = "images/elements/toMenuFromPlayng.png",
-		over = "images/elements/toMenuFromPlayngPressed.png",
+		defaultFile = "images/elements/toMenuFromPlayng.png",
+		overFile = "images/elements/toMenuFromPlayngPressed.png",
 		width = 55*sizeCoef,
 		height = 36*sizeCoef,
 		onEvent = changeScene
@@ -784,8 +784,8 @@ function drawLayoutBtns()
 		id = "restart",
 		left = 440*coefW + display.screenOriginX,
 		top = (55*coefH-36*sizeCoef)/2 + display.screenOriginY,
-		default = "images/elements/restart.png",
-		over = "images/elements/restartPressed.png",
+		defaultFile = "images/elements/restart.png",
+		overFile = "images/elements/restartPressed.png",
 		width = 38*sizeCoef,
 		height = 36*sizeCoef,
 		onEvent = changeScene
@@ -796,8 +796,8 @@ function drawLayoutBtns()
 		id = "replay",
 		left = 285*coefW + display.screenOriginX,
 		top = 195*coefH + display.screenOriginY,
-		default = "images/elements/replayButton.png",
-		over = "images/elements/replayButtonPressed.png",
+		defaultFile = "images/elements/replayButton.png",
+		overFile = "images/elements/replayButtonPressed.png",
 		width = 77*sizeCoef,
 		height = 38*sizeCoef,
 		onEvent = changeScene
@@ -808,8 +808,8 @@ function drawLayoutBtns()
 		id = "toMenuFinal",
 		left = 385*coefW + display.screenOriginX,
 		top = 195*coefH + display.screenOriginY,
-		default = "images/elements/toMenuFinal.png",
-		over = "images/elements/toMenuFinalPressed.png",
+		defaultFile = "images/elements/toMenuFinal.png",
+		overFile = "images/elements/toMenuFinalPressed.png",
 		width = 77*sizeCoef,
 		height = 38*sizeCoef,
 		onEvent = changeScene

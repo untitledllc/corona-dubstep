@@ -577,7 +577,7 @@ function new()
 	end
 	
 	local function exitPressed(event)
-		if (event.phase == "release") then
+		if (event.phase == "ended") then
 			ads.hide()
 			--local vol = require("volumeRegulator")
 			--local rc = require("recording")
@@ -683,8 +683,8 @@ function new()
 		id = "toMenu",
 		left = 375*gl.coefW + display.screenOriginX,
 		top = (55*gl.coefH-36*gl.sizeCoef)/2 + display.screenOriginY,
-		default = "images/elements/toMenuFromPlayng.png",
-		over = "images/elements/toMenuFromPlayngPressed.png",
+		defaultFile = "images/elements/toMenuFromPlayng.png",
+		overFile = "images/elements/toMenuFromPlayngPressed.png",
 		width = 55*gl.sizeCoef,
 		height = 36*gl.sizeCoef,
 		onEvent = exitPressed
@@ -695,8 +695,8 @@ function new()
 		id = "restart",
 		left = 440*gl.coefW + display.screenOriginX,
 		top = (55*gl.coefH-36*gl.sizeCoef)/2 + display.screenOriginY,
-		default = "images/elements/restart.png",
-		over = "images/elements/restartPressed.png",
+		defaultFile = "images/elements/restart.png",
+		overFile = "images/elements/restartPressed.png",
 		width = 38*gl.sizeCoef,
 		height = 36*gl.sizeCoef,
 		onEvent = exitPressed

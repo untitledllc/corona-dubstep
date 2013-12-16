@@ -60,7 +60,7 @@ function new()
 	local localGroup = display.newGroup()
 
 	function continuePress(event)
-		if event.phase == "release" then
+		if event.phase == "ended" then
 
 			audio.stop()
 			for i, v in pairs(gl.soundsConfig) do
@@ -171,8 +171,8 @@ function new()
 		id = "continue",
 		left = 335*gl.coefW + display.screenOriginX,
 		top = 220*gl.coefH + display.screenOriginY,
-		default = "images/elements/continueButton.png",
-		over = "images/elements/continueButtonPressed.png",
+		defaultFile = "images/elements/continueButton.png",
+		overFile = "images/elements/continueButtonPressed.png",
 		width = 77*gl.sizeCoef,
 		height = 38*gl.sizeCoef,
 		onEvent = continuePress
@@ -240,7 +240,7 @@ function new()
 	
 	if atOncePlay then
 		timer.performWithDelay(50, function()
-			continuePress({name = "buttonEvent", phase = "release"})
+			continuePress({name = "buttonEvent", phase = "ended"})
 		end)
 	end
 	--native.showAlert("alert3", "alert3", {"ok"})

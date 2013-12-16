@@ -97,7 +97,7 @@ function prepareToPlay()
 		for i, v in pairs(gl.buttonsInScenes[1]) do
 			if v[2] == true and gl.configInterface.soundButtons[v[1]].button then
 				local b = gl.configInterface.soundButtons[v[1]].button
-				b:dispatchEvent({name = "emulatePress", phase = "release", target = b})
+				b:dispatchEvent({name = "emulatePress", phase = "ended", target = b})
 			end
 		end
 	end)
@@ -105,7 +105,7 @@ function prepareToPlay()
 	-- DEBUG //зажатый глитч
 	--[[gl.configInterface.glitchButtons[1].button[1].isVisible = false
 	gl.configInterface.glitchButtons[1].button[2].isVisible = true
-	gl.configInterface.glitchButtons[1].button:dispatchEvent({name = "emulatePress", phase = "press", target = gl.configInterface.glitchButtons[1].button})
+	gl.configInterface.glitchButtons[1].button:dispatchEvent({name = "emulatePress", phase = "began", target = gl.configInterface.glitchButtons[1].button})
 	]]--
 
 	-- Ставим первый бэкграунд
@@ -220,7 +220,7 @@ function nextScene(event)
 							-- Если кнопка нажата, то "отжимаем"
 							if curBInfo.button.pressed and curBInfo.button.pressed ~= 0 then
 								--unpressButton(curBInfo.button)
-								curBInfo.button:dispatchEvent({name = "emulatePress", phase = "release", target = curBInfo.button})
+								curBInfo.button:dispatchEvent({name = "emulatePress", phase = "ended", target = curBInfo.button})
 							end
 							--gl.configInterface.soundButtons[v[1]].button.txt:removeSelf()
 							--gl.configInterface.soundButtons[v[1]].button.txt = nil
@@ -233,7 +233,7 @@ function nextScene(event)
 						-- Если кнопка нажата, то "отжимаем"
 						if curBInfo.button.pressed and curBInfo.button.pressed ~= 0 then
 							--unpressButton(curBInfo.button)
-							curBInfo.button:dispatchEvent({name = "emulatePress", phase = "release", target = curBInfo.button})
+							curBInfo.button:dispatchEvent({name = "emulatePress", phase = "ended", target = curBInfo.button})
 						end
 					end
 				end
@@ -316,7 +316,7 @@ function nextScene(event)
 				local curBInfo = gl.configInterface.soundButtons[v[1]]
 				if curBInfo.button and curBInfo.side == gl.choosenSide then
 					if v[2] == true and (not curBInfo.button.pressed  or curBInfo.button.pressed == 0) then
-						gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "emulatePress", phase = "release", target = gl.configInterface.soundButtons[v[1]].button})
+						gl.configInterface.soundButtons[v[1]].button:dispatchEvent({name = "emulatePress", phase = "ended", target = gl.configInterface.soundButtons[v[1]].button})
 					end
 				end
 			end
@@ -364,7 +364,7 @@ function nextScene(event)
 					-- Если кнопка нажата, то "отжимаем"
 					if gl.mainGroup[2][i].pressed and gl.mainGroup[2][i].pressed ~= 0 then
 						--unpressButton(gl.mainGroup[2][i])
-						gl.mainGroup[2][i]:dispatchEvent({name = "emulatePress", phase = "release", target = gl.mainGroup[2][i]})
+						gl.mainGroup[2][i]:dispatchEvent({name = "emulatePress", phase = "ended", target = gl.mainGroup[2][i]})
 					end
 			end
 			]]--
@@ -373,7 +373,7 @@ function nextScene(event)
 				v.button.isVisible = false
 
 				if v.button.pressed and v.button.pressed ~= 0 then
-					v.button:dispatchEvent({name = "emulatePress", phase = "release", target = v.button})
+					v.button:dispatchEvent({name = "emulatePress", phase = "ended", target = v.button})
 				end
 			end
 
@@ -542,9 +542,11 @@ function playFX(trackInfo,button)
 
 		playingVoicesFxs[trackInfo.id] = trackInfo
 		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+		button.tween.timeStart = system.getTimer()
+		button.tween.duration = button.tween.time
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
-			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+			if system.getTimer() >= button.tween.timeStart + button.tween.duration then
 				playingVoicesFxs[trackInfo.id] = nil
 				trackInfo.channel = nil
 			end
@@ -575,10 +577,11 @@ function playFX(trackInfo,button)
 
 		playingVoicesFxs[trackInfo.id] = trackInfo
 		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
-
+		button.tween.timeStart = system.getTimer()
+		button.tween.duration = button.tween.time
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
-			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+			if system.getTimer() >= button.tween.timeStart + button.tween.duration then
 				playingVoicesFxs[trackInfo.id] = nil
 				trackInfo.channel = nil
 			end
@@ -604,10 +607,12 @@ function playVoice(trackInfo,button)
 
 		playingVoicesFxs[trackInfo.id] = trackInfo
 		button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+		button.tween.timeStart = system.getTimer()
+		button.tween.duration = button.tween.time
 		audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 			button.pressed = 0
 
-			if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+			if system.getTimer() >= button.tween.timeStart + button.tween.duration then
 				-- Удаляем трек из списка глитча
 				for i, v in pairs(gl.configInterface.glitchButtons) do
 					if v.button then
@@ -698,10 +703,12 @@ function playVoice(trackInfo,button)
 
 			playingVoicesFxs[trackInfo.id] = trackInfo
 			button.tween = transition.from(button, {alpha = 1, time = audio.getDuration(trackInfo.sound)})
+			button.tween.timeStart = system.getTimer()
+			button.tween.duration = button.tween.time
 			audio.play(trackInfo.sound, {channel = trackInfo.channel, loops = 0, onComplete = function()
 				button.pressed = 0
 				
-				if system.getTimer() >= button.tween._timeStart + button.tween._duration then
+				if system.getTimer() >= button.tween.timeStart + button.tween.duration then
 					-- Удаляем трек из списка глитча
 					for i, v in pairs(gl.configInterface.glitchButtons) do
 						if v.button then
@@ -813,7 +820,7 @@ end
 
 function playGlitch(event)
  	
-	if (event.phase == "press") then
+	if (event.phase == "began") then
 
 		-- Если по какой-то причине оставался не удаленный глитч на текущей кнопке, то удаляем его
 		if runtimeGlitchHandlers[event.target.id] then
@@ -848,7 +855,7 @@ function playGlitch(event)
 		
 	
 	
-	elseif event.phase == "release" then
+	elseif event.phase == "ended" then
 		if runtimeGlitchHandlers[event.target.id] then
 			Runtime:removeEventListener("enterFrame", runtimeGlitchHandlers[event.target.id])
 			runtimeGlitchHandlers[event.target.id] = nil
