@@ -13,6 +13,7 @@ settings =
     {
         plist =
         {
+            UIStatusBarHidden = true,
             CFBundleDisplayName = "Romney Dub",
             UISupportedInterfaceOrientations =
             {
@@ -32,6 +33,17 @@ settings =
             UIPrerenderedIcon = true,
             UIApplicationExitsOnSuspend = false,
             CFBundleIdentifier = "ru.hintsolutions.romneydub",
+        },
+    },
+    plugins =
+    {   
+        ["CoronaProvider.analytics.flurry"] =
+        {
+            publisherId = "com.coronalabs",
+        },
+        ["CoronaProvider.ads.inmobi"] =
+        {
+            publisherId = "com.coronalabs",
         },
     },
     android =
